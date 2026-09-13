@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="Static/Style/Style.css">
+    <link rel="stylesheet" href="../../static/style/Style.css">
     <title>Create Event</title>
 </head>
 <body>
     <nav class="navbar navbar-expand-md festival-navbar navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="index.html">Food Festival</a>
+            <a class="navbar-brand" href="index.html">Music Festival</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
             <span class="navbar-toggler-icon"></span>
             </button>
@@ -29,7 +29,7 @@
         <h1>Create Event</h1>
             <div class="card mt-4 mb-4 shadow-sm">
                 <div class="card-body p-4">
-                    <h2 class="card-title mb-3">Create a Food Festival</h2>
+                    <h2 class="card-title mb-3">Create a Music Festival</h2>
                 <div class="alert alert-light border mb-4">
                 <strong>Acknowledgement of Country</strong>
                 <p class="mb-0">
@@ -39,11 +39,11 @@
                 <form class="mb-3">
                     <div class="mb-3">
                         <label for="eventName" class="form-label">Event Name</label>
-                        <input type="text" class="form-control" id="eventName" placeholder="Enter event name" required>
+                        <input type="text" class="form-control" id="eventName" placeholder="Enter music festival name">
                     </div>
                     <div class="mb-3">
                         <label for="eventDescription" class="form-label">Event Description</label>
-                        <textarea class="form-control" id="eventDescription" rows="3" placeholder="Enter event description" required></textarea>
+                        <textarea class="form-control" id="eventDescription" rows="3" placeholder="Describe the music festival, artists, and event details"></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="eventDate" class="form-label">Event Date</label>
@@ -74,15 +74,18 @@
                         <input type="file" class="form-control" id="eventImage" accept="image/*">
                     </div>
                     <div class="mb-3">
-                        <label for="eventCategory" class="form-label">Food Festival Category</label>
+                        <label for="eventCategory" class="form-label">Music Festival Category</label>
                         <select class="form-select" id="eventCategory" required>
                             <option value="" selected disabled>Select a category</option>
-                            <option value="street-food">Street Food</option>
-                             <option value="international">International Cuisine</option>
-                            <option value="dessert">Dessert & Sweets</option>
-                            <option value="vegan">Vegan & Vegetarian</option>
-                            <option value="seafood">Seafood</option>
-                            <option value="cultural">Cultural Food Festival</option>
+                            <option value="street-food">Pop</option>
+                             <option value="international">Hip-Hop & Rap</option>
+                            <option value="dessert">R&B & Soul</option>
+                            <option value="vegan">Indie Rock</option>
+                            <option value="seafood">Electronic & Dance</option>
+                            <option value="cultural">Heavy Metal</option>
+                            <option value="farmers-market">Folk & Acoustic</option>
+                            <option value="wine-and-dine">Punk & Hardcore</option>
+                            <option value="family-friendly">Jazz & Blues</option>
                         </select>
                     </div>
                     <div class="mb-3">
