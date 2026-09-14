@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block content %}
+
+<nav class="navbar navbar-expand-md festival-navbar navbar-dark">
+    <div class="container">
+        <a class="navbar-brand" href="index.html">Music Festival</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <div class="navbar-nav ms-auto align-items-md-center">
+                <a class="nav-link" href="index.html">Home</a>
+                <a class="nav-link active" href="create-event.html">Create Event</a>
+                <a class="nav-link" href="booking-history.html">Booking History</a>
+                <a class="btn btn-light btn-sm ms-md-3 me-md-2" href="account.html">Sign Up</a>
+                <a class="btn btn-outline-light btn-sm" href="account.html">Log In</a>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <h1>Create Event</h1>
+        <div class="card mt-4 mb-4 shadow-sm">
+            <div class="card-body p-4">
+                <h2 class="card-title mb-3">Create a Music Festival</h2>
+            <div class="alert alert-light border mb-4">
+            <strong>Acknowledgement of Country</strong>
+            <p class="mb-0">
+            We acknowledge the Traditional Custodians of the land on which our events are held and pay our respects to Elders past and present.
+            </p>
+        </div>
+            <form class="mb-3">
+                <div class="mb-3">
+                    <label for="eventName" class="form-label">Event Name</label>
+                    <input type="text" class="form-control" id="eventName" placeholder="Enter music festival name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="eventDescription" class="form-label">Event Description</label>
+                    <textarea class="form-control" id="eventDescription" rows="3" placeholder="Describe the music festival, artists, and event details" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="eventDate" class="form-label">Event Date</label>
+                    <input type="date" class="form-control" id="eventDate" required>
+                </div>
+                <div class="mb-3">
+                    <label for="startTime" class="form-label">Start Time</label>
+                    <input type="time" class="form-control" id="startTime" required>
+                </div>
+                <div class="mb-3">
+                    <label for="endTime" class="form-label">End Time</label>
+                    <input type="time" class="form-control" id="endTime" required>
+                </div>
+                <div class="mb-3">
+                    <label for="eventLocation" class="form-label">Location</label>
+                    <input type="text" class="form-control" id="eventLocation" placeholder="Enter event location" required>
+                </div>
+                <div class="mb-3">
+                    <label for="ticketPrice" class="form-label">Ticket Price ($)</label>
+                    <input type="number" class="form-control" id="ticketPrice" min="0" step="0.01" placeholder="Enter ticket price" required>
+                </div>
+                <div class="mb-3">
+                    <label for="ticketCapacity" class="form-label">Number of Tickets Available</label>
+                    <input type="number" class="form-control" id="ticketCapacity" min="1" placeholder="Enter number of tickets available" required>
+                </div>
+                <div class="mb-3">
+                    <label for="eventImage" class="form-label">Event Image</label>
+                    <input type="file" class="form-control" id="eventImage" accept="image/*">
+                </div>
+                <div class="mb-3">
+                    <label for="eventCategory" class="form-label">Music Festival Category</label>
+                    <select class="form-select" id="eventCategory" required>
+                        <option value="" selected disabled>Select a category</option>
+                        <option value="pop">Pop</option>
+                        <option value="hip-hop-rap">Hip-Hop & Rap</option>
+                        <option value="rnb-soul">R&B & Soul</option>
+                        <option value="alternative">Alternative</option>
+                        <option value="indie-rock">Indie Rock</option>
+                        <option value="electronic-dance">Electronic & Dance</option>
+                        <option value="heavy-metal">Heavy Metal</option>
+                        <option value="folk-acoustic">Folk & Acoustic</option>
+                        <option value="punk-hardcore">Punk & Hardcore</option>
+                        <option value="jazz-blues">Jazz & Blues</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="eventStatus" class="form-label">Event Status</label>
+                    <select class="form-select" id="eventStatus" required>
+                        <option value="" selected disabled>Select event status</option>
+                        <option value="open">Open</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="sold-out">Sold Out</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success mb-3">Create Event</button>
+            </form>
+    </div>
+</div>
+    <a href="index.html" class="btn btn-secondary mb-3">Back to Home</a>
+</div>
+<footer class="site-footer bg-dark text-white text-center py-3 mt-5">
+    <div class="container">
+        <p class="mb-0">&copy; 2026 Music Festival. All rights reserved.</p>
+    </div>
+</footer>
+
+{% endblock %}

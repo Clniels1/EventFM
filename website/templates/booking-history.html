@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+
+<nav class="navbar navbar-expand-md festival-navbar navbar-dark">
+    <div class="container">
+        <a class="navbar-brand" href="index.html">Music Festival</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="index.html">Home</a>
+                <a class="nav-link" href="create-event.html">Create Event</a>
+                <a class="nav-link active" href="booking-history.html">Booking History</a>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <h1 class="mb-4">Booking History</h1>
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link active" href="#">Upcoming Bookings</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Past Bookings</a>
+        </li>
+    </ul>
+    <div class="card mt-4 mb-4 col-md-8 mx-auto shadow-sm">
+        <img src="{{ url_for('static', filename='img/festival-1.jpg') }}"
+             class="card-img-top"
+             alt="Awesome Music Festival 2026">
+        <div class="card-body p-4">
+            <h2 class="card-title mb-3">Awesome Music Festival 2026</h2>
+            <p><strong>Booking ID:</strong> BK001</p>
+            <p><strong>Event Date:</strong> <a href="festival-calendar.html" class="date-link">19 September 2026</a></p>
+            <p><strong>Location:</strong> <a href="https://www.google.com/maps/search/?api=1&query=Riverstage+Brisbane" class="location-link" target="_blank">Riverstage, Brisbane</a></p>
+            <p><strong>Number of Tickets:</strong> 2</p>
+            <p><strong>Total Price:</strong> $239.98</p>
+            <p>
+                <strong>Booking Status:</strong>
+                <span class="badge bg-success">Confirmed</span>
+            </p>
+            <p><strong>Booked:</strong> 12 August 2026, 9:15 AM</p>
+            <a href="event-details.html" class="btn btn-primary">View Event</a>
+        </div>
+    </div>
+    <a href="index.html" class="btn btn-secondary mb-3">Back to Home</a>
+</div>
+<footer class="bg-dark text-white text-center py-3 mt-5">
+    <div class="container">
+        <p class="mb-0">&copy; 2026 Music Festival. All rights reserved.</p>
+    </div>
+</footer>
+
+{% endblock %}
