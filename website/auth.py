@@ -38,7 +38,11 @@ def register():
     register_form = RegisterForm()
     if register_form.validate_on_submit():
         user_name = register_form.user_name.data
+        first_name = register_form.first_name.data
+        surname = register_form.surname.data
         email = register_form.email.data
+        contact_number = register_form.contact_number.data
+        street_address = register_form.street_address.data
         password = register_form.password.data
         user_type = register_form.user_type.data
 
@@ -48,7 +52,9 @@ def register():
             return render_template('account.html', form=register_form, heading='Register')
 
         password_hash = generate_password_hash(password)
-        new_user = User(name=user_name, emailid=email, password_hash=password_hash, user_type=user_type)
+        new_user = User(name=user_name, first_name=first_name, surname=surname, emailid=email,
+                         contact_number=contact_number, street_address=street_address,
+                         password_hash=password_hash, user_type=user_type)
         db.session.add(new_user)
         db.session.commit()
 
