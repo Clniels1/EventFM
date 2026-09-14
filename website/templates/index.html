@@ -1,24 +1,6 @@
-{% include "base.html" %}
-{% block body %}
+{% extends "base.html" %}
+{% block content %}
 
-<nav class="navbar navbar-expand-md festival-navbar navbar-dark">
-    <div class="container">
-        <a class="navbar-brand" href="index.html">Food Festival</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="mainNavbar">
-            <div class="navbar-nav ms-auto align-items-md-center">
-                <a class="nav-link active" href="index.html">Home</a>
-                <a class="nav-link" href="create-event.html">Create Event</a>
-                <a class="nav-link" href="booking-history.html">Booking History</a>
-
-                <a class="btn btn-light btn-sm ms-md-3 me-md-2" href="account.html">Sign Up</a>
-                <a class="btn btn-outline-light btn-sm" href="account.html">Log In</a>
-            </div>
-        </div>
-    </div>
-</nav>
 <div class="container">
     <div class="text-center py-4">
         <h1 class="fs-2 fw-bold">Discover Food Festivals</h1>
