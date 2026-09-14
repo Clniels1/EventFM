@@ -1,5 +1,5 @@
-{% include "base.html" %}
-{% block body %}
+{% extends "base.html" %}
+{% block content %}
 
 <nav class="navbar navbar-expand-md festival-navbar navbar-dark">
     <div class="container">
@@ -13,8 +13,8 @@
                 <a class="nav-link" href="create-event.html">Create Event</a>
                 <a class="nav-link" href="booking-history.html">Booking History</a>
 
-                <a class="btn btn-light btn-sm ms-md-3 me-md-2" href="account.html">Sign Up</a>
-                <a class="btn btn-outline-light btn-sm" href="account.html">Log In</a>
+                <a class="btn btn-light btn-sm ms-md-3 me-md-2" href="{{ url_for('auth.register') }}">Sign Up</a>
+                <a class="btn btn-outline-light btn-sm" href="{{ url_for('auth.login') }}">Log In</a>
             </div>
         </div>
     </div>
