@@ -5,7 +5,7 @@ from .models import User
 from .forms import LoginForm, RegisterForm
 from . import db
 
-#github demo
+
 # Create a blueprint - make sure all BPs have unique names
 auth_bp = Blueprint('auth', __name__)
 
