@@ -28,7 +28,7 @@
                     </a>
                 </li>
                 <li class="list-group-item"><strong>Price:</strong> ${{ '%.2f'|format(event.price) }} per ticket</li>
-                <li class="list-group-item"><strong>Tickets Available:</strong> {{ event.capacity }}</li>
+                <li class="list-group-item"><strong>Tickets Available:</strong> {{ event.tickets_remaining }}</li>
                 <li class="list-group-item">
                     <strong>Acknowledgement of Country:</strong> {{ event.acknowledgement_type }}
                 </li>
@@ -38,8 +38,61 @@
                 </li>
                 {% endif %}
             </ul>
+            {% if order_id %}
+                <div class="alert alert-success">
+                    <h4 class="alert-heading">Booking Confirmed!</h4>
+                    <p class="mb-0">
+                        Your booking was successful. Your Order ID is <strong>#{{ order_id }}</strong>.
+                    </p>
+                </div>
+            {% endif %}
+            {% if booking_error == 'not_enough_tickets' %}
+                <div class="alert alert-danger">
+                    <p class="mb-0">
+                        There are not enough tickets available for the quantity you requested.
+                        Please choose a smaller number of tickets.
+                    </p>
+                </div>
+            {% endif %}
+            {% if event.status == 'Open' %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4>Book Tickets</h4>
+                        {% if current_user.is_authenticated %}
+                            <form method="POST" action="{{ url_for('main.book_event', event_id=event.id) }}">
+                                {{ booking_form.hidden_tag() }}
+                                <div class="mb-3">
+                                    {{ booking_form.quantity.label(class="form-label") }}
+                                    {{ booking_form.quantity(class="form-control") }}
+                                </div>
+                                {{ booking_form.submit(class="btn btn-success") }}
+                            </form>
+                        {% else %}
+                            <p>Please log in to book tickets.</p>
+                            <a href="{{ url_for('auth.login') }}" class="btn btn-success">Log In to Book</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% elif event.status == 'Sold Out' %}
+                <div class="alert alert-warning">
+                    This event is sold out.
+                </div>
+            {% elif event.status == 'Cancelled' %}
+                <div class="alert alert-danger">
+                    This event has been cancelled.
+                </div>
+            {% elif event.status == 'Inactive' %}
+                <div class="alert alert-secondary">
+                    This event is no longer available for booking.
+                </div>
+            {% endif %}
             {% if current_user.is_authenticated and current_user.id == event.user_id %}
                 <a href="{{ url_for('main.edit_event', event_id=event.id) }}" class="btn btn-warning mb-3">Edit Event</a>
+                {% if event.status != 'Cancelled' %}
+                    <form method="POST" action="{{ url_for('main.cancel_event', event_id=event.id) }}" class="d-inline">
+                        <button type="submit" class="btn btn-danger mb-3">Cancel Event</button>
+                    </form>
+                {% endif %}
             {% endif %}
             <a href="{{ url_for('main.index') }}" class="btn btn-primary mb-3">Back to Home</a>
         </div>
