@@ -29,74 +29,65 @@
             We acknowledge the Traditional Custodians of the land on which our events are held and pay our respects to Elders past and present.
             </p>
         </div>
-            <form class="mb-3">
+            <form method="POST" enctype="multipart/form-data" class="mb-3">
+                {{ form.hidden_tag() }}
                 <div class="mb-3">
                     <label for="eventName" class="form-label">Event Name</label>
-                    <input type="text" class="form-control" id="eventName" placeholder="Enter music festival name" required>
+                    {{ form.title(class="form-control", id="eventName", placeholder="Enter music festival name") }}
                 </div>
                 <div class="mb-3">
                     <label for="eventDescription" class="form-label">Event Description</label>
-                    <textarea class="form-control" id="eventDescription" rows="3" placeholder="Describe the music festival, artists, and event details" required></textarea>
+                    {{ form.description(class="form-control", id="eventDescription", rows="3", placeholder="Describe the music festival, artists, and event details") }}
                 </div>
                 <div class="mb-3">
                     <label for="eventDate" class="form-label">Event Date</label>
-                    <input type="date" class="form-control" id="eventDate" required>
+                    {{ form.date(class="form-control", id="eventDate") }}
                 </div>
                 <div class="mb-3">
                     <label for="startTime" class="form-label">Start Time</label>
-                    <input type="time" class="form-control" id="startTime" required>
+                    {{ form.start_time(class="form-control", id="startTime") }}
                 </div>
                 <div class="mb-3">
                     <label for="endTime" class="form-label">End Time</label>
-                    <input type="time" class="form-control" id="endTime" required>
+                    {{ form.end_time(class="form-control", id="endTime") }}
                 </div>
                 <div class="mb-3">
                     <label for="eventLocation" class="form-label">Location</label>
-                    <input type="text" class="form-control" id="eventLocation" placeholder="Enter event location" required>
+                    {{ form.location(class="form-control", id="eventLocation", placeholder="Enter event location") }}
                 </div>
                 <div class="mb-3">
                     <label for="ticketPrice" class="form-label">Ticket Price ($)</label>
-                    <input type="number" class="form-control" id="ticketPrice" min="0" step="0.01" placeholder="Enter ticket price" required>
+                    {{ form.price(class="form-control", id="ticketPrice", min="0", step="0.01", placeholder="Enter ticket price") }}
                 </div>
                 <div class="mb-3">
                     <label for="ticketCapacity" class="form-label">Number of Tickets Available</label>
-                    <input type="number" class="form-control" id="ticketCapacity" min="1" placeholder="Enter number of tickets available" required>
+                    {{ form.capacity(class="form-control", id="ticketCapacity", min="1", placeholder="Enter number of tickets available") }}
                 </div>
                 <div class="mb-3">
                     <label for="eventImage" class="form-label">Event Image</label>
-                    <input type="file" class="form-control" id="eventImage" accept="image/*">
+                    {{ form.image(class="form-control", id="eventImage", accept="image/*") }}
                 </div>
                 <div class="mb-3">
                     <label for="eventCategory" class="form-label">Music Festival Category</label>
-                    <select class="form-select" id="eventCategory" required>
-                        <option value="" selected disabled>Select a category</option>
-                        <option value="pop">Pop</option>
-                        <option value="hip-hop-rap">Hip-Hop & Rap</option>
-                        <option value="rnb-soul">R&B & Soul</option>
-                        <option value="alternative">Alternative</option>
-                        <option value="indie-rock">Indie Rock</option>
-                        <option value="electronic-dance">Electronic & Dance</option>
-                        <option value="heavy-metal">Heavy Metal</option>
-                        <option value="folk-acoustic">Folk & Acoustic</option>
-                        <option value="punk-hardcore">Punk & Hardcore</option>
-                        <option value="jazz-blues">Jazz & Blues</option>
-                    </select>
+                    {{ form.genre(class="form-select", id="eventCategory") }}
                 </div>
                 <div class="mb-3">
-                    <label for="eventStatus" class="form-label">Event Status</label>
-                    <select class="form-select" id="eventStatus" required>
-                        <option value="" selected disabled>Select event status</option>
-                        <option value="open">Open</option>
-                        <option value="inactive">Inactive</option>
-                        <option value="sold-out">Sold Out</option>
-                        <option value="cancelled">Cancelled</option>
-                    </select>
+                    <label for="acknowledgementType" class="form-label">Acknowledgement of Country Type</label>
+                    {{ form.acknowledgement_type(class="form-select", id="acknowledgementType") }}
                 </div>
-                <button type="submit" class="btn btn-success mb-3">Create Event</button>
+                <div class="mb-3">
+                    <label for="acknowledgementText" class="form-label">Acknowledgement Information</label>
+                    {{ form.acknowledgement_text(class="form-control", id="acknowledgementText", rows="3", placeholder="Enter additional acknowledgement information if required") }}
+                </div>
+                {% if editing %}
+                    {{ form.submit(class="btn btn-warning mb-3", value="Update Event") }}
+                {% else %}
+                    {{ form.submit(class="btn btn-success mb-3") }}
+                {% endif %}
             </form>
     </div>
 </div>
-    <a href="index.html" class="btn btn-secondary mb-3">Back to Home</a>
+    <a href="{{ url_for('main.index') }}" class="btn btn-secondary mb-3">Back to Home</a>
 </div>
 <footer class="site-footer bg-dark text-white text-center py-3 mt-5">
     <div class="container">
