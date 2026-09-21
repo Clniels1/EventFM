@@ -23,7 +23,7 @@
                 <div class="collapse navbar-collapse" id="mainNavbar">
                     <div class="navbar-nav ms-auto align-items-md-center">
                         <a class="nav-link" href="{{ url_for('main.index') }}">Home</a>
-                        <a class="nav-link" href="create-event.html">Create Event</a>
+                        <a class="nav-link" href="{{ url_for('main.create_event') }}">Create Event</a>
                         <a class="nav-link" href="booking-history.html">Booking History</a>
 
                         {% if current_user.is_authenticated %}

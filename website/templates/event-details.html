@@ -1,96 +1,49 @@
 {% extends "base.html" %}
 {% block content %}
 
-<nav class="navbar navbar-expand-md festival-navbar navbar-dark">
-    <div class="container">
-        <a class="navbar-brand" href="index.html">Music Festival</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="mainNavbar">
-            <div class="navbar-nav ms-auto align-items-md-center">
-                <a class="nav-link" href="index.html">Home</a>
-                <a class="nav-link" href="create-event.html">Create Event</a>
-                <a class="nav-link" href="booking-history.html">Booking History</a>
-                <a class="btn btn-light btn-sm ms-md-3 me-md-2" href="account.html">Sign Up</a>
-                <a class="btn btn-outline-light btn-sm" href="account.html">Log In</a>
-            </div>
-        </div>
-    </div>
-</nav>
 <div class="container">
     <div class="card mt-4 mb-4 shadow-sm">
-        <img src="{{ url_for('static', filename='img/festival-1.jpg') }}"
-             class="card-img-top"
-             alt="Awesome Music Festival 2026">
+        <img src="{{ url_for('static', filename='img/' + event.image_filename) if event.image_filename else url_for('static', filename='img/festival-1.jpg') }}"
+            class="card-img-top"
+            alt="{{ event.title }}"
+            style="width: 100%; height: 300px; object-fit: cover; object-position: center;">
         <div class="card-body p-4">
             <h1 class="mb-3">Event Details</h1>
-            <h2>Awesome Music Festival 2026</h2>
-            <span class="badge bg-success mb-3">Open</span>
-            <p>Come see your favourite artists at the annual Awesome Music Festival.</p>
+            <h2>{{ event.title }}</h2>
+            <span class="badge bg-success mb-3">{{ event.status }}</span>
+            <p>{{ event.description }}</p>
             <ul class="list-group mb-4">
-                <li class="list-group-item"><strong>Category:</strong> Electronic & Dance</li>
+                <li class="list-group-item"><strong>Category:</strong> {{ event.genre }}</li>
                 <li class="list-group-item">
-                    <strong>Date:</strong>
-                    <a href="festival-calendar.html" class="date-link">19 September 2026</a>
+                    <strong>Date:</strong> {{ event.date.strftime('%d %B %Y') }}
                 </li>
-                <li class="list-group-item"><strong>Start Time:</strong> 7:00 PM</li>
-                <li class="list-group-item"><strong>End Time:</strong> 1:00 AM</li>
+                <li class="list-group-item"><strong>Start Time:</strong> {{ event.start_time.strftime('%I:%M %p') }}</li>
+                <li class="list-group-item"><strong>End Time:</strong> {{ event.end_time.strftime('%I:%M %p') }}</li>
                 <li class="list-group-item">
                     <strong>Location:</strong>
-                    <a href="https://www.google.com/maps/search/?api=1&query=Riverstage+Brisbane"
+                    <a href="https://www.google.com/maps/search/?api=1&query={{ event.location }}"
                     class="location-link"
                     target="_blank">
-                    Riverstage, Brisbane
+                    {{ event.location }}
                     </a>
                 </li>
-                <li class="list-group-item"><strong>Price:</strong> $119.99 per ticket</li>
-                <li class="list-group-item"><strong>Tickets Available:</strong> 100+</li>
+                <li class="list-group-item"><strong>Price:</strong> ${{ '%.2f'|format(event.price) }} per ticket</li>
+                <li class="list-group-item"><strong>Tickets Available:</strong> {{ event.capacity }}</li>
+                <li class="list-group-item">
+                    <strong>Acknowledgement of Country:</strong> {{ event.acknowledgement_type }}
+                </li>
+                {% if event.acknowledgement_text %}
+                <li class="list-group-item">
+                    <strong>Acknowledgement Information:</strong> {{ event.acknowledgement_text }}
+                </li>
+                {% endif %}
             </ul>
-            <h3 class="mt-4">Book Tickets</h3>
-            <div class="mb-3">
-                <label for="ticketQuantity" class="form-label">Number of Tickets</label>
-                <input type="number" class="form-control" id="ticketQuantity" min="1" max="100" value="1">
-            </div>
-            <div class="alert alert-info">
-                Select the number of tickets above, then click Book Event to confirm your booking.
-            </div>
-            <p class="text-muted">
-                You must be logged in to continue with your booking.
-            </p>
-            <div class="mb-3 d-flex gap-2">
-                <a href="account.html" class="btn btn-success">Book Event</a>
-                <a href="index.html" class="btn btn-primary">Back to Home</a>
-            </div>
-            <hr>
-            <h3 class="mt-4">Comments</h3>
-            <div class="card mb-3 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Alex</h5>
-                    <p class="card-text">Great festival! The music was amazing and the atmosphere was incredible.</p>
-                </div>
-            </div>
-            <div class="card mb-3 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Sarah</h5>
-                    <p class="card-text">Loved the variety of artists. I would definitely attend again!</p>
-                </div>
-            </div>
-            <h3 class="mt-4">Post a Comment</h3>
-            <form class="mb-3">
-                <div class="mb-3">
-                    <label for="comment" class="form-label">Your Comment</label>
-                    <textarea class="form-control" id="comment" rows="3" placeholder="Write your comment here"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Post Comment</button>
-            </form>
+            {% if current_user.is_authenticated and current_user.id == event.user_id %}
+                <a href="{{ url_for('main.edit_event', event_id=event.id) }}" class="btn btn-warning mb-3">Edit Event</a>
+            {% endif %}
+            <a href="{{ url_for('main.index') }}" class="btn btn-primary mb-3">Back to Home</a>
         </div>
     </div>
 </div>
-<footer class="bg-dark text-white text-center py-3 mt-5">
-    <div class="container">
-        <p class="mb-0">&copy; 2026 Music Festival. All rights reserved.</p>
-    </div>
-</footer>
 
 {% endblock %}
