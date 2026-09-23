@@ -94,6 +94,35 @@
                     </form>
                 {% endif %}
             {% endif %}
+            <hr class="my-4">   
+            <h3 class="mb-3">Comments</h3>
+            {% if current_user.is_authenticated %}
+                <form method="POST" action="{{ url_for('main.add_comment', event_id=event.id) }}" class="mb-4">
+                    {{ comment_form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ comment_form.content.label(class="form-label") }}
+                        {{ comment_form.content(class="form-control", rows="3") }}
+                    </div>
+                    {{ comment_form.submit(class="btn btn-primary") }}
+                </form>
+            {% else %}
+                 <p>
+                    Please <a href="{{ url_for('auth.login') }}">log in</a> to post a comment.
+                 </p>
+            {% endif %}
+            {% for comment in event.comments %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h6 class="card-title mb-1">{{ comment.author.name }}</h6>
+                        <p class="card-text mb-2">{{ comment.content }}</p>
+                        <small class="text-muted">
+                            {{ comment.created_at.strftime('%d %B %Y, %I:%M %p') }}
+                        </small>
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-muted">No comments yet.</p>
+            {% endfor %}
             <a href="{{ url_for('main.index') }}" class="btn btn-primary mb-3">Back to Home</a>
         </div>
     </div>

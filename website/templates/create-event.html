@@ -1,23 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 
-<nav class="navbar navbar-expand-md festival-navbar navbar-dark">
-    <div class="container">
-        <a class="navbar-brand" href="index.html">Music Festival</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
-        <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="mainNavbar">
-            <div class="navbar-nav ms-auto align-items-md-center">
-                <a class="nav-link" href="index.html">Home</a>
-                <a class="nav-link active" href="create-event.html">Create Event</a>
-                <a class="nav-link" href="booking-history.html">Booking History</a>
-                <a class="btn btn-light btn-sm ms-md-3 me-md-2" href="account.html">Sign Up</a>
-                <a class="btn btn-outline-light btn-sm" href="account.html">Log In</a>
-            </div>
-        </div>
-    </div>
-</nav>
 <div class="container">
     <h1>Create Event</h1>
         <div class="card mt-4 mb-4 shadow-sm">
@@ -89,10 +72,5 @@
 </div>
     <a href="{{ url_for('main.index') }}" class="btn btn-secondary mb-3">Back to Home</a>
 </div>
-<footer class="site-footer bg-dark text-white text-center py-3 mt-5">
-    <div class="container">
-        <p class="mb-0">&copy; 2026 Music Festival. All rights reserved.</p>
-    </div>
-</footer>
 
 {% endblock %}
