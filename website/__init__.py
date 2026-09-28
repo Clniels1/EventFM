@@ -13,6 +13,7 @@ def create_app():
     app = Flask(__name__)  # this is the name of the module/package that is calling this app
     # Should be set to false in a production environment
     app.debug = True
+    app.config['PROPAGATE_EXCEPTIONS'] = False
     app.secret_key = '{=i?D@bc3L&lF(=T'
     # set the app configuration data 
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sitedata.sqlite'
@@ -41,6 +42,9 @@ def create_app():
 
     from . import auth
     app.register_blueprint(auth.auth_bp)
+
+    from . import errors
+    app.register_blueprint(errors.errors_bp)
 
     with app.app_context():
         db.create_all()
