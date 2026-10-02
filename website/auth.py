@@ -9,8 +9,8 @@ from . import db
 # Create a blueprint - make sure all BPs have unique names
 auth_bp = Blueprint('auth', __name__)
 
-# this is a hint for a login function
 @auth_bp.route('/login', methods=['GET', 'POST'])
+
 # view function
 def login():
     login_form = LoginForm()
@@ -26,7 +26,7 @@ def login():
         if error is None:
             login_user(user)
             nextp = request.args.get('next') # this gives the url from where the login page was accessed
-            if nextp is None or not nextp.startswith('/'):
+            if nextp is None or not nextp.startswith('/') or nextp.startswith(('//', '/\\')):
                 return redirect(url_for('main.index'))
             return redirect(nextp)
         else:
