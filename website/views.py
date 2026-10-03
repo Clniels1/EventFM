@@ -145,7 +145,6 @@ def book_event(event_id):
             event_id=event.id,
             quantity=quantity
             ))
-        return redirect(url_for('main.event_details', event_id=event.id, order_id=order.id))
     return redirect(url_for('main.event_details', event_id=event.id))
 
 @main_bp.route('/booking-history')
