@@ -114,7 +114,9 @@ def cancel_event(event_id):
     event = Event.query.get_or_404(event_id)
     if event.user_id != current_user.id:
         return redirect(url_for('main.event_details', event_id=event.id))
-    if event.status != 'Open':
+    event.refresh_status()
+    if event.status not in ('Open', 'Sold Out'):
+        db.session.commit()
         return redirect(url_for('main.event_details', event_id=event.id))
     event.status = 'Cancelled'
     db.session.commit()
