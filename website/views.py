@@ -94,6 +94,10 @@ def edit_event(event_id):
         return redirect(url_for('main.event_details', event_id=event.id))
     form = EventForm(obj=event)
     if form.validate_on_submit():
+        # capacity above sold
+        if form.capacity.data < event.tickets_sold:
+            flash(f'Capacity cannot be less than the {event.tickets_sold} tickets already sold')
+            return render_template('create-event.html', form=form, editing=True)
         existing_image = event.image_filename
         form.populate_obj(event)
         event.image_filename = existing_image
