@@ -1,7 +1,7 @@
 import os
 import calendar
 from datetime import date
-from flask import Blueprint, render_template, redirect, url_for, current_app, request
+from flask import Blueprint, render_template, redirect, url_for, current_app, request, flash
 from .models import Event, Order, Comment
 from .forms import EventForm, BookingForm, CommentForm
 from . import db
@@ -52,6 +52,10 @@ def event_details(event_id):
 @main_bp.route('/create-event', methods=['GET', 'POST'])
 @login_required
 def create_event():
+    # organisers only
+    if current_user.user_type != 'organiser':
+        flash('Only organiser accounts can create events')
+        return redirect(url_for('main.index'))
     form = EventForm()
     if form.validate_on_submit():
         image_filename = None
