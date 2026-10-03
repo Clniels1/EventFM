@@ -41,13 +41,13 @@ def register():
         user_name = register_form.user_name.data
         first_name = register_form.first_name.data
         surname = register_form.surname.data
-        email = register_form.email.data
+        email = register_form.email.data.strip().lower()
         contact_number = register_form.contact_number.data
         street_address = register_form.street_address.data
         password = register_form.password.data
         user_type = register_form.user_type.data
 
-        existing_user = db.session.scalar(db.select(User).where(db.or_(User.name==user_name, User.emailid==email)))
+        existing_user = db.session.scalar(db.select(User).where(db.or_(User.name==user_name, db.func.lower(User.emailid)==email)))
         if existing_user is not None:
             flash('That user name or email is already registered')
             return render_template('account.html', form=register_form, heading='Register')

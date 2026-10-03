@@ -43,6 +43,7 @@
                 <div class="card-body p-4">
                     <h2 class="mb-4">Payment Details</h2>
                     <form method="POST" action="{{ url_for('main.confirm_payment', event_id=event.id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="quantity" value="{{ quantity }}">
                         <div class="mb-3">
                             <label for="cardName"
