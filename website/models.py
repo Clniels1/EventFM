@@ -76,7 +76,7 @@ class Event(db.Model):
     def refresh_status(self):
         if self.status == 'Cancelled':
             return
-        if self.date < datetime.now(timezone.utc).date():
+        if self.date < datetime.now().date():
             self.status = 'Inactive'
         elif self.tickets_remaining <= 0:
             self.status = 'Sold Out'

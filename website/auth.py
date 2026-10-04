@@ -19,10 +19,8 @@ def login():
         user_name = login_form.user_name.data
         password = login_form.password.data
         user = db.session.scalar(db.select(User).where(User.name==user_name))
-        if user is None:
-            error = 'Incorrect user name'
-        elif not check_password_hash(user.password_hash, password): # takes the hash and cleartext password
-            error = 'Incorrect password'
+        if user is None or not check_password_hash(user.password_hash, password): # takes the hash and cleartext password
+            error = 'Incorrect user name or password'
         if error is None:
             login_user(user)
             nextp = request.args.get('next') # this gives the url from where the login page was accessed
