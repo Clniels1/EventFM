@@ -88,8 +88,9 @@
             {% endif %}
             {% if current_user.is_authenticated and current_user.id == event.user_id %}
                 <a href="{{ url_for('main.edit_event', event_id=event.id) }}" class="btn btn-warning mb-3">Edit Event</a>
-                {% if event.status != 'Cancelled' %}
+                {% if event.status in ['Open', 'Sold Out'] %}
                     <form method="POST" action="{{ url_for('main.cancel_event', event_id=event.id) }}" class="d-inline">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <button type="submit" class="btn btn-danger mb-3">Cancel Event</button>
                     </form>
                 {% endif %}

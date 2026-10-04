@@ -24,7 +24,7 @@ GENRE_CHOICES = [
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(100), unique=True, nullable=False)
     first_name = db.Column(db.String(100), nullable=False)
     surname = db.Column(db.String(100), nullable=False)
     emailid = db.Column(db.String(100), unique=True, nullable=False)
@@ -76,7 +76,7 @@ class Event(db.Model):
     def refresh_status(self):
         if self.status == 'Cancelled':
             return
-        if self.date < datetime.now(timezone.utc).date():
+        if self.date < datetime.now().date():
             self.status = 'Inactive'
         elif self.tickets_remaining <= 0:
             self.status = 'Sold Out'

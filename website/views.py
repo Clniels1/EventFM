@@ -1,7 +1,7 @@
 import os
 import calendar
 from datetime import date
-from flask import Blueprint, render_template, redirect, url_for, current_app, request
+from flask import Blueprint, render_template, redirect, url_for, current_app, request, flash
 from .models import Event, Order, Comment
 from .forms import EventForm, BookingForm, CommentForm
 from . import db
@@ -52,6 +52,10 @@ def event_details(event_id):
 @main_bp.route('/create-event', methods=['GET', 'POST'])
 @login_required
 def create_event():
+    # organisers only
+    if current_user.user_type != 'organiser':
+        flash('Only organiser accounts can create events')
+        return redirect(url_for('main.index'))
     form = EventForm()
     if form.validate_on_submit():
         image_filename = None
@@ -90,6 +94,10 @@ def edit_event(event_id):
         return redirect(url_for('main.event_details', event_id=event.id))
     form = EventForm(obj=event)
     if form.validate_on_submit():
+        # capacity above sold
+        if form.capacity.data < event.tickets_sold:
+            flash(f'Capacity cannot be less than the {event.tickets_sold} tickets already sold')
+            return render_template('create-event.html', form=form, editing=True)
         existing_image = event.image_filename
         form.populate_obj(event)
         event.image_filename = existing_image
@@ -110,7 +118,9 @@ def cancel_event(event_id):
     event = Event.query.get_or_404(event_id)
     if event.user_id != current_user.id:
         return redirect(url_for('main.event_details', event_id=event.id))
-    if event.status != 'Open':
+    event.refresh_status()
+    if event.status not in ('Open', 'Sold Out'):
+        db.session.commit()
         return redirect(url_for('main.event_details', event_id=event.id))
     event.status = 'Cancelled'
     db.session.commit()
@@ -139,7 +149,6 @@ def book_event(event_id):
             event_id=event.id,
             quantity=quantity
             ))
-        return redirect(url_for('main.event_details', event_id=event.id, order_id=order.id))
     return redirect(url_for('main.event_details', event_id=event.id))
 
 @main_bp.route('/booking-history')

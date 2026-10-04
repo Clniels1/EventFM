@@ -9,8 +9,8 @@ from . import db
 # Create a blueprint - make sure all BPs have unique names
 auth_bp = Blueprint('auth', __name__)
 
-# this is a hint for a login function
 @auth_bp.route('/login', methods=['GET', 'POST'])
+
 # view function
 def login():
     login_form = LoginForm()
@@ -19,14 +19,12 @@ def login():
         user_name = login_form.user_name.data
         password = login_form.password.data
         user = db.session.scalar(db.select(User).where(User.name==user_name))
-        if user is None:
-            error = 'Incorrect user name'
-        elif not check_password_hash(user.password_hash, password): # takes the hash and cleartext password
-            error = 'Incorrect password'
+        if user is None or not check_password_hash(user.password_hash, password): # takes the hash and cleartext password
+            error = 'Incorrect user name or password'
         if error is None:
             login_user(user)
             nextp = request.args.get('next') # this gives the url from where the login page was accessed
-            if nextp is None or not nextp.startswith('/'):
+            if nextp is None or not nextp.startswith('/') or nextp.startswith(('//', '/\\')):
                 return redirect(url_for('main.index'))
             return redirect(nextp)
         else:
@@ -41,13 +39,13 @@ def register():
         user_name = register_form.user_name.data
         first_name = register_form.first_name.data
         surname = register_form.surname.data
-        email = register_form.email.data
+        email = register_form.email.data.strip().lower()
         contact_number = register_form.contact_number.data
         street_address = register_form.street_address.data
         password = register_form.password.data
         user_type = register_form.user_type.data
 
-        existing_user = db.session.scalar(db.select(User).where(db.or_(User.name==user_name, User.emailid==email)))
+        existing_user = db.session.scalar(db.select(User).where(db.or_(User.name==user_name, db.func.lower(User.emailid)==email)))
         if existing_user is not None:
             flash('That user name or email is already registered')
             return render_template('account.html', form=register_form, heading='Register')

@@ -23,7 +23,9 @@
                 <div class="collapse navbar-collapse" id="mainNavbar">
                     <div class="navbar-nav ms-auto align-items-md-center">
                         <a class="nav-link" href="{{ url_for('main.index') }}">Home</a>
+                        {% if not current_user.is_authenticated or current_user.user_type == 'organiser' %}
                         <a class="nav-link" href="{{ url_for('main.create_event') }}">Create Event</a>
+                        {% endif %}
                         <a class="nav-link" href="{{ url_for('main.booking_history') }}">Booking History</a>
                         <a class="nav-link" href="{{ url_for('main.festival_calendar') }}">Calendar</a>
 
