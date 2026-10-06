@@ -1,7 +1,7 @@
 import os
 import calendar
 from datetime import date
-from flask import Blueprint, render_template, redirect, url_for, current_app, request, flash
+from flask import Blueprint, render_template, redirect, url_for, current_app, request, flash, jsonify
 from .models import Event, Order, Comment
 from .forms import EventForm, BookingForm, CommentForm
 from . import db
@@ -29,6 +29,30 @@ def index():
         cancelled_events=cancelled_events,
         selected_genre=selected_genre,
     )
+
+@main_bp.route('/search')
+def search():
+    query = request.args.get('q', '').strip()
+    if not query:
+        return jsonify([])
+
+    search_filter = db.or_(
+        Event.title.ilike(f'%{query}%'),
+        Event.location.ilike(f'%{query}%'),
+        Event.genre.ilike(f'%{query}%'),
+        Event.description.ilike(f'%{query}%')
+    )
+    events = Event.query.filter(search_filter).limit(5).all()
+    results = [
+        {
+            'id': event.id,
+            'title': event.title,
+            'location': event.location,
+            'url': url_for('main.event_details', event_id=event.id)
+        }
+        for event in events
+    ]
+    return jsonify(results)
 
 @main_bp.route('/event/<int:event_id>')
 def event_details(event_id):
