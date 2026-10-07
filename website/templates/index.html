@@ -8,24 +8,27 @@
     </div>
     <div class="search-container mb-4 mx-auto" style="max-width: 650px;">
         <div class="input-group search-input-group">
-            <input type="text" class="form-control search-input" placeholder="Search music festivals..." onkeydown="if (event.key === 'Escape') this.blur();">
-            <button class="btn btn-outline-secondary search-btn" type="button">Search</button>
+            <div class="search-input-wrapper">
+                <input type="text" class="form-control search-input" id="festival-search-input" placeholder="Search music festivals..." autocomplete="off">
+                <div id="search-results-dropdown" class="search-results-box d-none"></div>
+            </div>
+            <button class="btn btn-outline-secondary search-btn" type="button" id="festival-search-btn">Search</button>
         </div>
         <div class="search-backdrop" aria-hidden="true"></div>
     </div>
     <h2 class="mb-3">Browse by Category</h2>
     <div class="d-flex flex-wrap gap-2 mb-4">
-        <a href="{{ url_for('main.index') }}" class="btn {{ 'btn-primary' if not selected_genre else 'btn-light' }} btn-sm">All</a>
-        <a href="{{ url_for('main.index', genre='pop') }}" class="btn {{ 'btn-primary' if selected_genre == 'pop' else 'btn-light' }} btn-sm">Pop</a>
-        <a href="{{ url_for('main.index', genre='hip-hop-rap') }}" class="btn {{ 'btn-primary' if selected_genre == 'hip-hop-rap' else 'btn-light' }} btn-sm">Hip-Hop & Rap</a>
-        <a href="{{ url_for('main.index', genre='rnb-soul') }}" class="btn {{ 'btn-primary' if selected_genre == 'rnb-soul' else 'btn-light' }} btn-sm">R&B & Soul</a>
-        <a href="{{ url_for('main.index', genre='alternative') }}" class="btn {{ 'btn-primary' if selected_genre == 'alternative' else 'btn-light' }} btn-sm">Alternative</a>
-        <a href="{{ url_for('main.index', genre='indie-rock') }}" class="btn {{ 'btn-primary' if selected_genre == 'indie-rock' else 'btn-light' }} btn-sm">Indie Rock</a>
-        <a href="{{ url_for('main.index', genre='electronic-dance') }}" class="btn {{ 'btn-primary' if selected_genre == 'electronic-dance' else 'btn-light' }} btn-sm">Electronic & Dance</a>
-        <a href="{{ url_for('main.index', genre='heavy-metal') }}" class="btn {{ 'btn-primary' if selected_genre == 'heavy-metal' else 'btn-light' }} btn-sm">Heavy Metal</a>
-        <a href="{{ url_for('main.index', genre='folk-acoustic') }}" class="btn {{ 'btn-primary' if selected_genre == 'folk-acoustic' else 'btn-light' }} btn-sm">Folk & Acoustic</a>
-        <a href="{{ url_for('main.index', genre='punk-hardcore') }}" class="btn {{ 'btn-primary' if selected_genre == 'punk-hardcore' else 'btn-light' }} btn-sm">Punk & Hardcore</a>
-        <a href="{{ url_for('main.index', genre='jazz-blues') }}" class="btn {{ 'btn-primary' if selected_genre == 'jazz-blues' else 'btn-light' }} btn-sm">Jazz & Blues</a>
+        <a href="{{ url_for('main.index') }}" class="btn {{ 'btn-primary' if not selected_genre else 'btn-light filter-pill-unselected' }} btn-sm">All</a>
+        <a href="{{ url_for('main.index', genre='pop') }}" class="btn {{ 'btn-primary' if selected_genre == 'pop' else 'btn-light filter-pill-unselected' }} btn-sm">Pop</a>
+        <a href="{{ url_for('main.index', genre='hip-hop-rap') }}" class="btn {{ 'btn-primary' if selected_genre == 'hip-hop-rap' else 'btn-light filter-pill-unselected' }} btn-sm">Hip-Hop & Rap</a>
+        <a href="{{ url_for('main.index', genre='rnb-soul') }}" class="btn {{ 'btn-primary' if selected_genre == 'rnb-soul' else 'btn-light filter-pill-unselected' }} btn-sm">R&B & Soul</a>
+        <a href="{{ url_for('main.index', genre='alternative') }}" class="btn {{ 'btn-primary' if selected_genre == 'alternative' else 'btn-light filter-pill-unselected' }} btn-sm">Alternative</a>
+        <a href="{{ url_for('main.index', genre='indie-rock') }}" class="btn {{ 'btn-primary' if selected_genre == 'indie-rock' else 'btn-light filter-pill-unselected' }} btn-sm">Indie Rock</a>
+        <a href="{{ url_for('main.index', genre='electronic-dance') }}" class="btn {{ 'btn-primary' if selected_genre == 'electronic-dance' else 'btn-light filter-pill-unselected' }} btn-sm">Electronic & Dance</a>
+        <a href="{{ url_for('main.index', genre='heavy-metal') }}" class="btn {{ 'btn-primary' if selected_genre == 'heavy-metal' else 'btn-light filter-pill-unselected' }} btn-sm">Heavy Metal</a>
+        <a href="{{ url_for('main.index', genre='folk-acoustic') }}" class="btn {{ 'btn-primary' if selected_genre == 'folk-acoustic' else 'btn-light filter-pill-unselected' }} btn-sm">Folk & Acoustic</a>
+        <a href="{{ url_for('main.index', genre='punk-hardcore') }}" class="btn {{ 'btn-primary' if selected_genre == 'punk-hardcore' else 'btn-light filter-pill-unselected' }} btn-sm">Punk & Hardcore</a>
+        <a href="{{ url_for('main.index', genre='jazz-blues') }}" class="btn {{ 'btn-primary' if selected_genre == 'jazz-blues' else 'btn-light filter-pill-unselected' }} btn-sm">Jazz & Blues</a>
     </div>
     <h2 class="mb-3">Upcoming</h2>
     <div class="d-flex flex-row flex-wrap gap-3">
@@ -99,5 +102,119 @@
     
 </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('festival-search-input');
+    const searchBtn = document.getElementById('festival-search-btn');
+    const searchContainer = document.querySelector('.search-container');
+    const resultsBox = document.getElementById('search-results-dropdown');
+    let debounceTimer = null;
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text || '';
+        return div.innerHTML;
+    }
+
+    function renderResults(results) {
+        if (!results || results.length === 0) {
+            resultsBox.innerHTML = '<div class="search-result-empty">No matching events found</div>';
+            resultsBox.classList.remove('d-none');
+            searchContainer.classList.add('has-results');
+            return;
+        }
+
+        const html = results.map(event => `
+            <a href="${event.url}" class="search-result-item">
+                <div class="search-result-title">${escapeHtml(event.title)}</div>
+                <div class="search-result-location">${escapeHtml(event.location)}</div>
+            </a>
+        `).join('');
+
+        resultsBox.innerHTML = html;
+        resultsBox.classList.remove('d-none');
+        searchContainer.classList.add('has-results');
+    }
+
+    function hideResults() {
+        resultsBox.classList.add('d-none');
+        resultsBox.innerHTML = '';
+        searchContainer.classList.remove('has-results');
+    }
+
+    function performSearch() {
+        const query = searchInput.value.trim();
+        if (query.length === 0) {
+            hideResults();
+            return;
+        }
+
+        fetch(`/search?q=${encodeURIComponent(query)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (searchInput.value.trim().length > 0) {
+                    renderResults(data);
+                } else {
+                    hideResults();
+                }
+            })
+            .catch(err => {
+                console.error('Search error:', err);
+            });
+    }
+
+    searchInput.addEventListener('input', function () {
+        clearTimeout(debounceTimer);
+        const query = this.value.trim();
+        if (query.length === 0) {
+            hideResults();
+            return;
+        }
+        debounceTimer = setTimeout(performSearch, 150);
+    });
+
+    searchInput.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            hideResults();
+            this.blur();
+        } else if (event.key === 'Enter') {
+            const firstResult = resultsBox.querySelector('.search-result-item');
+            if (firstResult) {
+                event.preventDefault();
+                firstResult.click();
+            }
+        }
+    });
+
+    searchInput.addEventListener('focus', function () {
+        const query = this.value.trim();
+        if (query.length > 0) {
+            performSearch();
+        }
+    });
+
+    searchInput.addEventListener('blur', function () {
+        setTimeout(() => {
+            if (!searchContainer.contains(document.activeElement)) {
+                hideResults();
+            }
+        }, 150);
+    });
+
+    if (searchBtn) {
+        searchBtn.addEventListener('click', function () {
+            searchInput.focus();
+            performSearch();
+        });
+    }
+
+    document.addEventListener('click', function (event) {
+        if (!searchContainer.contains(event.target)) {
+            hideResults();
+        }
+    });
+});
+</script>
 
 {% endblock %}
