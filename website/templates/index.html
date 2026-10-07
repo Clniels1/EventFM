@@ -18,17 +18,17 @@
     </div>
     <h2 class="mb-3">Browse by Category</h2>
     <div class="d-flex flex-wrap gap-2 mb-4">
-        <a href="{{ url_for('main.index') }}" class="btn {{ 'btn-primary' if not selected_genre else 'btn-light' }} btn-sm">All</a>
-        <a href="{{ url_for('main.index', genre='pop') }}" class="btn {{ 'btn-primary' if selected_genre == 'pop' else 'btn-light' }} btn-sm">Pop</a>
-        <a href="{{ url_for('main.index', genre='hip-hop-rap') }}" class="btn {{ 'btn-primary' if selected_genre == 'hip-hop-rap' else 'btn-light' }} btn-sm">Hip-Hop & Rap</a>
-        <a href="{{ url_for('main.index', genre='rnb-soul') }}" class="btn {{ 'btn-primary' if selected_genre == 'rnb-soul' else 'btn-light' }} btn-sm">R&B & Soul</a>
-        <a href="{{ url_for('main.index', genre='alternative') }}" class="btn {{ 'btn-primary' if selected_genre == 'alternative' else 'btn-light' }} btn-sm">Alternative</a>
-        <a href="{{ url_for('main.index', genre='indie-rock') }}" class="btn {{ 'btn-primary' if selected_genre == 'indie-rock' else 'btn-light' }} btn-sm">Indie Rock</a>
-        <a href="{{ url_for('main.index', genre='electronic-dance') }}" class="btn {{ 'btn-primary' if selected_genre == 'electronic-dance' else 'btn-light' }} btn-sm">Electronic & Dance</a>
-        <a href="{{ url_for('main.index', genre='heavy-metal') }}" class="btn {{ 'btn-primary' if selected_genre == 'heavy-metal' else 'btn-light' }} btn-sm">Heavy Metal</a>
-        <a href="{{ url_for('main.index', genre='folk-acoustic') }}" class="btn {{ 'btn-primary' if selected_genre == 'folk-acoustic' else 'btn-light' }} btn-sm">Folk & Acoustic</a>
-        <a href="{{ url_for('main.index', genre='punk-hardcore') }}" class="btn {{ 'btn-primary' if selected_genre == 'punk-hardcore' else 'btn-light' }} btn-sm">Punk & Hardcore</a>
-        <a href="{{ url_for('main.index', genre='jazz-blues') }}" class="btn {{ 'btn-primary' if selected_genre == 'jazz-blues' else 'btn-light' }} btn-sm">Jazz & Blues</a>
+        <a href="{{ url_for('main.index') }}" class="btn {{ 'btn-primary' if not selected_genre else 'btn-light filter-pill-unselected' }} btn-sm">All</a>
+        <a href="{{ url_for('main.index', genre='pop') }}" class="btn {{ 'btn-primary' if selected_genre == 'pop' else 'btn-light filter-pill-unselected' }} btn-sm">Pop</a>
+        <a href="{{ url_for('main.index', genre='hip-hop-rap') }}" class="btn {{ 'btn-primary' if selected_genre == 'hip-hop-rap' else 'btn-light filter-pill-unselected' }} btn-sm">Hip-Hop & Rap</a>
+        <a href="{{ url_for('main.index', genre='rnb-soul') }}" class="btn {{ 'btn-primary' if selected_genre == 'rnb-soul' else 'btn-light filter-pill-unselected' }} btn-sm">R&B & Soul</a>
+        <a href="{{ url_for('main.index', genre='alternative') }}" class="btn {{ 'btn-primary' if selected_genre == 'alternative' else 'btn-light filter-pill-unselected' }} btn-sm">Alternative</a>
+        <a href="{{ url_for('main.index', genre='indie-rock') }}" class="btn {{ 'btn-primary' if selected_genre == 'indie-rock' else 'btn-light filter-pill-unselected' }} btn-sm">Indie Rock</a>
+        <a href="{{ url_for('main.index', genre='electronic-dance') }}" class="btn {{ 'btn-primary' if selected_genre == 'electronic-dance' else 'btn-light filter-pill-unselected' }} btn-sm">Electronic & Dance</a>
+        <a href="{{ url_for('main.index', genre='heavy-metal') }}" class="btn {{ 'btn-primary' if selected_genre == 'heavy-metal' else 'btn-light filter-pill-unselected' }} btn-sm">Heavy Metal</a>
+        <a href="{{ url_for('main.index', genre='folk-acoustic') }}" class="btn {{ 'btn-primary' if selected_genre == 'folk-acoustic' else 'btn-light filter-pill-unselected' }} btn-sm">Folk & Acoustic</a>
+        <a href="{{ url_for('main.index', genre='punk-hardcore') }}" class="btn {{ 'btn-primary' if selected_genre == 'punk-hardcore' else 'btn-light filter-pill-unselected' }} btn-sm">Punk & Hardcore</a>
+        <a href="{{ url_for('main.index', genre='jazz-blues') }}" class="btn {{ 'btn-primary' if selected_genre == 'jazz-blues' else 'btn-light filter-pill-unselected' }} btn-sm">Jazz & Blues</a>
     </div>
     <h2 class="mb-3">Upcoming</h2>
     <div class="d-flex flex-row flex-wrap gap-3">

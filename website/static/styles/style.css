@@ -162,4 +162,15 @@ body {
     text-align: center;
     color: #6c757d;
     font-size: 0.9rem;
+}
+
+/* Unselected category filter pills */
+.filter-pill-unselected,
+.unselected-pill {
+    border: 1px solid #ced4da;
+}
+
+.filter-pill-unselected:hover,
+.unselected-pill:hover {
+    border-color: #adb5bd;
 }
