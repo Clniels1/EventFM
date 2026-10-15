@@ -5,9 +5,17 @@ from flask import Blueprint, render_template, redirect, url_for, current_app, re
 from .models import Event, Order, Comment
 from .forms import EventForm, BookingForm, CommentForm
 from . import db
+from .semantic import index_event, semantic_search
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 main_bp = Blueprint('main', __name__)
+
+def safe_index_event(event):
+    try:
+        index_event(event)
+    except Exception:
+        db.session.rollback()
+        current_app.logger.exception('Failed to index event %s for semantic search', event.id)
 
 @main_bp.route('/')
 def index():
@@ -42,7 +50,21 @@ def search():
         Event.genre.ilike(f'%{query}%'),
         Event.description.ilike(f'%{query}%')
     )
-    events = Event.query.filter(search_filter).limit(5).all()
+    keyword_events = Event.query.filter(search_filter).all()
+
+    # score each event by semantic similarity
+    scores = {}
+    try:
+        scores = dict(semantic_search(query, limit=10))
+    except Exception:
+        current_app.logger.exception('Semantic search failed, using keyword results only')
+    for event in keyword_events:
+        boost = 1.0 if query.lower() in event.title.lower() else 0.5
+        scores[event.id] = scores.get(event.id, 0) + boost
+
+    ranked_ids = sorted(scores, key=scores.get, reverse=True)[:5]
+    events_by_id = {e.id: e for e in Event.query.filter(Event.id.in_(ranked_ids)).all()}
+    events = [events_by_id[i] for i in ranked_ids if i in events_by_id]
     results = [
         {
             'id': event.id,
@@ -106,6 +128,7 @@ def create_event():
 
         db.session.add(event)
         db.session.commit()
+        safe_index_event(event)
         return redirect(url_for('main.event_details', event_id=event.id))
 
     return render_template('create-event.html', form=form)
@@ -132,6 +155,7 @@ def edit_event(event_id):
             image.save(image_path)
             event.image_filename = image_filename
         db.session.commit()
+        safe_index_event(event)
         return redirect(url_for('main.event_details', event_id=event.id))
     
     return render_template('create-event.html', form=form, editing=True)
