@@ -72,3 +72,10 @@ class CommentForm(FlaskForm):
 class BookingForm(FlaskForm):
     quantity = IntegerField("Number of Tickets", validators=[InputRequired(), NumberRange(min=1)])
     submit = SubmitField("Book Event")
+
+# Search form, submitted with GET so results pages can be linked to
+class SearchForm(FlaskForm):
+    class Meta:
+        csrf = False
+
+    q = StringField("Search")
