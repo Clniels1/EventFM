@@ -1,9 +1,11 @@
 import re
 import numpy as np
+from flask import current_app
 from . import db
 from .models import Event, EventChunk, GENRE_CHOICES
 
 MODEL_NAME = 'all-MiniLM-L6-v2'
+EMBEDDING_DIM = 384    # output size of MODEL_NAME; stored vectors of any other size are ignored
 CHUNK_WORDS = 70        # target words per chunk (model truncates at 256 word-pieces)
 MIN_SCORE = 0.25        # minimum cosine similarity to count as a match
 
@@ -58,13 +60,25 @@ def index_event(event):
 def _load_matrix():
     global _matrix_cache
     if _matrix_cache is None:
-        rows = EventChunk.query.with_entities(EventChunk.event_id, EventChunk.embedding).all()
-        if not rows:
+        rows = EventChunk.query.with_entities(EventChunk.id, EventChunk.event_id, EventChunk.embedding).all()
+        ids, vectors = [], []
+        for chunk_id, event_id, blob in rows:
+            # skip malformed rows so one bad embedding doesn't disable search for every event
+            if not isinstance(blob, (bytes, bytearray)) or len(blob) != EMBEDDING_DIM * 4:
+                current_app.logger.warning('Skipping chunk %s with invalid embedding', chunk_id)
+                continue
+            ids.append(event_id)
+            vectors.append(np.frombuffer(blob, dtype=np.float32))
+        if not vectors:
             return None
-        ids = np.array([r[0] for r in rows])
-        matrix = np.vstack([np.frombuffer(r[1], dtype=np.float32) for r in rows])
-        _matrix_cache = (ids, matrix)
+        _matrix_cache = (np.array(ids), np.vstack(vectors))
     return _matrix_cache
+
+
+def warm_up():
+    """Load the model and embedding matrix now so the first search isn't slow."""
+    get_model()
+    _load_matrix()
 
 
 def semantic_search(query, limit=5):

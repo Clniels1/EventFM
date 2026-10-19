@@ -1,3 +1,4 @@
+import os
 # import flask - from 'package' import 'Class'
 from flask import Flask 
 from flask_bootstrap import Bootstrap5
@@ -53,5 +54,14 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+
+        # preload the semantic search model and embeddings; skipped in the reloader's
+        # parent process, which never serves requests
+        if not app.debug or os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
+            from .semantic import warm_up
+            try:
+                warm_up()
+            except Exception:
+                app.logger.exception('Semantic search warm-up failed')
 
     return app
