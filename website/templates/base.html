@@ -16,7 +16,10 @@
         <!-- Navbar -->
         <nav class="navbar navbar-expand-md festival-navbar navbar-dark">
             <div class="container">
-                <a class="navbar-brand" href="{{ url_for('main.index') }}">Music Festival</a>
+                <a class="navbar-brand eventfm-brand" href="{{ url_for('main.index') }}">
+                    <span class="eventfm-logo-icon">♫</span>
+                    Event<span class="eventfm-brand-accent">FM</span>
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -67,11 +70,32 @@
 
     {% endblock %}
 
-    <footer class="footer bg-dark text-white text-center py-4 mt-5">
-        <div class="container">
-            <p class="mb-1">&copy; 2026 Music Festival</p>
-            <p class="mb-0">Discover, book and enjoy live music events.</p>
+    <footer class="site-footer eventfm-footer mt-5">
+    <div class="container">
+        <div class="row gy-4 align-items-start">
+            <div class="col-md-6">
+                <h3 class="eventfm-footer-brand">
+                    Event<span>FM</span>
+                </h3>
+                <p class="eventfm-footer-description">
+                    Discover unforgettable music festivals,
+                    explore exciting events, and experience
+                    the best of live music.
+                </p>
+            </div>
+            <div class="col-md-6">
+                <h5 class="eventfm-footer-heading">Explore EventFM</h5>
+
+                <div class="eventfm-footer-links">
+                    <a href="{{ url_for('main.index') }}">Home</a>
+                    <a href="{{ url_for('main.index') }}">Discover Festivals</a>
+                </div>
+            </div>
         </div>
+        <div class="eventfm-footer-bottom">
+            <p>&copy; 2026 EventFM. All rights reserved.</p>
+        </div>
+    </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
