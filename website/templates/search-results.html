@@ -1,10 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+    <div class="text-center py-4">
+        <h1 class="fs-2 fw-bold">Search Music Festivals</h1>
+    </div>
+    {% include "_search-bar.html" %}
+
+    {% if not query %}
+    <p class="text-center text-muted">Enter a search term to find events by title, location, genre or description.</p>
+    {% else %}
+    <h2 class="mb-3 fs-4">{{ events|length }} result{{ '' if events|length == 1 else 's' }} for "{{ query }}"</h2>
+    {% if events %}
+    <div class="d-flex flex-row flex-wrap gap-3">
+        {% for event in events %}
+        <div class="card event-card" style="width: 18rem; max-width: 100%;">
+            <img src="{{ url_for('static', filename='img/' + event.image_filename) if event.image_filename else url_for('static', filename='img/festival-1.jpg') }}" class="card-img-top" alt="{{ event.title }}" style="height: 160px; object-fit: cover;">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ event.title }}</h5>
+                <p class="card-subtitle mb-2 text-muted small">{{ event.date.strftime('%d %B %Y') }} &middot; {{ event.location }}</p>
+                <div class="mb-2">
+                    <span class="badge {{ 'text-bg-success' if event.status in ['Open', 'Sold Out'] else 'text-bg-danger' if event.status == 'Cancelled' else 'text-bg-secondary' }}">{{ event.status }}</span>
+                    <span class="badge text-bg-dark">18+</span>
+                </div>
+                <p class="card-text">{{ event.description }}</p>
+                <div class="mt-auto pt-2">
+                    <a href="{{ url_for('main.event_details', event_id=event.id) }}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-center text-muted">No matching events found. Try a different search term.</p>
+    {% endif %}
+    {% endif %}
+</div>
+
+{% endblock %}
