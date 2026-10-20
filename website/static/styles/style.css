@@ -944,6 +944,63 @@ header {
     border-radius: 10px;
 }
 
+/* Floating flash toasts (event details page) */
+
+.flash-toasts {
+    position: fixed;
+    top: 88px; /* just below the sticky navbar */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1080;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: min(480px, calc(100% - 32px));
+    pointer-events: none;
+}
+
+.flash-toast {
+    margin: 0;
+    border-radius: 10px;
+    pointer-events: auto;
+    animation: flash-toast 5s ease forwards;
+}
+
+/* hovering keeps the message up so it can be read */
+.flash-toast:hover {
+    animation-play-state: paused;
+}
+
+@keyframes flash-toast {
+    0% {
+        opacity: 0;
+        transform: translateY(-12px);
+    }
+    6%,
+    88% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-12px);
+        visibility: hidden;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    @keyframes flash-toast {
+        0%,
+        88% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+            visibility: hidden;
+        }
+    }
+}
+
 /* EventFM error pages */
 
 .error-page {
@@ -1056,4 +1113,562 @@ header {
 .view-all-btn:focus {
     background-color: #AD5135;
     border-color: #AD5135;
+}
+
+/* Acknowledgement of Country */
+
+.aoc-section {
+    margin: 32px 0 24px;
+    padding-top: 24px;
+    border-top: 1px solid #E4DFD5;
+}
+
+.aoc-heading {
+    font-size: 1.35rem;
+    font-weight: 500;
+}
+
+.aoc-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #6B6878;
+}
+
+.aoc-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.aoc-option-input {
+    position: absolute;
+    opacity: 0;
+}
+
+.aoc-option-label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    height: 100%;
+    padding: 14px 16px;
+    border: 2px solid #E4DFD5;
+    border-radius: 10px;
+    background-color: #ffffff;
+    cursor: pointer;
+}
+
+.aoc-option-title {
+    font-weight: 600;
+}
+
+.aoc-option-text {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+/* same blue as Bootstrap's checked and focused form controls */
+.aoc-option-input:checked + .aoc-option-label {
+    border-color: #0d6efd;
+}
+
+.aoc-option-input:focus-visible + .aoc-option-label {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.aoc-panel {
+    padding: 18px 20px;
+    border-radius: 10px;
+    background-color: #F7F7F8;
+    margin-bottom: 16px;
+}
+
+.aoc-citation {
+    font-size: 0.8rem;
+    color: #6B6878;
+}
+
+.aoc-citation a {
+    color: inherit;
+}
+
+/* yellow notice shown when no acknowledgement is chosen */
+.aoc-disclaimer {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background-color: #FFF8E1;
+    border: 1px solid #F2D27A;
+    color: #5C4A0E;
+}
+
+.aoc-disclaimer-icon {
+    flex-shrink: 0;
+    color: #B7860B;
+}
+
+/* show only the panel for the selected option (browsers without :has() show them all) */
+@supports selector(:has(*)) {
+    .aoc-panel {
+        display: none;
+    }
+    .aoc-section:has(input[value="none"]:checked) .aoc-panel-none {
+        display: flex;
+    }
+    .aoc-section:has(input[value="generic"]:checked) .aoc-panel-generic,
+    .aoc-section:has(input[value="enhanced"]:checked) .aoc-panel-enhanced {
+        display: block;
+    }
+}
+
+.aoc-statement {
+    margin: 0 0 16px;
+    padding: 12px 16px;
+    border: 1px solid #E4DFD5;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: #3A3744;
+}
+
+/* read-only statement template - tinted and dashed so it doesn't look like an input */
+.aoc-template {
+    background-color: #EFEFF2;
+    border: 1px dashed #C4C4CC;
+    line-height: 1.7;
+}
+
+.aoc-slot {
+    padding: 1px 6px;
+    border-radius: 4px;
+    background-color: #DCDCE2;
+    color: #4A4857;
+    font-size: 0.9em;
+    font-style: italic;
+}
+
+.required-mark {
+    color: #B42318;
+}
+
+.aoc-panel-enhanced {
+    background-color: #ffffff;
+    border: 1px solid #E6E6EA;
+}
+
+
+.aoc-step {
+    margin: 0;
+    padding: 16px 20px 18px;
+    border: 1px solid #E6E6EA;
+    border-radius: 8px;
+    background-color: #F7F7F8;
+}
+
+.aoc-step + .aoc-step {
+    margin-top: 16px;
+}
+
+.aoc-step legend {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #22212A;
+    margin-bottom: 12px;
+}
+
+.aoc-details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: #22212A;
+}
+
+.aoc-details[open] summary {
+    margin-bottom: 10px;
+}
+
+.aoc-table th {
+    white-space: nowrap;
+}
+
+.aoc-error {
+    margin-top: 4px;
+    font-size: 0.85rem;
+    color: #B42318;
+}
+
+.aoc-review {
+    padding: 12px 16px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    border: 1px solid #E4DFD5;
+    font-size: 0.9rem;
+}
+
+.aoc-review ul {
+    padding-left: 18px;
+}
+
+.aoc-review-warning {
+    color: #8A4A00;
+}
+
+.aoc-review-note {
+    color: #555;
+}
+
+/* Acknowledgement on the event details page */
+
+.aoc-event-panel {
+    padding: 18px 20px;
+    border: 1px solid #E4E2DD;
+    border-radius: 10px;
+    background-color: #F3F2EF;
+}
+
+.aoc-event-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #22212A;
+}
+
+.aoc-event-text {
+    white-space: pre-line;
+    margin-bottom: 10px;
+}
+
+.aoc-event-meta {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px;
+    font-size: 0.9rem;
+}
+
+.aoc-event-meta li + li {
+    margin-top: 4px;
+}
+
+.aoc-event-link {
+    font-size: 0.9rem;
+    color: #5C5966;
+}
+
+/* Acknowledgement of Country guide page */
+
+.aoc-guide-title {
+    font-weight: 600;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #D9D9DE;
+}
+
+/* Wikipedia-style contents list, stays in view while scrolling on wide screens */
+.aoc-guide-contents {
+    position: sticky;
+    top: 100px;
+    font-size: 0.9rem;
+}
+
+.aoc-guide-contents-title {
+    font-weight: 600;
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #D9D9DE;
+}
+
+.aoc-guide-contents ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.aoc-guide-contents ul ul {
+    padding-left: 14px;
+}
+
+.aoc-guide-contents li {
+    margin: 5px 0;
+}
+
+.aoc-guide-contents a {
+    text-decoration: none;
+}
+
+.aoc-guide-contents a:hover {
+    text-decoration: underline;
+}
+
+.aoc-guide-section {
+    margin-bottom: 32px;
+    scroll-margin-top: 100px; /* keep headings clear of the sticky header */
+}
+
+.aoc-guide-section h2 {
+    font-size: 1.45rem;
+    font-weight: 500;
+    padding-bottom: 6px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #D9D9DE;
+}
+
+.aoc-guide-subheading {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 24px;
+    scroll-margin-top: 100px;
+}
+
+.aoc-guide .aoc-table {
+    background-color: #ffffff;
+}
+
+.aoc-city-table td:first-child {
+    white-space: nowrap;
+}
+
+.aoc-resource-list {
+    padding-left: 18px;
+}
+
+.aoc-resource-list li + li {
+    margin-top: 6px;
+}
+
+.aoc-issue-list dt {
+    font-weight: 600;
+}
+
+.aoc-issue-list dd {
+    margin-bottom: 12px;
+    color: #555;
+}
+
+/* Event details page, styled to match the homepage */
+
+/* Event image sits behind the top of the page; the card blurs whatever is behind it */
+.event-details-card {
+    border: 1px solid #ECE7E1;
+    border-radius: 16px;
+    overflow: clip; /* not hidden, which would stop the ticket panel from sticking */
+    background-color: #ffffff;
+    box-shadow: 0 4px 16px rgba(20, 20, 30, 0.06);
+}
+
+.event-details-title {
+    font-size: clamp(1.9rem, 4vw, 2.6rem);
+    font-weight: 600;
+    letter-spacing: -0.6px;
+    color: #22212A;
+}
+
+/* smaller section headings, without the accent bar used on the big page titles */
+.event-details-heading {
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    color: #22212A;
+}
+
+.event-details-page .badge {
+    border-radius: 6px;
+    padding: 6px 9px;
+}
+
+/* Location and date rows under the title */
+.event-details-meta p {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #22212A;
+}
+
+.event-details-meta .bi {
+    color: #C96A4A;
+}
+
+/* Status, genre and age badges under the date row, same as the homepage cards */
+.event-details-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.event-details-tags .badge {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Header and about stack on the left, tickets span both rows on the right.
+   On phones the tickets come straight after the header. */
+.event-details-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+        "header"
+        "tickets"
+        "about";
+    gap: 24px;
+}
+
+.event-details-header {
+    grid-area: header;
+}
+
+.event-details-about {
+    grid-area: about;
+}
+
+/* no trailing margin, so the sticky ticket box stops level with the last item */
+.event-details-about > :last-child {
+    margin-bottom: 0 !important;
+}
+
+.event-details-tickets {
+    grid-area: tickets;
+}
+
+@media (min-width: 992px) {
+    .event-details-layout {
+        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+        grid-template-areas:
+            "header tickets"
+            "about tickets";
+        grid-template-rows: auto 1fr;
+        column-gap: 32px;
+    }
+
+    /* Ticket box follows the page while the about column scrolls past */
+    .event-ticket-panel {
+        position: sticky;
+        top: 100px; /* clears the sticky navbar */
+    }
+}
+
+.event-ticket-price {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #C96A4A;
+}
+
+.event-ticket-price span {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #6b6874;
+}
+
+.event-ticket-remaining {
+    font-size: 0.9rem;
+    color: #555555;
+}
+
+/* quantity input and Book button share the row evenly */
+.event-ticket-half {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.event-details-page .event-back-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 16px;
+    border: 1px solid #E0DDD6;
+    border-radius: 50px;
+    background-color: #EFEDE8;
+    font-size: 0.9rem;
+    color: #5C5966;
+}
+
+.event-details-page .event-back-btn:hover,
+.event-details-page .event-back-btn:focus {
+    background-color: #E4E1DA;
+    border-color: #D3CFC6;
+    color: #22212A;
+}
+
+.event-booking-card {
+    border: 1px solid #E4E2DD;
+    border-radius: 14px;
+    background-color: #F3F2EF;
+}
+
+.event-details-description {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #444444;
+    white-space: pre-line;
+}
+
+.event-details-page .form-control:focus {
+    border-color: #C96A4A;
+    box-shadow: 0 0 0 0.2rem rgba(201, 106, 74, 0.2);
+}
+
+.event-details-page .form-control {
+    border-radius: 9px;
+}
+
+.event-details-page .btn {
+    border-radius: 9px;
+    font-weight: 600;
+}
+
+.event-details-page .btn-primary,
+.event-details-page .btn-success {
+    background-color: #C96A4A;
+    border-color: #C96A4A;
+}
+
+.event-details-page .btn-primary:hover,
+.event-details-page .btn-primary:focus,
+.event-details-page .btn-success:hover,
+.event-details-page .btn-success:focus {
+    background-color: #AD5135;
+    border-color: #AD5135;
+}
+
+.event-details-page .alert {
+    border-radius: 10px;
+}
+
+/* Grey panel separating the comments from the event details */
+.event-comments {
+    padding: 24px;
+    border: 1px solid #E4E2DD;
+    border-radius: 14px;
+    background-color: #F3F2EF;
+}
+
+.event-comments textarea.form-control {
+    resize: vertical;
+}
+
+.event-details-page .event-comments .btn-sm {
+    padding: 6px 14px;
+}
+
+/* the last comment's margin would make the bottom padding deeper than the sides */
+.event-comments > :last-child {
+    margin-bottom: 0 !important;
+}
+
+.event-comment-card {
+    border: 1px solid #ECE7E1;
+    border-radius: 12px;
+}
+
+.event-comment-card .card-title {
+    font-weight: 600;
+    color: #22212A;
+}
+
+.event-comment-avatar {
+    background-color: #C96A4A;
+}
+
+.event-details-page hr {
+    border-color: #E4DFD5;
+    opacity: 1;
 }

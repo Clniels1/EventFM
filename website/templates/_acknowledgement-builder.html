@@ -1,0 +1,179 @@
+{# Acknowledgement of Country section of the create / edit event form.
+   Panels are shown for the selected option using CSS only (no JavaScript). #}
+{% macro field_errors(field) %}
+    {% for error in field.errors %}<div class="aoc-error">{{ error }}</div>{% endfor %}
+{% endmacro %}
+
+{% macro required_label(field) %}
+    <label for="{{ field.id }}" class="form-label">{{ field.label.text }} <span class="required-mark">*</span></label>
+{% endmacro %}
+
+{% set option_info = {
+    'none': ('None', 'No statement is shown on your event page.'),
+    'generic': ('Generic', 'A standard statement acknowledging the Traditional Custodians of the land.'),
+    'enhanced': ('Enhanced', 'A tailored statement that names the Traditional Custodians of your venue.')
+} %}
+
+<section class="aoc-section" id="acknowledgement">
+    <h3 class="aoc-heading">Acknowledgement of Country</h3>
+    <p class="text-muted">
+        An Acknowledgement of Country shows respect for the Traditional Custodians of the land your event is held on.
+        Anyone can give one; a Welcome to Country can only be given by Traditional Owners.
+        <a href="{{ url_for('main.acknowledgement_guide') }}" target="_blank">Read the EventFM guide</a>.
+    </p>
+
+    <div class="aoc-options" role="radiogroup" aria-label="Acknowledgement of Country type">
+        {% for option in form.acknowledgement_type %}
+        <div class="aoc-option">
+            {{ option(class="aoc-option-input") }}
+            <label for="{{ option.id }}" class="aoc-option-label">
+                <span class="aoc-option-title">{{ option_info[option.data][0] }}</span>
+                <span class="aoc-option-text">{{ option_info[option.data][1] }}</span>
+            </label>
+        </div>
+        {% endfor %}
+    </div>
+    {{ field_errors(form.acknowledgement_type) }}
+
+    <!-- No acknowledgement -->
+    <div class="aoc-panel aoc-panel-none aoc-disclaimer">
+        <svg class="aoc-disclaimer-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
+            <line x1="12" y1="7" x2="12" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="12" cy="17" r="1.2" fill="currentColor"/>
+        </svg>
+        <p class="mb-0">
+            Acknowledgements are widely expected at Australian events. Even a generic acknowledgement is a simple way to
+            show respect for First Nations peoples attending your event.
+        </p>
+    </div>
+
+    <!-- Generic acknowledgement -->
+    <div class="aoc-panel aoc-panel-generic">
+        <p class="small text-muted mb-1">Your event page will show:</p>
+        <p class="mb-2">{{ generic_statement }}</p>
+        <p class="aoc-citation mb-0">
+            Sourced from the sample wording published by
+            <a href="https://www.reconciliation.org.au/reconciliation/acknowledgement-of-country-and-welcome-to-country/"
+               target="_blank" rel="noopener">Reconciliation Australia</a>.
+        </p>
+    </div>
+
+    <!-- Enhanced acknowledgement -->
+    <div class="aoc-panel aoc-panel-enhanced">
+        <fieldset class="aoc-step">
+            <legend>1. Country</legend>
+            <div class="mb-3">
+                {{ required_label(form.aoc_region) }}
+                {{ form.aoc_region(class="form-select") }}
+                {{ field_errors(form.aoc_region) }}
+                <div class="form-text">
+                    Capital city entries cover the city centre only. For suburbs and regional venues, choose
+                    "Somewhere else in Australia".
+                </div>
+            </div>
+
+            <details class="aoc-details mb-3">
+                <summary>Capital city reference</summary>
+                <div class="table-responsive">
+                    <table class="table table-sm aoc-table mb-0">
+                        <thead><tr><th>City</th><th>Traditional Custodians</th><th>Place name</th></tr></thead>
+                        <tbody>
+                        {% for city in capital_cities.values() %}
+                            <tr>
+                                <td>{{ city.city }}</td>
+                                <td>{{ city.custodians }}</td>
+                                <td>{{ city.place_name or '-' }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <p class="small text-muted mt-2 mb-0">
+                    Notes on spelling and contested custodianship are on the
+                    <a href="{{ url_for('main.acknowledgement_guide') }}#capital-cities" target="_blank">guide page</a>.
+                </p>
+            </details>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-7">
+                    {{ form.aoc_custodians.label(class="form-label") }}
+                    {{ form.aoc_custodians(class="form-control", placeholder="e.g. Turrbal and Jagera peoples (optional for capital cities)") }}
+                    {{ field_errors(form.aoc_custodians) }}
+                </div>
+                <div class="col-md-5">
+                    {{ form.aoc_place_name.label(class="form-label") }}
+                    {{ form.aoc_place_name(class="form-control", placeholder="e.g. Meanjin") }}
+                    {{ field_errors(form.aoc_place_name) }}
+                    <div class="form-text">Only use a name you have checked is used locally.</div>
+                </div>
+            </div>
+            <div class="mb-1">
+                {{ required_label(form.aoc_source) }}
+                {{ form.aoc_source(class="form-select") }}
+                {{ field_errors(form.aoc_source) }}
+                <div class="form-text">
+                    Not sure? See <a href="{{ url_for('main.acknowledgement_guide') }}#find-custodians" target="_blank">how
+                    to find the Traditional Custodians of a place</a>.
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="aoc-step">
+            <legend>2. Your event</legend>
+            <div class="mb-3">
+                {{ required_label(form.aoc_connection) }}
+                {{ form.aoc_connection(class="form-control", rows="3",
+                    placeholder="e.g. The river has been a gathering place for song and story for thousands of years, and we are proud to bring music back to it.") }}
+                {{ field_errors(form.aoc_connection) }}
+            </div>
+            <div class="mb-3">
+                {{ form.aoc_commitment.label(class="form-label") }}
+                {{ form.aoc_commitment(class="form-control", rows="2",
+                    placeholder="e.g. Our line-up includes First Nations artists, booked and paid fairly. Only include what your event is genuinely doing.") }}
+                {{ field_errors(form.aoc_commitment) }}
+            </div>
+            <div class="form-check">
+                {{ form.aoc_welcome(class="form-check-input") }}
+                {{ form.aoc_welcome.label(class="form-check-label") }}
+                <div class="form-text">
+                    Arrange this with the local Land Council or Traditional Owner organisation, and pay them for it. It is
+                    listed separately on your event page.
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="aoc-step">
+            <legend>3. Statement</legend>
+            <p class="fw-semibold mb-1">Statement Template:</p>
+            <p class="form-text mt-0 mb-2">How your statement will be formatted based on your answers:</p>
+            <div class="aoc-statement aoc-template">{{ aoc_preview }}</div>
+            <div class="mb-1">
+                {{ form.acknowledgement_text.label(class="form-label") }}
+                {{ form.acknowledgement_text(class="form-control", rows="4", placeholder="Leave blank to use the statement template") }}
+                {{ field_errors(form.acknowledgement_text) }}
+            </div>
+            {% if aoc_review %}
+            <div class="aoc-review mt-3">
+                <p class="aoc-label mb-2">Check your wording</p>
+                <ul class="mb-0">
+                    {% for level, message in aoc_review %}
+                    <li class="aoc-review-{{ level }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </fieldset>
+
+        <fieldset class="aoc-step">
+            <legend>4. Confirm</legend>
+            {% for check in [form.aoc_check_names, form.aoc_check_genuine, form.aoc_check_difference] %}
+            <div class="form-check">
+                {{ check(class="form-check-input") }}
+                <label class="form-check-label" for="{{ check.id }}">{{ check.label.text }} <span class="required-mark">*</span></label>
+                {{ field_errors(check) }}
+            </div>
+            {% endfor %}
+        </fieldset>
+    </div>
+</section>

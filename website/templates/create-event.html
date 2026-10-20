@@ -156,26 +156,8 @@
                         Provide the acknowledgement details required for your event.
                     </p>
                 </div>
-                <!-- Acknowledgement Type -->
-                <div class="mb-3">
-                    <label for="acknowledgementType" class="form-label">
-                        Acknowledgement of Country Type
-                    </label>
-                    {{ form.acknowledgement_type(class="form-select", id="acknowledgementType") }}
-                    {% for error in form.acknowledgement_type.errors %}
-                        <div class="text-danger small">{{ error }}</div>
-                    {% endfor %}
-                </div>
-                <!-- Acknowledgement Text -->
-                <div class="mb-4">
-                    <label for="acknowledgementText" class="form-label">
-                        Acknowledgement Information
-                    </label>
-                    {{ form.acknowledgement_text(class="form-control", id="acknowledgementText", rows="3", placeholder="Enter additional acknowledgement information if required") }}
-                    {% for error in form.acknowledgement_text.errors %}
-                        <div class="text-danger small">{{ error }}</div>
-                    {% endfor %}
-                </div>
+                <!-- Enhanced Acknowledgement of Country Builder -->
+                {% include '_acknowledgement-builder.html' %}
                 <hr class="my-4">
                 <!-- Form Actions -->
                 <div class="d-flex flex-wrap justify-content-end align-items-center gap-3">

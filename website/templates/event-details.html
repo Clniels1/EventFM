@@ -1,117 +1,89 @@
 {% extends "base.html" %}
+
+{# Flash messages float over the page as toasts and fade out on their own #}
+{% block flash_messages %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="flash-toasts" aria-live="polite">
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category if category in ['success', 'danger', 'warning', 'info'] else 'info' }} alert-dismissible fade show shadow flash-toast" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+{% endblock %}
+
 {% block content %}
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.0.2/dist/maplibre-gl.css" />
-
-<div class="container">
-    <div class="card mt-4 mb-4 shadow-sm">
+<div class="container event-details-page">
+    <a href="{{ back_url }}" class="btn event-back-btn mt-2">
+        <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Back
+    </a>
+    <div class="card event-details-card mt-3 mb-4">
         <img src="{{ url_for('static', filename='img/' + event.image_filename) if event.image_filename else url_for('static', filename='img/festival-1.jpg') }}"
             class="card-img-top"
             alt="{{ event.title }}"
             style="width: 100%; height: 300px; object-fit: cover; object-position: center;">
         <div class="card-body p-4">
-            <h1 class="mb-4">{{ event.title }}</h1>
-            <div class="row g-4 align-items-stretch">
-                <!-- Left Column: Details & Booking -->
-                <div class="col-lg-6 col-12 d-flex flex-column">
-                    <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
-                        <h2 class="mb-0">Event Information</h2>
-                        <span class="badge {{ 'bg-success' if event.status == 'Open' else ('bg-danger' if event.status == 'Cancelled' else ('bg-warning text-dark' if event.status == 'Sold Out' else 'bg-secondary')) }}">{{ event.status }}</span>
-                    </div>
-                    <ul class="list-group mb-4">
-                        <li class="list-group-item"><strong>Category:</strong> {{ event.genre | replace('-', ' ') | title }}</li>
-                        <li class="list-group-item">
-                            <i class="bi bi-calendar-event me-2" aria-hidden="true"></i><strong>Date:</strong> {{ event.date.strftime('%d %B %Y') }}
-                        </li>
-                        <li class="list-group-item"><i class="bi bi-clock me-2" aria-hidden="true"></i><strong>Start Time:</strong> {{ event.start_time.strftime('%I:%M %p') }}</li>
-                        <li class="list-group-item"><i class="bi bi-clock-history me-2" aria-hidden="true"></i><strong>End Time:</strong> {{ event.end_time.strftime('%I:%M %p') }}</li>
-                        <li class="list-group-item">
-                            <i class="bi bi-geo-alt-fill me-2" aria-hidden="true"></i><strong>Location:</strong>
-                            <a href="https://www.google.com/maps/search/?api=1&query={{ event.location }}"
+            <div class="event-details-layout">
+                <!-- Title, location, date and tags -->
+                <div class="event-details-header">
+                    <h1 class="event-details-title mb-2">{{ event.title }}</h1>
+                    <div class="event-details-meta mb-3">
+                        <p>
+                            <i class="bi bi-geo-alt-fill" aria-hidden="true"></i>
+                            <a href="https://www.google.com/maps/search/?api=1&query={{ event.location | urlencode }}"
                             class="location-link"
-                            target="_blank">
-                            {{ event.location }}
-                            </a>
-                        </li>
-                        <li class="list-group-item"><i class="bi bi-person-check me-2" aria-hidden="true"></i><strong>Age Restriction:</strong> {{ event.age_limit | age_label }}</li>
-                        <li class="list-group-item"><i class="bi bi-cash-coin me-2" aria-hidden="true"></i><strong>Price:</strong> ${{ '%.2f'|format(event.price) }} per ticket</li>
-                        <li class="list-group-item"><i class="bi bi-ticket-perforated me-2" aria-hidden="true"></i><strong>Tickets Available:</strong> {{ event.tickets_remaining }}</li>
-                        <li class="list-group-item">
-                            <strong>Acknowledgement of Country:</strong> {{ event.acknowledgement_type }}
-                        </li>
-                        {% if event.acknowledgement_text %}
-                        <li class="list-group-item">
-                            <strong>Acknowledgement Information:</strong> {{ event.acknowledgement_text }}
-                        </li>
-                        {% endif %}
-                    </ul>
-                    <p class="mt-3 mb-4">{{ event.description }}</p>
-                    {% if order_id %}
-                        <div class="alert alert-success">
-                            <h4 class="alert-heading">Booking Confirmed!</h4>
-                            <p class="mb-0">
-                                Your booking was successful. Your Order ID is <strong>#{{ order_id }}</strong>.
-                            </p>
-                        </div>
-                    {% endif %}
-                    {% if booking_error == 'not_enough_tickets' %}
-                        <div class="alert alert-danger">
-                            <p class="mb-0">
-                                There are not enough tickets available for the quantity you requested.
-                                Please choose a smaller number of tickets.
-                            </p>
-                        </div>
-                    {% endif %}
-                    {% if event.status == 'Open' %}
-                        <div class="card mb-0">
-                            <div class="card-body">
-                                <h4>Book Tickets</h4>
-                                {% if current_user.is_authenticated %}
-                                    <form id="bookingForm" method="POST" action="{{ url_for('main.book_event', event_id=event.id) }}">
-                                        {{ booking_form.hidden_tag() }}
-                                        <div class="mb-3">
-                                            {{ booking_form.quantity.label(class="form-label") }}
-                                            {{ booking_form.quantity(class="form-control", min="1", max="10") }}
-                                        </div>
-                                        <button type="button" class="btn btn-success" onclick="if (document.getElementById('bookingForm').reportValidity()) { bootstrap.Modal.getOrCreateInstance(document.getElementById('bookingConfirmModal')).show(); }">Book Event</button>
-                                    </form>
-                                    <div class="modal fade" id="bookingConfirmModal" tabindex="-1" aria-labelledby="bookingConfirmModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="bookingConfirmModalLabel">Confirm Booking</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p>Are you sure you want to proceed with this ticket booking?</p>
-                                                    <p>You will be taken to the payment page to complete your booking.</p>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Go Back</button>
-                                                    <button type="submit" form="bookingForm" class="btn btn-success">Continue to Payment</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% else %}
-                                    <p class="mb-2">Please log in to book tickets.</p>
-                                    <a href="{{ url_for('auth.login') }}" class="btn btn-success">Log In to Book</a>
+                            target="_blank">{{ event.location }}</a>
+                        </p>
+                        <p>
+                            <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                            {{ event.date.strftime('%A, %d %B %Y') }}
+                            &middot; {{ event.start_time.strftime('%I:%M %p').lstrip('0') }} &ndash; {{ event.end_time.strftime('%I:%M %p').lstrip('0') }}
+                        </p>
+                    </div>
+                    <div class="event-details-tags">
+                        {% include "_event-card-badges.html" %}
+                        <span class="badge text-bg-light border"><i class="bi bi-music-note-beamed me-1" aria-hidden="true"></i>{{ event.genre | genre_label }}</span>
+                        <span class="badge text-bg-light border"><i class="bi bi-person-check me-1" aria-hidden="true"></i>{{ event.age_limit | age_label }}</span>
+                    </div>
+                </div>
+
+                <!-- About -->
+                <div class="event-details-about">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <h2 class="event-details-heading mb-0">About this event</h2>
+                    </div>
+                    <p class="event-details-description mb-4">{{ event.description }}</p>
+                    {% if event.acknowledgement_type != 'none' and event.acknowledgement_text %}
+                    {% set detail = event.acknowledgement %}
+                    <div class="aoc-event-panel mb-4">
+                        <p class="aoc-event-title mb-2">Acknowledgement of Country</p>
+                        <p class="aoc-event-text">{{ event.acknowledgement_text }}</p>
+                        {% if detail %}
+                        <ul class="aoc-event-meta">
+                            <li>
+                                <strong>Traditional Custodians:</strong> {{ detail.custodians }}
+                                {% if detail.place_name %}&middot; {{ detail.place_name }}{% endif %}
+                            </li>
+                            {% if detail.welcome_to_country %}
+                            <li><strong>Welcome to Country:</strong> delivered by a Traditional Owner at the start of the event</li>
+                            {% endif %}
+                            <li class="text-muted">
+                                Custodians identified using: {{ source_labels.get(detail.source, detail.source) }}
+                                {% if detail.region in capital_cities %}
+                                    (<a href="{{ capital_cities[detail.region].url }}" target="_blank" rel="noopener">{{ capital_cities[detail.region].source }}</a>)
                                 {% endif %}
-                            </div>
-                        </div>
-                    {% elif event.status == 'Sold Out' %}
-                        <div class="alert alert-warning mb-0">
-                            This event is sold out.
-                        </div>
-                    {% elif event.status == 'Cancelled' %}
-                        <div class="alert alert-danger mb-0">
-                            This event has been cancelled.
-                        </div>
-                    {% elif event.status == 'Inactive' %}
-                        <div class="alert alert-secondary mb-0">
-                            This event is no longer available for booking.
-                        </div>
+                            </li>
+                        </ul>
+                        {% endif %}
+                        <a class="aoc-event-link" href="{{ url_for('main.acknowledgement_guide') }}">
+                            <i class="bi bi-info-circle me-1" aria-hidden="true"></i>What is an Acknowledgement of Country?
+                        </a>
+                    </div>
                     {% endif %}
                     {% if current_user.is_authenticated and current_user.id == event.user_id %}
                         <div class="mt-3">
@@ -145,183 +117,123 @@
                     {% endif %}
                 </div>
 
-                <!-- Right Column: Leaflet Map -->
-                <div class="col-lg-6 col-12 d-flex flex-column">
-                    <div class="card shadow-sm h-100 d-flex flex-column overflow-hidden mb-0">
-                        <div class="card-body p-0 flex-grow-1 position-relative" style="min-height: 300px;">
-                            <div id="event-map" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; width: 100%; height: 100%;"></div>
+                <!-- Booking: beside the title on desktop, under the tags on phones -->
+                <div class="event-details-tickets">
+                    <div class="event-ticket-panel">
+                    {% if order_id %}
+                        <div class="alert alert-success">
+                            <h4 class="alert-heading">Booking Confirmed!</h4>
+                            <p class="mb-0">
+                                Your booking was successful. Your Order ID is <strong>#{{ order_id }}</strong>.
+                            </p>
                         </div>
+                    {% endif %}
+                    {% if booking_error == 'not_enough_tickets' %}
+                        <div class="alert alert-danger">
+                            <p class="mb-0">
+                                There are not enough tickets available for the quantity you requested.
+                                Please choose a smaller number of tickets.
+                            </p>
+                        </div>
+                    {% endif %}
+                    <div class="card event-booking-card mb-0">
+                        <div class="card-body">
+                            <p class="event-ticket-price mb-1">${{ '%.2f'|format(event.price) }} <span>per ticket</span></p>
+                            {% if event.status == 'Open' %}
+                                <p class="event-ticket-remaining mb-3">
+                                    <i class="bi bi-ticket-perforated me-1" aria-hidden="true"></i>{{ '{:,}'.format(event.tickets_remaining) }} tickets available
+                                </p>
+                                {% if current_user.is_authenticated %}
+                                    <form id="bookingForm" method="POST" action="{{ url_for('main.book_event', event_id=event.id) }}">
+                                        {{ booking_form.hidden_tag() }}
+                                        {{ booking_form.quantity.label(class="form-label") }}
+                                        <div class="d-flex gap-2">
+                                            {{ booking_form.quantity(class="form-control event-ticket-half", min="1", max="10") }}
+                                            <button type="button" class="btn btn-success event-ticket-half" data-bs-toggle="modal" data-bs-target="#bookingConfirmModal">Book Event</button>
+                                        </div>
+                                    </form>
+                                {% else %}
+                                    <p class="mb-2">Please log in to book tickets.</p>
+                                    <a href="{{ url_for('auth.login') }}" class="btn btn-success w-100">Log In to Book</a>
+                                {% endif %}
+                            {% elif event.status == 'Sold Out' %}
+                                <div class="alert alert-warning mt-3 mb-0">
+                                    This event is sold out.
+                                </div>
+                            {% elif event.status == 'Cancelled' %}
+                                <div class="alert alert-danger mt-3 mb-0">
+                                    This event has been cancelled.
+                                </div>
+                            {% elif event.status == 'Inactive' %}
+                                <div class="alert alert-secondary mt-3 mb-0">
+                                    This event is no longer available for booking.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>
 
-            <hr class="my-4">   
-            <h3 class="mb-3">Comments ({{ event.comments | length }})</h3>
-            {% if current_user.is_authenticated %}
-                <form method="POST" action="{{ url_for('main.add_comment', event_id=event.id) }}" class="mb-4">
-                    {{ comment_form.hidden_tag() }}
-                    <div class="mb-3">
-                        {{ comment_form.content.label(class="form-label") }}
-                        {{ comment_form.content(class="form-control", rows="3") }}
-                    </div>
-                    {{ comment_form.submit(class="btn btn-primary") }}
-                </form>
-            {% else %}
-                 <p>
-                    Please <a href="{{ url_for('auth.login') }}">log in</a> to post a comment.
-                 </p>
-            {% endif %}
-            {% for comment in event.comments | sort(attribute='created_at', reverse=true) %}
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center gap-2 mb-2">
-                            <span class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center fw-bold" style="width: 40px; height: 40px;">{{ comment.author.name[:1] | upper }}</span>
-                            <h6 class="card-title mb-0">{{ comment.author.name }}</h6>
+            <section class="event-comments mt-4">
+                {% set comment_count = event.comments | length %}
+                <h3 class="event-details-heading mb-3">{{ comment_count }} Comment{{ 's' if comment_count != 1 }}</h3>
+                {% if current_user.is_authenticated %}
+                    <form method="POST" action="{{ url_for('main.add_comment', event_id=event.id) }}" class="mb-3">
+                        {{ comment_form.hidden_tag() }}
+                        {{ comment_form.content.label(class="visually-hidden") }}
+                        {{ comment_form.content(class="form-control", rows="2", placeholder="Add a comment...") }}
+                        <div class="d-flex justify-content-end mt-2">
+                            <button type="submit" class="btn btn-primary btn-sm text-nowrap">
+                                <i class="bi bi-send me-2" aria-hidden="true"></i>Post Comment
+                            </button>
                         </div>
-                        <p class="card-text mb-2">{{ comment.content }}</p>
-                        <small class="text-muted">
-                            <i class="bi bi-clock me-1" aria-hidden="true"></i>{{ comment.created_at.strftime('%d %B %Y, %I:%M %p') }} UTC
-                        </small>
+                    </form>
+                {% else %}
+                     <p>
+                        Please <a href="{{ url_for('auth.login') }}">log in</a> to post a comment.
+                     </p>
+                {% endif %}
+                {% for comment in event.comments | sort(attribute='created_at', reverse=true) %}
+                    <div class="card event-comment-card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="rounded-circle event-comment-avatar text-white d-inline-flex align-items-center justify-content-center fw-bold" style="width: 40px; height: 40px;">{{ comment.author.name[:1] | upper }}</span>
+                                <h6 class="card-title mb-0">{{ comment.author.name }}</h6>
+                            </div>
+                            <p class="card-text mb-2">{{ comment.content }}</p>
+                            <small class="text-muted">
+                                <i class="bi bi-clock me-1" aria-hidden="true"></i>{{ comment.created_at.strftime('%d %B %Y, %I:%M %p') }} UTC
+                            </small>
+                        </div>
                     </div>
-                </div>
-            {% else %}
-                <p class="text-muted">No comments yet.</p>
-            {% endfor %}
-            <a href="{{ url_for('main.index') }}" class="btn btn-primary mb-3">Back to Home</a>
+                {% else %}
+                    <p class="text-muted">No comments yet.</p>
+                {% endfor %}
+            </section>
         </div>
     </div>
+    {% if event.status == 'Open' and current_user.is_authenticated %}
+    <!-- Outside the sticky ticket panel so the modal sits above its backdrop -->
+    <div class="modal fade" id="bookingConfirmModal" tabindex="-1" aria-labelledby="bookingConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bookingConfirmModalLabel">Confirm Booking</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to proceed with this ticket booking?</p>
+                    <p>You will be taken to the payment page to complete your booking.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Go Back</button>
+                    <button type="submit" form="bookingForm" class="btn btn-success">Continue to Payment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="https://unpkg.com/maplibre-gl@4.0.2/dist/maplibre-gl.js"></script>
-<script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.0.21/leaflet-maplibre-gl.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const locationString = {{ event.location|tojson }};
-    const eventTitle = {{ event.title|tojson }};
-
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text || '';
-        return div.innerHTML;
-    }
-
-    // Fix for Leaflet default icon paths with CDNs
-    delete L.Icon.Default.prototype._getIconUrl;
-    L.Icon.Default.mergeOptions({
-        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-    });
-
-    const venueCoords = {
-        'Riverstage, Brisbane, QLD': [-27.4777, 153.0289],
-        'Flemington Racecourse, Melbourne, VIC': [-37.7892, 144.9126],
-        'Sydney Opera House Forecourt, Sydney, NSW': [-33.8568, 151.2153],
-        'Roma Street Parkland, Brisbane, QLD': [-27.4628, 153.0189],
-        'Hordern Pavilion, Sydney, NSW': [-33.8942, 151.2227],
-        'Kings Park, Perth, WA': [-31.9609, 115.8328],
-        "Eaton's Hill Outdoor Arena, Brisbane, QLD": [-27.3524, 152.9366],
-        'Tyagarah Tea Tree Farm, Byron Bay, NSW': [-28.5991, 153.5471],
-        'Sydney Showground, Olympic Park, Sydney, NSW': [-33.8447, 151.0673],
-        'Sidney Myer Music Bowl, Melbourne, VIC': [-37.8228, 144.9754],
-        'Fortitude Music Hall, Brisbane, QLD': [-27.4578, 153.0345],
-        'Melbourne Showgrounds, Melbourne, VIC': [-37.7801, 144.9137],
-        'The Tivoli, Brisbane, QLD': [-27.4526, 153.0336],
-        'Enmore Theatre, Sydney, NSW': [-33.8998, 151.1738],
-        'Red Hill Auditorium, Perth, WA': [-31.8488, 116.0645],
-        'Adelaide Entertainment Centre, Adelaide, SA': [-34.9082, 138.5778],
-        'The Gov, Adelaide, SA': [-34.9073, 138.5768],
-        'Palais Theatre, Melbourne, VIC': [-37.8677, 144.9765],
-        'Manning Bar, Sydney, NSW': [-33.8893, 151.1896],
-        'Broadwater Parklands, Gold Coast, QLD': [-27.9657, 153.4182],
-        'Queensland Performing Arts Centre (QPAC), Brisbane, QLD': [-27.4746, 153.0188],
-        'Newcastle Entertainment Centre, Newcastle, NSW': [-32.9234, 151.7388],
-        'Overseas Passenger Terminal, Sydney, NSW': [-33.8587, 151.2098],
-        'Blue Mountains Cultural Centre, Katoomba, NSW': [-33.7142, 150.3117],
-        'Alice Springs Desert Park, Alice Springs, NT': [-23.7088, 133.8347],
-        'South Bank, Brisbane': [-27.4789, 153.0210],
-        'Fortitude Valley, Brisbane': [-27.4578, 153.0345],
-        'Street Food Festival': [-27.4578, 153.0345],
-        'Brisbane Food Festival': [-27.4789, 153.0210]
-    };
-
-    const cityCoords = {
-        'brisbane': [-27.4705, 153.0260],
-        'sydney': [-33.8688, 151.2093],
-        'melbourne': [-37.8136, 144.9631],
-        'perth': [-31.9505, 115.8605],
-        'adelaide': [-34.9285, 138.6007],
-        'gold coast': [-28.0167, 153.4000],
-        'byron bay': [-28.6474, 153.6120],
-        'newcastle': [-32.9283, 151.7817],
-        'canberra': [-35.2809, 149.1300],
-        'hobart': [-42.8821, 147.3272],
-        'darwin': [-12.4634, 130.8456],
-        'alice springs': [-23.6980, 133.8807]
-    };
-
-    let initialCoords = venueCoords[locationString];
-    if (!initialCoords) {
-        const lowerLoc = (locationString || '').toLowerCase();
-        for (const [city, coords] of Object.entries(cityCoords)) {
-            if (lowerLoc.includes(city)) {
-                initialCoords = coords;
-                break;
-            }
-        }
-    }
-    if (!initialCoords) {
-        initialCoords = [-27.4705, 153.0260];
-    }
-
-    const map = L.map('event-map').setView(initialCoords, 14);
-
-    // Positron theme by CARTO (vector tiles - no watermark & no API key required)
-    try {
-        L.maplibreGL({
-            style: 'https://tiles.openfreemap.org/styles/positron',
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank">CARTO</a>'
-        }).addTo(map);
-    } catch (err) {
-        // Fallback to light street tiles if WebGL is unavailable
-        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, TomTom',
-            maxZoom: 19
-        }).addTo(map);
-    }
-
-    function createPopupContent(title, loc) {
-        return `<div style="min-width: 140px;">
-                    <div class="fw-bold mb-1">${escapeHtml(title)}</div>
-                    <div class="text-muted small">${escapeHtml(loc)}</div>
-                </div>`;
-    }
-
-    const marker = L.marker(initialCoords).addTo(map);
-    marker.bindPopup(createPopupContent(eventTitle, locationString)).openPopup();
-
-    setTimeout(function () {
-        map.invalidateSize();
-    }, 250);
-
-    if (!venueCoords[locationString] && locationString) {
-        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationString)}`)
-            .then(res => res.json())
-            .then(data => {
-                if (data && data.length > 0) {
-                    const lat = parseFloat(data[0].lat);
-                    const lon = parseFloat(data[0].lon);
-                    marker.setLatLng([lat, lon]);
-                    map.setView([lat, lon], 14);
-                    marker.openPopup();
-                }
-            })
-            .catch(() => {
-                // Keep default/inferred coordinates on network failure
-            });
-    }
-});
-</script>
 
 {% endblock %}
