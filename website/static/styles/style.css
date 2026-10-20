@@ -533,6 +533,85 @@ body {
     width: 100%;
 }
 
+/* Horizontal event card variant (compact, landscape image beside the details) */
+
+.event-card.event-card-horizontal .card-body {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.event-card.event-card-horizontal .card-title {
+    min-height: 0;
+    margin-bottom: 0;
+    font-size: 1.05rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.event-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 14px;
+    margin: 0;
+    font-size: 0.85rem;
+    color: #6b6874;
+}
+
+.event-card-meta span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.event-card-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.event-card.event-card-horizontal .badge {
+    padding: 4px 8px;
+    font-weight: 500;
+}
+
+.event-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: auto;
+    padding-top: 4px;
+}
+
+.event-card.event-card-horizontal .btn-primary {
+    padding: 6px 14px;
+    font-size: 0.85rem;
+}
+
+.event-card.event-card-horizontal .card-img-top {
+    height: 170px !important;
+}
+
+@media (min-width: 576px) {
+    .event-card.event-card-horizontal {
+        flex-direction: row;
+    }
+
+    /* Image stretches to the card's (short) height and stays wider than tall */
+    .event-card.event-card-horizontal .card-img-top {
+        width: 44%;
+        flex: 0 0 min(44%, 260px);
+        height: auto !important;
+        min-height: 150px;
+        border-radius: 0;
+    }
+}
+
 /* EventFM homepage section headings */
 
 .festival-section-title {
@@ -856,4 +935,39 @@ header {
 
 .search-empty-state p:last-child {
     margin-bottom: 0;
+}
+
+/* Full festival list (empty search) */
+
+.all-events-subheading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #22212A;
+}
+
+.all-events-subheading span {
+    padding: 2px 10px;
+    border-radius: 50px;
+    background-color: #ECE7E1;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6b6874;
+}
+
+.view-all-btn {
+    background-color: #C96A4A;
+    border-color: #C96A4A;
+    border-radius: 50px;
+    padding: 10px 26px;
+    font-weight: 600;
+}
+
+.view-all-btn:hover,
+.view-all-btn:focus {
+    background-color: #AD5135;
+    border-color: #AD5135;
 }

@@ -11,6 +11,7 @@ from werkzeug.utils import secure_filename
 main_bp = Blueprint('main', __name__)
 
 SEARCH_RESULT_LIMIT = 10
+HOME_EVENT_LIMIT = 6
 GENRE_LABELS = dict(GENRE_CHOICES)
 
 @main_bp.app_template_filter('genre_label')
@@ -24,12 +25,11 @@ def safe_index_event(event):
         db.session.rollback()
         current_app.logger.exception('Failed to index event %s for semantic search', event.id)
 
-@main_bp.route('/')
-def index():
-    selected_genre = request.args.get('genre')
+def events_by_status(genre=None):
+    """Return (upcoming, past, cancelled) events, optionally filtered to one genre."""
     query = Event.query.order_by(Event.date.asc(), Event.start_time.asc())
-    if selected_genre:
-        query = query.filter_by(genre=selected_genre)
+    if genre:
+        query = query.filter_by(genre=genre)
     events = query.all()
     for event in events:
         event.refresh_status()
@@ -37,11 +37,15 @@ def index():
     upcoming_events = [event for event in events if event.status in ['Open', 'Sold Out']]
     recent_events = [event for event in reversed(events) if event.status == 'Inactive']
     cancelled_events = [event for event in events if event.status == 'Cancelled']
+    return upcoming_events, recent_events, cancelled_events
+
+@main_bp.route('/')
+def index():
+    selected_genre = request.args.get('genre')
+    upcoming_events, _, _ = events_by_status(selected_genre)
     return render_template(
         'index.html',
-        upcoming_events=upcoming_events,
-        recent_events=recent_events,
-        cancelled_events=cancelled_events,
+        upcoming_events=upcoming_events[:HOME_EVENT_LIMIT],
         selected_genre=selected_genre,
         genre_choices=GENRE_CHOICES,
         search_form=SearchForm(),
@@ -91,8 +95,17 @@ def search():
             })
         db.session.commit()
 
+        return render_template('search-results.html', search_form=search_form, query=query,
+                               results=results, ai_available=ai_available)
+
+    # an empty search lists every festival, optionally narrowed to the genre picked on the home page
+    selected_genre = request.args.get('genre')
+    upcoming_events, recent_events, cancelled_events = events_by_status(selected_genre)
     return render_template('search-results.html', search_form=search_form, query=query,
-                           results=results, ai_available=ai_available)
+                           selected_genre=selected_genre,
+                           upcoming_events=upcoming_events,
+                           recent_events=recent_events,
+                           cancelled_events=cancelled_events)
 
 @main_bp.route('/event/<int:event_id>')
 def event_details(event_id):
