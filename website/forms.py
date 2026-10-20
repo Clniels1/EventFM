@@ -5,7 +5,7 @@ from flask_wtf.file import FileField, FileAllowed
 from wtforms.fields import (TextAreaField, SubmitField, StringField, PasswordField,
                              SelectField, DateField, TimeField, FloatField, IntegerField)
 from wtforms.validators import InputRequired, DataRequired, Length, Email, EqualTo, NumberRange, ValidationError
-from .models import GENRE_CHOICES
+from .models import GENRE_CHOICES, AGE_LIMIT_CHOICES
 
 CONTACT_NUMBER_RE = re.compile(r'^(?:\+?61|0)[2-478]\d{8}$')
 
@@ -119,6 +119,12 @@ class EventForm(FlaskForm):
     genre = SelectField(
         "Music Genre",
         choices=GENRE_CHOICES,
+        validators=[InputRequired()]
+    )
+    age_limit = SelectField(
+        "Age Restriction",
+        choices=AGE_LIMIT_CHOICES,
+        default='all-ages',
         validators=[InputRequired()]
     )
     acknowledgement_type = SelectField(

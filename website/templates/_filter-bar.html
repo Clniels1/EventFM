@@ -1,0 +1,64 @@
+{# Dropdown filter bar; expects filter_context() variables and optionally `query` #}
+<form method="get" action="{{ url_for(request.endpoint) }}" class="filter-bar">
+    {% if query %}
+    <input type="hidden" name="q" value="{{ query }}">
+    {% endif %}
+
+    <div class="dropdown">
+        <button class="btn filter-dropdown-btn{{ ' active' if filters.genre }}" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+            <i class="bi bi-music-note-beamed"></i>
+            Genre{% if filters.genre %} · {{ filters.genre|length }}{% endif %}
+            <i class="bi bi-chevron-down"></i>
+        </button>
+        <div class="dropdown-menu filter-menu filter-menu-scroll">
+            {% for value, label in genre_choices %}
+            <label class="form-check filter-option">
+                <input class="form-check-input" type="checkbox" name="genre" value="{{ value }}"{{ ' checked' if value in filters.genre }}>
+                <span class="form-check-label">{{ label }}</span>
+            </label>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <button class="btn filter-dropdown-btn{{ ' active' if filters.price }}" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+            <i class="bi bi-tag"></i>
+            {{ price_labels[filters.price] if filters.price else 'Price' }}
+            <i class="bi bi-chevron-down"></i>
+        </button>
+        <div class="dropdown-menu filter-menu">
+            <label class="form-check filter-option">
+                <input class="form-check-input" type="radio" name="price" value=""{{ ' checked' if not filters.price }}>
+                <span class="form-check-label">Any price</span>
+            </label>
+            {% for value, label, _, _ in price_ranges %}
+            <label class="form-check filter-option">
+                <input class="form-check-input" type="radio" name="price" value="{{ value }}"{{ ' checked' if filters.price == value }}>
+                <span class="form-check-label">{{ label }}</span>
+            </label>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <button class="btn filter-dropdown-btn{{ ' active' if filters.age }}" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+            <i class="bi bi-person-check"></i>
+            Age{% if filters.age %} · {{ filters.age|length }}{% endif %}
+            <i class="bi bi-chevron-down"></i>
+        </button>
+        <div class="dropdown-menu filter-menu">
+            {% for value, label in age_choices %}
+            <label class="form-check filter-option">
+                <input class="form-check-input" type="checkbox" name="age" value="{{ value }}"{{ ' checked' if value in filters.age }}>
+                <span class="form-check-label">{{ label }}</span>
+            </label>
+            {% endfor %}
+        </div>
+    </div>
+
+    <button type="submit" class="btn filter-apply-btn">Apply</button>
+    {% if active_filter_count %}
+    <a href="{{ url_for(request.endpoint, q=query or None) }}" class="filter-clear-link">Clear all</a>
+    {% endif %}
+</form>
+
