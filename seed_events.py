@@ -15,7 +15,8 @@ DUMMY_EVENTS = [
         "genre": "indie-rock",
         "price": 89.00,
         "capacity": 5000,
-        "image_filename": None,
+        "image_filename": "events/riverstage-indie-fest.jpg",
+        "age_limit": "15-plus",
         "status": "Open",
         "acknowledgement_type": "enhanced",
         "acknowledgement_text": "We acknowledge the Turrbal and Jagera peoples as the Traditional Custodians of Meanjin (Brisbane), the lands and waterways on which this festival takes place. We pay our respects to their Elders past, present, and emerging."
@@ -30,7 +31,8 @@ DUMMY_EVENTS = [
         "genre": "electronic-dance",
         "price": 135.50,
         "capacity": 12000,
-        "image_filename": None,
+        "image_filename": "events/neon-horizon-electronic-carnival.jpg",
+        "age_limit": "18-plus",
         "status": "Open",
         "acknowledgement_type": "generic",
         "acknowledgement_text": "We acknowledge the Traditional Custodians of the land upon which this event is held, and pay our respects to their Elders past, present, and emerging."
@@ -45,7 +47,8 @@ DUMMY_EVENTS = [
         "genre": "jazz-blues",
         "price": 95.00,
         "capacity": 2500,
-        "image_filename": None,
+        "image_filename": "events/sunset-rhythms-jazz-blues.jpg",
+        "age_limit": "all-ages",
         "status": "Open",
         "acknowledgement_type": "enhanced",
         "acknowledgement_text": "We acknowledge the Gadigal people of the Eora Nation, the Traditional Custodians of the land on which Bennelong Point stands. We celebrate their enduring storytelling and musical traditions."
@@ -60,7 +63,8 @@ DUMMY_EVENTS = [
         "genre": "country",
         "price": 75.00,
         "capacity": 3500,
-        "image_filename": None,
+        "image_filename": "events/outback-sunset-country-muster.jpg",
+        "age_limit": "all-ages",
         "status": "Open",
         "acknowledgement_type": "generic",
         "acknowledgement_text": "We pay our respects to the Traditional Custodians of the land on which we gather and their continuous connection to Country."
@@ -75,7 +79,8 @@ DUMMY_EVENTS = [
         "genre": "hip-hop-rap",
         "price": 110.00,
         "capacity": 5500,
-        "image_filename": None,
+        "image_filename": "events/urban-pulse-hip-hop-summit.jpg",
+        "age_limit": "18-plus",
         "status": "Open",
         "acknowledgement_type": "enhanced",
         "acknowledgement_text": "We recognize the Gadigal people of the Eora Nation and honour the rich history of First Nations artists who lead Australian hip-hop and truth-telling."
@@ -90,7 +95,8 @@ DUMMY_EVENTS = [
         "genre": "classical",
         "price": 60.00,
         "capacity": 4000,
-        "image_filename": None,
+        "image_filename": "events/symphony-under-the-stars.jpg",
+        "age_limit": "all-ages",
         "status": "Open",
         "acknowledgement_type": "enhanced",
         "acknowledgement_text": "We acknowledge the Whadjuk Nyoongar people as the Traditional Custodians of Boorloo (Perth) and pay respect to their sacred connection to these lands."
@@ -105,7 +111,8 @@ DUMMY_EVENTS = [
         "genre": "heavy-metal",
         "price": 120.00,
         "capacity": 3000,
-        "image_filename": None,
+        "image_filename": "events/iron-steel-metal-massacre.jpg",
+        "age_limit": "18-plus",
         "status": "Open",
         "acknowledgement_type": "none",
         "acknowledgement_text": None
@@ -120,7 +127,8 @@ DUMMY_EVENTS = [
         "genre": "folk-acoustic",
         "price": 105.00,
         "capacity": 6000,
-        "image_filename": None,
+        "image_filename": "events/byron-bay-acoustic-folk-gathering.jpg",
+        "age_limit": "all-ages",
         "status": "Open",
         "acknowledgement_type": "enhanced",
         "acknowledgement_text": "We pay tribute to the Bundjalung Nation, custodians of this sacred coastal gathering place for thousands of generations."
@@ -135,7 +143,8 @@ DUMMY_EVENTS = [
         "genre": "edm",
         "price": 145.00,
         "capacity": 15000,
-        "image_filename": None,
+        "image_filename": "events/bassquake-bass-edm-fest.jpg",
+        "age_limit": "18-plus",
         "status": "Open",
         "acknowledgement_type": "generic",
         "acknowledgement_text": "We acknowledge the Traditional Owners of the lands on which this venue stands and pay respects to Elders past, present, and emerging."
@@ -150,7 +159,8 @@ DUMMY_EVENTS = [
         "genre": "rnb-soul",
         "price": 99.00,
         "capacity": 7000,
-        "image_filename": None,
+        "image_filename": "events/soul-haven-rnb-revival.jpg",
+        "age_limit": "15-plus",
         "status": "Open",
         "acknowledgement_type": "enhanced",
         "acknowledgement_text": "We acknowledge the Wurundjeri Woi-wurrung people of the Kulin Nation and pay our deepest respects to their Elders past and present."
@@ -165,7 +175,8 @@ DUMMY_EVENTS = [
         "genre": "punk-hardcore",
         "price": 65.00,
         "capacity": 1500,
-        "image_filename": None,
+        "image_filename": "events/concrete-chaos-punk-fest.jpg",
+        "age_limit": "18-plus",
         "status": "Open",
         "acknowledgement_type": "none",
         "acknowledgement_text": None
@@ -180,7 +191,8 @@ DUMMY_EVENTS = [
         "genre": "post-grunge",
         "price": 70.00,
         "capacity": 2200,
-        "image_filename": None,
+        "image_filename": "events/grit-feedback-grunge-fest.jpg",
+        "age_limit": "18-plus",
         "status": "Open",
         "acknowledgement_type": "generic",
         "acknowledgement_text": "We acknowledge the Traditional Custodians of this land and extend our respect to all First Nations people present today."
@@ -195,7 +207,8 @@ DUMMY_EVENTS = [
         "genre": "pop",
         "price": 85.00,
         "capacity": 8000,
-        "image_filename": None,
+        "image_filename": "events/coastal-chill-pop-fiesta.jpg",
+        "age_limit": "all-ages",
         "status": "Open",
         "acknowledgement_type": "enhanced",
         "acknowledgement_text": "We honour the Yugambeh language people, Traditional Owners of Kombumerri Country, and their enduring kinship with land, waters, and community."
@@ -210,7 +223,8 @@ DUMMY_EVENTS = [
         "genre": "alternative",
         "price": 88.00,
         "capacity": 3200,
-        "image_filename": None,
+        "image_filename": "events/subterranean-sounds-alternative-showcase.jpg",
+        "age_limit": "15-plus",
         "status": "Open",
         "acknowledgement_type": "enhanced",
         "acknowledgement_text": "We acknowledge the Kaurna people as the Traditional Custodians of the Adelaide Plains where we gather to share art and song."
@@ -225,7 +239,8 @@ DUMMY_EVENTS = [
         "genre": "edm",
         "price": 115.00,
         "capacity": 4500,
-        "image_filename": None,
+        "image_filename": "events/solaris-twilight-edm-expedition.jpg",
+        "age_limit": "18-plus",
         "status": "Open",
         "acknowledgement_type": "generic",
         "acknowledgement_text": "We pay respect to the Traditional Custodians of this land and recognise their continuous connection to Country."
@@ -240,7 +255,8 @@ DUMMY_EVENTS = [
         "genre": "jazz-blues",
         "price": 110.00,
         "capacity": 2800,
-        "image_filename": None,
+        "image_filename": "events/velvet-lounge-midnight-jazz.jpg",
+        "age_limit": "18-plus",
         "status": "Open",
         "acknowledgement_type": "enhanced",
         "acknowledgement_text": "We respectfully acknowledge the Bunurong Boon Wurrung and Wurundjeri Woi-wurrung peoples of the Kulin Nation."
@@ -255,7 +271,8 @@ DUMMY_EVENTS = [
         "genre": "indie-rock",
         "price": 92.00,
         "capacity": 4000,
-        "image_filename": None,
+        "image_filename": "events/high-voltage-rock-clash.jpg",
+        "age_limit": "15-plus",
         "status": "Open",
         "acknowledgement_type": "generic",
         "acknowledgement_text": "We acknowledge the Awabakal and Worimi peoples, Traditional Custodians of Newcastle and the surrounding waterways."
@@ -270,7 +287,8 @@ DUMMY_EVENTS = [
         "genre": "hip-hop-rap",
         "price": 105.00,
         "capacity": 3500,
-        "image_filename": None,
+        "image_filename": "events/harbour-beats-urban-jam.jpg",
+        "age_limit": "under-18",
         "status": "Open",
         "acknowledgement_type": "enhanced",
         "acknowledgement_text": "We pay our deepest respects to the Gadigal people of the Eora Nation, whose sovereign custodianship of these waters was never ceded."
@@ -285,7 +303,8 @@ DUMMY_EVENTS = [
         "genre": "folk-acoustic",
         "price": 55.00,
         "capacity": 1200,
-        "image_filename": None,
+        "image_filename": "events/mountain-mist-folk-strings.jpg",
+        "age_limit": "all-ages",
         "status": "Open",
         "acknowledgement_type": "enhanced",
         "acknowledgement_text": "We acknowledge the Dharug and Gundungurra peoples as the traditional owners of Ngurra (Country) in the Blue Mountains."
@@ -300,7 +319,8 @@ DUMMY_EVENTS = [
         "genre": "classical",
         "price": 80.00,
         "capacity": 1800,
-        "image_filename": None,
+        "image_filename": "events/echoes-of-eternity-chamber-orchestra.jpg",
+        "age_limit": "all-ages",
         "status": "Open",
         "acknowledgement_type": "generic",
         "acknowledgement_text": "We acknowledge the Traditional Custodians of this region and pay respects to Elders past, present, and emerging."
@@ -315,7 +335,8 @@ DUMMY_EVENTS = [
         "genre": "electronic-dance",
         "price": 125.00,
         "capacity": 10000,
-        "image_filename": None,
+        "image_filename": "events/autumn-equinox-dance-carnival.jpg",
+        "age_limit": "18-plus",
         "status": "Inactive",
         "acknowledgement_type": "enhanced",
         "acknowledgement_text": "We honour the Wurundjeri Woi-wurrung people of the Kulin Nation, custodians of these lands where music has united people for millennia."
@@ -330,7 +351,8 @@ DUMMY_EVENTS = [
         "genre": "jazz-blues",
         "price": 60.00,
         "capacity": 800,
-        "image_filename": None,
+        "image_filename": "events/winter-solstice-blues-jam.jpg",
+        "age_limit": "18-plus",
         "status": "Inactive",
         "acknowledgement_type": "generic",
         "acknowledgement_text": "We acknowledge the Kaurna people, Traditional Owners of Adelaide, and pay our respects to their culture."
@@ -345,7 +367,8 @@ DUMMY_EVENTS = [
         "genre": "pop",
         "price": 75.00,
         "capacity": 3000,
-        "image_filename": None,
+        "image_filename": "events/retro-rewind-90s-pop-bash.jpg",
+        "age_limit": "15-plus",
         "status": "Inactive",
         "acknowledgement_type": "none",
         "acknowledgement_text": None
@@ -360,7 +383,8 @@ DUMMY_EVENTS = [
         "genre": "punk-hardcore",
         "price": 50.00,
         "capacity": 950,
-        "image_filename": None,
+        "image_filename": "events/stormfront-hardcore-fest.jpg",
+        "age_limit": "18-plus",
         "status": "Cancelled",
         "acknowledgement_type": "generic",
         "acknowledgement_text": "We acknowledge the Traditional Custodians of this land and honour their enduring heritage."
@@ -375,7 +399,8 @@ DUMMY_EVENTS = [
         "genre": "alternative",
         "price": 110.00,
         "capacity": 2500,
-        "image_filename": None,
+        "image_filename": "events/desert-bloom-indie-extravaganza.jpg",
+        "age_limit": "all-ages",
         "status": "Cancelled",
         "acknowledgement_type": "enhanced",
         "acknowledgement_text": "We pay respect to the Arrernte people, Traditional Owners of Mparntwe (Alice Springs) and surrounding desert country."
@@ -409,9 +434,21 @@ def seed_database():
 
         # Insert events if they don't already exist
         created_count = 0
+        updated_count = 0
         for event_data in DUMMY_EVENTS:
             existing_event = Event.query.filter_by(title=event_data["title"]).first()
-            if not existing_event:
+            if existing_event:
+                # give previously seeded events their image if they don't have one yet
+                changed = False
+                if not existing_event.image_filename:
+                    existing_event.image_filename = event_data["image_filename"]
+                    changed = True
+                # events seeded before age limits existed were given the 'all-ages' default
+                if existing_event.age_limit == "all-ages" and event_data["age_limit"] != "all-ages":
+                    existing_event.age_limit = event_data["age_limit"]
+                    changed = True
+                updated_count += changed
+            else:
                 event = Event(
                     title=event_data["title"],
                     description=event_data["description"],
@@ -420,6 +457,7 @@ def seed_database():
                     end_time=event_data["end_time"],
                     location=event_data["location"],
                     genre=event_data["genre"],
+                    age_limit=event_data["age_limit"],
                     price=event_data["price"],
                     capacity=event_data["capacity"],
                     image_filename=event_data["image_filename"],
@@ -438,7 +476,7 @@ def seed_database():
             if not event.chunks:
                 index_event(event)
 
-        print(f"Successfully seeded {created_count} events into the database. Total events now: {Event.query.count()}.")
+        print(f"Successfully seeded {created_count} events and updated images/age limits on {updated_count} existing events. Total events now: {Event.query.count()}.")
 
 if __name__ == '__main__':
     seed_database()

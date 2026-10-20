@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container aoc-guide">
+    <h1 class="aoc-guide-title">Acknowledgement of Country</h1>
+    <p class="text-muted mb-4">
+        What organisers should know before adding an acknowledgement to an event.
+    </p>
+
+    <div class="row">
+    <!-- Contents sidebar, Wikipedia style -->
+    <nav class="col-lg-3 mb-4" aria-label="Contents">
+        <div class="aoc-guide-contents">
+            <p class="aoc-guide-contents-title">Contents</p>
+            <ul>
+                <li><a href="#what-is">What it is</a></li>
+                <li><a href="#welcome-vs-acknowledgement">Welcome vs Acknowledgement</a></li>
+                <li><a href="#capital-cities">Capital cities</a></li>
+                <li><a href="#find-custodians">Finding custodians</a></li>
+                <li>
+                    <a href="#mistakes">Mistakes to avoid</a>
+                    <ul>
+                        <li><a href="#contested">Contested issues</a></li>
+                    </ul>
+                </li>
+                <li><a href="#writing">Writing your own</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <article class="col-lg-9">
+
+    <section id="what-is" class="aoc-guide-section">
+        <h2>What it is</h2>
+        <p>
+            An Acknowledgement of Country is a short statement at the start of an event (or on an event page) that
+            recognises the Traditional Owners or Custodians of the land you're on and their ongoing connection to it.
+            Anyone can give one.
+        </p>
+        <p>
+            It matters for reconciliation because it recognises Aboriginal and Torres Strait Islander peoples as the
+            First Peoples of this land, and acknowledges the dispossession that followed colonisation. That only works
+            if it's done sincerely, rather than treated as a box-ticking exercise.
+        </p>
+    </section>
+
+    <section id="welcome-vs-acknowledgement" class="aoc-guide-section">
+        <h2>Welcome vs Acknowledgement</h2>
+        <div class="table-responsive">
+            <table class="table aoc-table">
+                <thead>
+                    <tr>
+                        <th scope="col"><span class="visually-hidden">Aspect</span></th>
+                        <th scope="col">Welcome to Country</th>
+                        <th scope="col">Acknowledgement of Country</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">Who gives it</th>
+                        <td>Traditional Owners of that Country, or people they've authorised</td>
+                        <td>Anyone</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">What happens</th>
+                        <td>Visitors are formally welcomed onto Country. Can include a speech, song, dance or smoking ceremony.</td>
+                        <td>A spoken or written statement of respect</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Organising it</th>
+                        <td>Book through the local Land Council or Traditional Owner organisation, well ahead. Expect to pay a fee.</td>
+                        <td>Write it yourself after researching whose Country you're on</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section id="capital-cities" class="aoc-guide-section">
+        <h2>Capital cities</h2>
+        <p>
+            For city centre council and government acknowledgements. For further out venues, check locally.
+        </p>
+        <div class="table-responsive">
+            <table class="table aoc-table aoc-city-table">
+                <thead>
+                    <tr>
+                        <th scope="col">City</th>
+                        <th scope="col">Traditional Custodians</th>
+                        <th scope="col">Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for city in capital_cities.values() %}
+                    <tr>
+                        <th scope="row" class="fw-normal">
+                            <strong>{{ city.city }}</strong>
+                            {% if city.place_name %}<div class="small text-muted">{{ city.place_name }}</div>{% endif %}
+                        </th>
+                        <td>{{ city.custodians }}</td>
+                        <td class="small">
+                            {{ city.note }}
+                            <a href="{{ city.url }}" target="_blank" rel="noopener noreferrer">{{ city.source }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section id="find-custodians" class="aoc-guide-section">
+        <h2>Finding custodians for a specific place</h2>
+        <ol>
+            <li>Use the AIATSIS resources below to find the general area.</li>
+            <li>Confirm the name and spelling locally, through the council or a land council.</li>
+            <li>If sources disagree, don't pick one. Follow local advice or name all groups. If you can't confirm it,
+                use the generic acknowledgement instead.</li>
+        </ol>
+        <ul class="aoc-resource-list">
+            {% for resource in resources %}
+            <li>
+                {% if resource.url %}
+                    <a href="{{ resource.url }}" target="_blank" rel="noopener noreferrer">{{ resource.name }}</a>
+                {%- else %}
+                    <strong>{{ resource.name }}</strong>
+                {%- endif %}: {{ resource.use }}
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section id="mistakes" class="aoc-guide-section">
+        <h2>Mistakes to avoid</h2>
+        <dl class="aoc-issue-list">
+            {% for title, explanation in mistakes %}
+            <dt>{{ title }}</dt>
+            <dd>{{ explanation }}</dd>
+            {% endfor %}
+        </dl>
+        <h3 id="contested" class="aoc-guide-subheading">Contested issues</h3>
+        <dl class="aoc-issue-list">
+            {% for title, explanation in contested %}
+            <dt>{{ title }}</dt>
+            <dd>{{ explanation }}</dd>
+            {% endfor %}
+        </dl>
+    </section>
+
+    <section id="writing" class="aoc-guide-section">
+        <h2>Writing your own</h2>
+        <p>
+            There's no set wording. In her TEDxSydney talk,
+            <a href="https://www.ted.com/talks/shelley_reys_deliver_an_acknowledgement_of_country_that_really_means_something"
+               target="_blank" rel="noopener noreferrer">Shelley Reys</a> suggests making it personal and relevant to the occasion.
+            The enhanced option on the event form covers:
+        </p>
+        <ol>
+            <li>Who the Traditional Custodians are</li>
+            <li>Respect to Elders past and present</li>
+            <li>Why this Country matters to your event, in your own words</li>
+            <li>Anything your event is actually doing, like booking First Nations artists</li>
+        </ol>
+        <p class="small text-muted">
+            The generic option uses a fixed statement: "{{ generic_statement }}"
+        </p>
+    </section>
+    </article>
+    </div>
+</div>
+
+{% endblock %}

@@ -34,18 +34,38 @@
                             {{ event.location }}
                             </a>
                         </li>
+                        <li class="list-group-item"><i class="bi bi-person-check me-2" aria-hidden="true"></i><strong>Age Restriction:</strong> {{ event.age_limit | age_label }}</li>
                         <li class="list-group-item"><i class="bi bi-cash-coin me-2" aria-hidden="true"></i><strong>Price:</strong> ${{ '%.2f'|format(event.price) }} per ticket</li>
                         <li class="list-group-item"><i class="bi bi-ticket-perforated me-2" aria-hidden="true"></i><strong>Tickets Available:</strong> {{ event.tickets_remaining }}</li>
-                        <li class="list-group-item">
-                            <strong>Acknowledgement of Country:</strong> {{ event.acknowledgement_type }}
-                        </li>
-                        {% if event.acknowledgement_text %}
-                        <li class="list-group-item">
-                            <strong>Acknowledgement Information:</strong> {{ event.acknowledgement_text }}
-                        </li>
-                        {% endif %}
                     </ul>
                     <p class="mt-3 mb-4">{{ event.description }}</p>
+                    {% if event.acknowledgement_type != 'none' and event.acknowledgement_text %}
+                    {% set detail = event.acknowledgement %}
+                    <div class="aoc-event-panel mb-4">
+                        <p class="aoc-label mb-2">Acknowledgement of Country</p>
+                        <p class="aoc-event-text">{{ event.acknowledgement_text }}</p>
+                        {% if detail %}
+                        <ul class="aoc-event-meta">
+                            <li>
+                                <strong>Traditional Custodians:</strong> {{ detail.custodians }}
+                                {% if detail.place_name %}&middot; {{ detail.place_name }}{% endif %}
+                            </li>
+                            {% if detail.welcome_to_country %}
+                            <li><strong>Welcome to Country:</strong> delivered by a Traditional Owner at the start of the event</li>
+                            {% endif %}
+                            <li class="text-muted">
+                                Custodians identified using: {{ source_labels.get(detail.source, detail.source) }}
+                                {% if detail.region in capital_cities %}
+                                    (<a href="{{ capital_cities[detail.region].url }}" target="_blank" rel="noopener">{{ capital_cities[detail.region].source }}</a>)
+                                {% endif %}
+                            </li>
+                        </ul>
+                        {% endif %}
+                        <a class="aoc-event-link" href="{{ url_for('main.acknowledgement_guide') }}">
+                            What is an Acknowledgement of Country?
+                        </a>
+                    </div>
+                    {% endif %}
                     {% if order_id %}
                         <div class="alert alert-success">
                             <h4 class="alert-heading">Booking Confirmed!</h4>

@@ -173,17 +173,6 @@ body {
     font-size: 0.9rem;
 }
 
-/* Unselected category filter pills */
-.filter-pill-unselected,
-.unselected-pill {
-    border: 1px solid #ced4da;
-}
-
-.filter-pill-unselected:hover,
-.unselected-pill:hover {
-    border-color: #adb5bd;
-}
-
 /* Event details Leaflet map */
 #event-map {
     width: 100%;
@@ -318,6 +307,12 @@ body {
 
 /* AI search explanation and match badges */
 
+/* Keep badges with explanations above the card-wide link so their tooltips still show */
+.event-card .badge[title] {
+    position: relative;
+    z-index: 2;
+}
+
 .ai-match-badge {
     background-color: #F3E8FF;
     color: #5B2A86;
@@ -376,68 +371,133 @@ body {
 
 /* EventFM homepage category filters */
 
-.festival-categories {
-    padding: 42px 0 18px;
+/* Filter bar (genre / price / age dropdowns) */
+
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
 }
 
-.festival-categories h2 {
-    font-size: 1.75rem;
-    font-weight: 600;
-    letter-spacing: -0.5px;
-    margin-bottom: 20px !important;
-}
-
-.festival-categories .btn {
+.filter-dropdown-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
     border-radius: 50px;
-    padding: 6px 16px;
+    padding: 8px 16px;
     font-size: 0.9rem;
     font-weight: 600;
-    white-space: nowrap;
-    flex: 0 0 auto;
-    transition: all 0.2s ease;
-}
-
-.festival-categories .category-pills {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 8px;
-    scrollbar-width: thin;
-}
-
-.festival-categories .btn-primary {
-    background-color: #C96A4A;
-    border-color: #C96A4A;
-    color: white;
-}
-
-.festival-categories .btn-primary:hover {
-    background-color: #AD5135;
-    border-color: #AD5135;
-}
-
-.festival-categories .filter-pill-unselected {
     background-color: #FFFFFF;
     border: 1px solid #E0DDD6;
     color: #333333;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
-.festival-categories .filter-pill-unselected:hover {
+.filter-dropdown-btn .bi-chevron-down {
+    font-size: 0.7rem;
+}
+
+.filter-dropdown-btn:hover,
+.filter-dropdown-btn.show {
     background-color: #FFF0E9;
     border-color: #C96A4A;
     color: #AD5135;
-    transform: translateY(-2px);
+}
+
+.filter-dropdown-btn.active,
+.filter-dropdown-btn.active:hover {
+    background-color: #C96A4A;
+    border-color: #C96A4A;
+    color: #FFFFFF;
+}
+
+.filter-menu {
+    min-width: 220px;
+    padding: 8px;
+    border: 1px solid #ECE7E1;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(20, 20, 30, 0.12);
+}
+
+.filter-menu-scroll {
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.filter-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 7px 10px 7px 34px;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    cursor: pointer;
+}
+
+.filter-option:hover {
+    background-color: #F8F6F0;
+}
+
+.filter-option .form-check-input {
+    cursor: pointer;
+}
+
+.filter-option .form-check-input:checked {
+    background-color: #C96A4A;
+    border-color: #C96A4A;
+}
+
+.filter-option .form-check-input:focus {
+    border-color: #C96A4A;
+    box-shadow: 0 0 0 0.2rem rgba(201, 106, 74, 0.2);
+}
+
+.filter-apply-btn {
+    border-radius: 50px;
+    padding: 8px 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    background-color: #22212A;
+    border-color: #22212A;
+    color: #FFFFFF;
+}
+
+.filter-apply-btn:hover,
+.filter-apply-btn:focus {
+    background-color: #000000;
+    border-color: #000000;
+    color: #FFFFFF;
+}
+
+.filter-clear-link {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #AD5135;
+}
+
+.home-section-title {
+    margin-top: 48px;
+}
+
+.home-filters {
+    margin-bottom: 28px;
+}
+
+.search-filters {
+    margin-bottom: 32px;
 }
 
 @media (max-width: 576px) {
-    .festival-categories {
-        padding-top: 28px;
+    .home-section-title {
+        margin-top: 32px;
     }
 
-    .festival-categories .btn {
-        padding: 8px 14px;
-        font-size: 0.82rem;
+    .filter-dropdown-btn,
+    .filter-apply-btn {
+        padding: 7px 13px;
+        font-size: 0.84rem;
     }
 }
 
@@ -472,7 +532,7 @@ body {
 
 .event-card .card-title {
     font-size: 1.2rem;
-    font-weight: 700;
+    font-weight: 600;
     line-height: 1.4;
 }
 
@@ -520,7 +580,7 @@ body {
 
 .event-card .card-title {
     font-size: 1.1rem;
-    font-weight: 700;
+    font-weight: 600;
     min-height: 2.8em;
 }
 
@@ -531,6 +591,85 @@ body {
 
 .event-card .mt-auto .btn {
     width: 100%;
+}
+
+/* Horizontal event card variant (compact, landscape image beside the details) */
+
+.event-card.event-card-horizontal .card-body {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.event-card.event-card-horizontal .card-title {
+    min-height: 0;
+    margin-bottom: 0;
+    font-size: 1.05rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.event-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 14px;
+    margin: 0;
+    font-size: 0.85rem;
+    color: #6b6874;
+}
+
+.event-card-meta span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.event-card-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.event-card.event-card-horizontal .badge {
+    padding: 4px 8px;
+    font-weight: 500;
+}
+
+.event-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: auto;
+    padding-top: 4px;
+}
+
+.event-card.event-card-horizontal .btn-primary {
+    padding: 6px 14px;
+    font-size: 0.85rem;
+}
+
+.event-card.event-card-horizontal .card-img-top {
+    height: 170px !important;
+}
+
+@media (min-width: 576px) {
+    .event-card.event-card-horizontal {
+        flex-direction: row;
+    }
+
+    /* Image stretches to the card's (short) height and stays wider than tall */
+    .event-card.event-card-horizontal .card-img-top {
+        width: 44%;
+        flex: 0 0 min(44%, 260px);
+        height: auto !important;
+        min-height: 150px;
+        border-radius: 0;
+    }
 }
 
 /* EventFM homepage section headings */
@@ -568,7 +707,7 @@ body {
 
 .event-card-info .event-card-price {
     font-size: 1.05rem;
-    font-weight: 700;
+    font-weight: 600;
     color: #C96A4A;
     margin-top: 10px;
 }
@@ -856,4 +995,361 @@ header {
 
 .search-empty-state p:last-child {
     margin-bottom: 0;
+}
+
+/* Full festival list (empty search) */
+
+.all-events-subheading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #22212A;
+}
+
+.all-events-subheading span {
+    padding: 2px 10px;
+    border-radius: 50px;
+    background-color: #ECE7E1;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6b6874;
+}
+
+.view-all-btn {
+    background-color: #C96A4A;
+    border-color: #C96A4A;
+    border-radius: 50px;
+    padding: 10px 26px;
+    font-weight: 600;
+}
+
+.view-all-btn:hover,
+.view-all-btn:focus {
+    background-color: #AD5135;
+    border-color: #AD5135;
+}
+
+/* Acknowledgement of Country */
+
+.aoc-section {
+    margin: 32px 0 24px;
+    padding-top: 24px;
+    border-top: 1px solid #E4DFD5;
+}
+
+.aoc-heading {
+    font-size: 1.35rem;
+    font-weight: 500;
+}
+
+.aoc-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #6B6878;
+}
+
+.aoc-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.aoc-option-input {
+    position: absolute;
+    opacity: 0;
+}
+
+.aoc-option-label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    height: 100%;
+    padding: 14px 16px;
+    border: 2px solid #E4DFD5;
+    border-radius: 10px;
+    background-color: #ffffff;
+    cursor: pointer;
+}
+
+.aoc-option-title {
+    font-weight: 600;
+}
+
+.aoc-option-text {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+/* same blue as Bootstrap's checked and focused form controls */
+.aoc-option-input:checked + .aoc-option-label {
+    border-color: #0d6efd;
+}
+
+.aoc-option-input:focus-visible + .aoc-option-label {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.aoc-panel {
+    padding: 18px 20px;
+    border-radius: 10px;
+    background-color: #F7F7F8;
+    margin-bottom: 16px;
+}
+
+.aoc-citation {
+    font-size: 0.8rem;
+    color: #6B6878;
+}
+
+.aoc-citation a {
+    color: inherit;
+}
+
+/* yellow notice shown when no acknowledgement is chosen */
+.aoc-disclaimer {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background-color: #FFF8E1;
+    border: 1px solid #F2D27A;
+    color: #5C4A0E;
+}
+
+.aoc-disclaimer-icon {
+    flex-shrink: 0;
+    color: #B7860B;
+}
+
+/* show only the panel for the selected option (browsers without :has() show them all) */
+@supports selector(:has(*)) {
+    .aoc-panel {
+        display: none;
+    }
+    .aoc-section:has(input[value="none"]:checked) .aoc-panel-none {
+        display: flex;
+    }
+    .aoc-section:has(input[value="generic"]:checked) .aoc-panel-generic,
+    .aoc-section:has(input[value="enhanced"]:checked) .aoc-panel-enhanced {
+        display: block;
+    }
+}
+
+.aoc-statement {
+    margin: 0 0 16px;
+    padding: 12px 16px;
+    border: 1px solid #E4DFD5;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: #3A3744;
+}
+
+/* read-only statement template - tinted and dashed so it doesn't look like an input */
+.aoc-template {
+    background-color: #EFEFF2;
+    border: 1px dashed #C4C4CC;
+    line-height: 1.7;
+}
+
+.aoc-slot {
+    padding: 1px 6px;
+    border-radius: 4px;
+    background-color: #DCDCE2;
+    color: #4A4857;
+    font-size: 0.9em;
+    font-style: italic;
+}
+
+.required-mark {
+    color: #B42318;
+}
+
+.aoc-panel-enhanced {
+    background-color: #ffffff;
+    border: 1px solid #E6E6EA;
+}
+
+
+.aoc-step {
+    margin: 0;
+    padding: 16px 20px 18px;
+    border: 1px solid #E6E6EA;
+    border-radius: 8px;
+    background-color: #F7F7F8;
+}
+
+.aoc-step + .aoc-step {
+    margin-top: 16px;
+}
+
+.aoc-step legend {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #22212A;
+    margin-bottom: 12px;
+}
+
+.aoc-details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: #22212A;
+}
+
+.aoc-details[open] summary {
+    margin-bottom: 10px;
+}
+
+.aoc-table th {
+    white-space: nowrap;
+}
+
+.aoc-error {
+    margin-top: 4px;
+    font-size: 0.85rem;
+    color: #B42318;
+}
+
+.aoc-review {
+    padding: 12px 16px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    border: 1px solid #E4DFD5;
+    font-size: 0.9rem;
+}
+
+.aoc-review ul {
+    padding-left: 18px;
+}
+
+.aoc-review-warning {
+    color: #8A4A00;
+}
+
+.aoc-review-note {
+    color: #555;
+}
+
+/* Acknowledgement on the event details page */
+
+.aoc-event-panel {
+    padding: 18px 20px;
+    border-left: 4px solid #C96A4A;
+    border-radius: 8px;
+    background-color: #FBF1EC;
+}
+
+.aoc-event-text {
+    white-space: pre-line;
+    margin-bottom: 10px;
+}
+
+.aoc-event-meta {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px;
+    font-size: 0.9rem;
+}
+
+.aoc-event-meta li + li {
+    margin-top: 4px;
+}
+
+.aoc-event-link {
+    font-size: 0.9rem;
+    color: #8A4A33;
+}
+
+/* Acknowledgement of Country guide page */
+
+.aoc-guide-title {
+    font-weight: 600;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #D9D9DE;
+}
+
+/* Wikipedia-style contents list, stays in view while scrolling on wide screens */
+.aoc-guide-contents {
+    position: sticky;
+    top: 100px;
+    font-size: 0.9rem;
+}
+
+.aoc-guide-contents-title {
+    font-weight: 600;
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #D9D9DE;
+}
+
+.aoc-guide-contents ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.aoc-guide-contents ul ul {
+    padding-left: 14px;
+}
+
+.aoc-guide-contents li {
+    margin: 5px 0;
+}
+
+.aoc-guide-contents a {
+    text-decoration: none;
+}
+
+.aoc-guide-contents a:hover {
+    text-decoration: underline;
+}
+
+.aoc-guide-section {
+    margin-bottom: 32px;
+    scroll-margin-top: 100px; /* keep headings clear of the sticky header */
+}
+
+.aoc-guide-section h2 {
+    font-size: 1.45rem;
+    font-weight: 500;
+    padding-bottom: 6px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #D9D9DE;
+}
+
+.aoc-guide-subheading {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 24px;
+    scroll-margin-top: 100px;
+}
+
+.aoc-guide .aoc-table {
+    background-color: #ffffff;
+}
+
+.aoc-city-table td:first-child {
+    white-space: nowrap;
+}
+
+.aoc-resource-list {
+    padding-left: 18px;
+}
+
+.aoc-resource-list li + li {
+    margin-top: 6px;
+}
+
+.aoc-issue-list dt {
+    font-weight: 600;
+}
+
+.aoc-issue-list dd {
+    margin-bottom: 12px;
+    color: #555;
 }

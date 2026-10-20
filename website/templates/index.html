@@ -12,51 +12,26 @@
     </div>
 </div>
 <div class="container">
-    <section class="festival-categories">
-    <h2 class="mb-3">Browse by Category</h2>
-    <div class="category-pills mb-4">
-        <a href="{{ url_for('main.index') }}" class="btn {{ 'btn-primary' if not selected_genre else 'btn-light filter-pill-unselected' }} btn-sm">All</a>
-        {% for value, label in genre_choices %}
-        <a href="{{ url_for('main.index', genre=value) }}" class="btn {{ 'btn-primary' if selected_genre == value else 'btn-light filter-pill-unselected' }} btn-sm">{{ label }}</a>
-        {% endfor %}
+    {% set card_horizontal = true %}
+    <h2 class="festival-section-title home-section-title">Upcoming Festivals</h2>
+    <div class="home-filters">
+        {% include "_filter-bar.html" %}
     </div>
-    </section>
-
-    {% if selected_genre and not (upcoming_events or recent_events or cancelled_events) %}
-    <div class="alert alert-light border text-center">
-        No {{ selected_genre | genre_label }} festivals yet.
-        <a href="{{ url_for('main.index') }}">View all festivals</a>
-    </div>
-    {% endif %}
-
-    <h2 class="festival-section-title">Upcoming Festivals</h2>
     {% if upcoming_events %}
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
+    <div class="row row-cols-1 row-cols-lg-2 g-4">
         {% for event in upcoming_events %}
         {% include "_event-card.html" %}
         {% endfor %}
     </div>
     {% else %}
-    <p class="text-muted">No upcoming festivals{{ ' in this category' if selected_genre }} right now. Check back soon!</p>
+    <p class="text-muted">No upcoming festivals{{ ' match these filters' if active_filter_count }} right now.</p>
     {% endif %}
 
-    {% if recent_events %}
-    <h2 class="festival-section-title mt-5">Past Festivals</h2>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
-        {% for event in recent_events %}
-        {% include "_event-card.html" %}
-        {% endfor %}
+    <div class="text-center mt-5">
+        <a href="{{ filter_url('main.search', filters) }}" class="btn btn-primary view-all-btn">
+            View all {{ 'matching ' if active_filter_count }}festivals<i class="bi bi-arrow-right ms-2"></i>
+        </a>
     </div>
-    {% endif %}
-
-    {% if cancelled_events %}
-    <h2 class="festival-section-title mt-5">Cancelled Festivals</h2>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
-        {% for event in cancelled_events %}
-        {% include "_event-card.html" %}
-        {% endfor %}
-    </div>
-    {% endif %}
 
 </div>
 

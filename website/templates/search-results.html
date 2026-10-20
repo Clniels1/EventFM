@@ -10,12 +10,37 @@
 </div>
 
 <div class="container search-results-page">
+    {% set card_horizontal = true %}
+    <div class="search-filters">
+        {% include "_filter-bar.html" %}
+    </div>
+
     {% if not query %}
+    <div class="search-results-header">
+        <h2 class="festival-section-title">{{ 'Matching' if active_filter_count else 'All' }} Festivals</h2>
+    </div>
+
+    {% if not (upcoming_events or recent_events or cancelled_events) %}
     <div class="search-empty-state">
         <i class="bi bi-search"></i>
-        <h2>Start with a search</h2>
-        <p>Try a genre, a city, or a mood like "chill outdoor music by the water".</p>
+        {% if active_filter_count %}
+        <h2>No festivals match these filters</h2>
+        <p>Try removing a filter, or <a href="{{ url_for('main.search') }}">clear them all</a>.</p>
+        {% else %}
+        <h2>No festivals yet</h2>
+        <p>Check back soon for upcoming festivals.</p>
+        {% endif %}
     </div>
+    {% endif %}
+
+    {% for section_title, section_events in [('Upcoming', upcoming_events), ('Past', recent_events), ('Cancelled', cancelled_events)] if section_events %}
+    <h3 class="all-events-subheading{{ ' mt-5' if not loop.first }}">{{ section_title }} <span>{{ section_events|length }}</span></h3>
+    <div class="row row-cols-1 row-cols-lg-2 g-4">
+        {% for event in section_events %}
+        {% include "_event-card.html" %}
+        {% endfor %}
+    </div>
+    {% endfor %}
     {% else %}
     <div class="search-results-header">
         <h2 class="festival-section-title">
@@ -29,7 +54,7 @@
     </div>
 
     {% if results %}
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
+    <div class="row row-cols-1 row-cols-lg-2 g-4">
         {% for result in results %}
         {% set event = result.event %}
         {% include "_event-card.html" %}
@@ -39,7 +64,11 @@
     <div class="search-empty-state">
         <i class="bi bi-search"></i>
         <h2>No matching festivals found</h2>
-        <p>Try describing what you're after differently, e.g. a genre, city or mood.</p>    </div>
+        {% if active_filter_count %}
+        <p>Try removing a filter, or <a href="{{ url_for('main.search', q=query) }}">search without filters</a>.</p>
+        {% else %}
+        <p>Try describing what you're after differently, e.g. a genre, city or mood.</p>
+        {% endif %}    </div>
     {% endif %}
     {% endif %}
 </div>

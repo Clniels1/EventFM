@@ -20,6 +20,14 @@ GENRE_CHOICES = [
     ('classical', 'Classical')
 ]
 
+# Age restriction choices for events
+AGE_LIMIT_CHOICES = [
+    ('all-ages', 'All ages'),
+    ('15-plus', '15+'),
+    ('18-plus', '18+'),
+    ('under-18', 'Under 18 only')
+]
+
 # Create user model 
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
@@ -52,6 +60,7 @@ class Event(db.Model):
     end_time = db.Column(db.Time, nullable=False)
     location = db.Column(db.String(200), nullable=False)
     genre = db.Column(db.String(30), nullable=False)
+    age_limit = db.Column(db.String(20), nullable=False, default='all-ages')
     price = db.Column(db.Float, nullable=False)
     capacity = db.Column(db.Integer, nullable=False)
     image_filename = db.Column(db.String(200))
@@ -64,6 +73,8 @@ class Event(db.Model):
     comments = db.relationship('Comment', backref='event', lazy=True)
     orders = db.relationship('Order', backref='event', lazy=True)
     chunks = db.relationship('EventChunk', backref='event', lazy=True, cascade='all, delete-orphan')
+    # Builder details, only present for enhanced Acknowledgements of Country
+    acknowledgement = db.relationship('Acknowledgement', backref='event', uselist=False, cascade='all, delete-orphan')
 
     @property
     def tickets_sold(self):
@@ -83,6 +94,20 @@ class Event(db.Model):
             self.status = 'Sold Out'
         else:
             self.status = 'Open'
+
+# Research behind an enhanced Acknowledgement of Country (one per event).
+# The final statement itself is stored on Event.acknowledgement_text.
+class Acknowledgement(db.Model):
+    __tablename__ = 'acknowledgements'
+    id = db.Column(db.Integer, primary_key=True)
+    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False, unique=True)
+    region = db.Column(db.String(30), nullable=False)  # capital city key or 'other'
+    custodians = db.Column(db.String(200), nullable=False)
+    place_name = db.Column(db.String(100))
+    source = db.Column(db.String(30), nullable=False)  # how the custodians were identified
+    connection = db.Column(db.Text, nullable=False)
+    commitment = db.Column(db.Text)
+    welcome_to_country = db.Column(db.Boolean, nullable=False, default=False)
 
 # Text chunk of an event with its semantic-search embedding
 class EventChunk(db.Model):

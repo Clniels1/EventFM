@@ -65,6 +65,13 @@ def create_app():
     with app.app_context():
         db.create_all()
 
+        # create_all never adds columns to existing tables, so add age_limit to older databases here
+        event_columns = [row[1] for row in db.session.execute(db.text('PRAGMA table_info(events)'))]
+        if 'age_limit' not in event_columns:
+            db.session.execute(db.text(
+                "ALTER TABLE events ADD COLUMN age_limit VARCHAR(20) NOT NULL DEFAULT 'all-ages'"))
+            db.session.commit()
+
         # preload the semantic search model and embeddings; skipped in the reloader's
         # parent process, which never serves requests
         if not app.debug or os.environ.get('WERKZEUG_RUN_MAIN') == 'true':

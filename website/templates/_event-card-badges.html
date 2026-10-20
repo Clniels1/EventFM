@@ -1,0 +1,17 @@
+{% if event.status == 'Open' %}
+<span class="badge text-bg-success">Open</span>
+{% elif event.status == 'Sold Out' %}
+<span class="badge text-bg-warning">Sold Out</span>
+{% elif event.status == 'Cancelled' %}
+<span class="badge text-bg-danger">Cancelled</span>
+{% else %}
+<span class="badge text-bg-secondary">{{ event.status }}</span>
+{% endif %}
+{% if result %}
+    {% if result.match_percent is not none %}
+    <span class="badge ai-match-badge" title="AI similarity score: how closely this festival's meaning matches your search"><i class="bi bi-stars me-1"></i>{{ result.match_percent }}% AI match</span>
+    {% endif %}
+    {% if result.keyword_match %}
+    <span class="badge text-bg-light border" title="Your exact search words appear in this festival's details">Keyword match</span>
+    {% endif %}
+{% endif %}

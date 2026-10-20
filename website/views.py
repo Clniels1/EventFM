@@ -3,20 +3,81 @@ import calendar
 from uuid import uuid4
 from datetime import date
 from flask import Blueprint, render_template, redirect, url_for, current_app, request, flash
-from .models import Event, Order, Comment, GENRE_CHOICES
+from .models import Event, Order, Comment, GENRE_CHOICES, AGE_LIMIT_CHOICES
 from .forms import EventForm, BookingForm, CommentForm, SearchForm
 from . import db
+from . import acknowledgement as aoc
 from .semantic import index_event, semantic_search
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 main_bp = Blueprint('main', __name__)
 
 SEARCH_RESULT_LIMIT = 10
+SEARCH_CANDIDATE_LIMIT = 100  # semantic matches considered before filters and the result limit are applied
+HOME_EVENT_LIMIT = 6
 GENRE_LABELS = dict(GENRE_CHOICES)
+AGE_LABELS = dict(AGE_LIMIT_CHOICES)
+
+# (key, label, min price inclusive, max price exclusive)
+PRICE_RANGES = [
+    ('under-75', 'Under $75', 0, 75),
+    ('75-100', '$75–$100', 75, 100),
+    ('100-125', '$100–$125', 100, 125),
+    ('125-plus', '$125+', 125, None),
+]
+PRICE_LABELS = {key: label for key, label, _, _ in PRICE_RANGES}
 
 @main_bp.app_template_filter('genre_label')
 def genre_label(slug):
     return GENRE_LABELS.get(slug, slug)
+
+@main_bp.app_template_filter('age_label')
+def age_label(slug):
+    return AGE_LABELS.get(slug, slug)
+
+def read_filters():
+    """Read the filter bar's selections from the query string, dropping unknown values."""
+    return {
+        'genre': [g for g in request.args.getlist('genre') if g in GENRE_LABELS],
+        'price': request.args.get('price') if request.args.get('price') in PRICE_LABELS else None,
+        'age': [a for a in request.args.getlist('age') if a in AGE_LABELS],
+    }
+
+def apply_filters(query, filters):
+    if filters['genre']:
+        query = query.filter(Event.genre.in_(filters['genre']))
+    if filters['price']:
+        _, _, low, high = next(r for r in PRICE_RANGES if r[0] == filters['price'])
+        query = query.filter(Event.price >= low)
+        if high is not None:
+            query = query.filter(Event.price < high)
+    if filters['age']:
+        query = query.filter(Event.age_limit.in_(filters['age']))
+    return query
+
+@main_bp.app_template_global()
+def filter_url(endpoint, filters, query=None, drop=None):
+    """URL for endpoint carrying the current filters; drop=('genre', 'pop') leaves one selection out."""
+    def keep(key, value):
+        return drop != (key, value)
+    return url_for(
+        endpoint,
+        q=query or None,
+        genre=[g for g in filters['genre'] if keep('genre', g)],
+        price=filters['price'] if filters['price'] and keep('price', filters['price']) else None,
+        age=[a for a in filters['age'] if keep('age', a)],
+    )
+
+def filter_context(filters):
+    """Template variables shared by every page that shows the filter bar."""
+    return {
+        'filters': filters,
+        'active_filter_count': len(filters['genre']) + len(filters['age']) + (1 if filters['price'] else 0),
+        'genre_choices': GENRE_CHOICES,
+        'price_ranges': PRICE_RANGES,
+        'age_choices': AGE_LIMIT_CHOICES,
+        'price_labels': PRICE_LABELS,
+    }
 
 def safe_index_event(event):
     try:
@@ -25,12 +86,9 @@ def safe_index_event(event):
         db.session.rollback()
         current_app.logger.exception('Failed to index event %s for semantic search', event.id)
 
-@main_bp.route('/')
-def index():
-    selected_genre = request.args.get('genre')
-    query = Event.query.order_by(Event.date.asc(), Event.start_time.asc())
-    if selected_genre:
-        query = query.filter_by(genre=selected_genre)
+def events_by_status(filters):
+    """Return (upcoming, past, cancelled) events matching the filter bar's selections."""
+    query = apply_filters(Event.query, filters).order_by(Event.date.asc(), Event.start_time.asc())
     events = query.all()
     for event in events:
         event.refresh_status()
@@ -38,20 +96,24 @@ def index():
     upcoming_events = [event for event in events if event.status in ['Open', 'Sold Out']]
     recent_events = [event for event in reversed(events) if event.status == 'Inactive']
     cancelled_events = [event for event in events if event.status == 'Cancelled']
+    return upcoming_events, recent_events, cancelled_events
+
+@main_bp.route('/')
+def index():
+    filters = read_filters()
+    upcoming_events, _, _ = events_by_status(filters)
     return render_template(
         'index.html',
-        upcoming_events=upcoming_events,
-        recent_events=recent_events,
-        cancelled_events=cancelled_events,
-        selected_genre=selected_genre,
-        genre_choices=GENRE_CHOICES,
+        upcoming_events=upcoming_events[:HOME_EVENT_LIMIT],
         search_form=SearchForm(),
+        **filter_context(filters),
     )
 
 @main_bp.route('/search')
 def search():
     search_form = SearchForm(formdata=request.args)
     query = (search_form.q.data or '').strip()
+    filters = read_filters()
     results = []
     ai_available = True
 
@@ -62,18 +124,20 @@ def search():
             Event.genre.ilike(f'%{query}%'),
             Event.description.ilike(f'%{query}%')
         )
-        keyword_ids = {e.id for e in Event.query.filter(search_filter).all()}
+        keyword_ids = {e.id for e in apply_filters(Event.query.filter(search_filter), filters).all()}
 
         # score each event by semantic similarity
         semantic_scores = {}
         try:
-            semantic_scores = dict(semantic_search(query, limit=SEARCH_RESULT_LIMIT))
+            semantic_scores = dict(semantic_search(query, limit=SEARCH_CANDIDATE_LIMIT))
         except Exception:
             ai_available = False
             current_app.logger.exception('Semantic search failed, using keyword results only')
 
-        scores = dict(semantic_scores)
-        events_by_id = {e.id: e for e in Event.query.filter(Event.id.in_(set(scores) | keyword_ids)).all()}
+        # only events passing the filters are ranked, so the result limit is applied after filtering
+        events_by_id = {e.id: e for e in apply_filters(
+            Event.query.filter(Event.id.in_(set(semantic_scores) | keyword_ids)), filters).all()}
+        scores = {event_id: score for event_id, score in semantic_scores.items() if event_id in events_by_id}
         for event_id in keyword_ids:
             boost = 1.0 if query.lower() in events_by_id[event_id].title.lower() else 0.5
             scores[event_id] = scores.get(event_id, 0) + boost
@@ -92,8 +156,17 @@ def search():
             })
         db.session.commit()
 
+        return render_template('search-results.html', search_form=search_form, query=query,
+                               results=results, ai_available=ai_available,
+                               **filter_context(filters))
+
+    # an empty search lists every festival matching the filters
+    upcoming_events, recent_events, cancelled_events = events_by_status(filters)
     return render_template('search-results.html', search_form=search_form, query=query,
-                           results=results, ai_available=ai_available)
+                           upcoming_events=upcoming_events,
+                           recent_events=recent_events,
+                           cancelled_events=cancelled_events,
+                           **filter_context(filters))
 
 @main_bp.route('/event/<int:event_id>')
 def event_details(event_id):
@@ -108,6 +181,8 @@ def event_details(event_id):
     return render_template(
         'event-details.html',
         event=event,
+        capital_cities=aoc.CAPITAL_CITIES,
+        source_labels=aoc.SOURCE_LABELS,
         booking_form=booking_form,
         comment_form=comment_form,
         order_id=order_id,
@@ -143,13 +218,13 @@ def create_event():
             end_time=form.end_time.data,
             location=form.location.data,
             genre=form.genre.data,
+            age_limit=form.age_limit.data,
             price=float(form.price.data),
             capacity=form.capacity.data,
             image_filename=image_filename,
-            acknowledgement_type=form.acknowledgement_type.data,
-            acknowledgement_text=form.acknowledgement_text.data,
             user_id=current_user.id
         )
+        aoc.apply_to_event(form, event)
 
         db.session.add(event)
         db.session.commit()
@@ -157,7 +232,7 @@ def create_event():
         flash('Event created successfully!', 'success')
         return redirect(url_for('main.event_details', event_id=event.id))
 
-    return render_template('create-event.html', form=form)
+    return render_event_form(form)
 
 @main_bp.route('/event/<int:event_id>/edit', methods=['GET', 'POST'])
 @login_required
@@ -171,14 +246,17 @@ def edit_event(event_id):
         flash('Cancelled or past events cannot be edited.', 'danger')
         return redirect(url_for('main.event_details', event_id=event.id))
     form = EventForm(obj=event)
+    if not form.is_submitted():
+        aoc.load_into_form(form, event)
     if form.validate_on_submit():
         # capacity above sold
         if form.capacity.data < event.tickets_sold:
             flash(f'Capacity cannot be less than the {event.tickets_sold} tickets already sold', 'danger')
-            return render_template('create-event.html', form=form, editing=True)
+            return render_event_form(form, editing=True)
         existing_image = event.image_filename
         form.populate_obj(event)
         event.image_filename = existing_image
+        aoc.apply_to_event(form, event)
         if form.image.data:
             image = form.image.data
             image_filename = f"{uuid4().hex}_{secure_filename(image.filename)}"
@@ -189,8 +267,34 @@ def edit_event(event_id):
         safe_index_event(event)
         flash('Event updated successfully!', 'success')
         return redirect(url_for('main.event_details', event_id=event.id))
-    
-    return render_template('create-event.html', form=form, editing=True)
+
+    return render_event_form(form, editing=True)
+
+def render_event_form(form, editing=False):
+    # check custom wording for common mistakes
+    review = []
+    if form.acknowledgement_type.data == 'enhanced' and form.acknowledgement_text.data:
+        review = aoc.review_statement(form.acknowledgement_text.data, form.aoc_custodians.data or '')
+    return render_template(
+        'create-event.html',
+        form=form,
+        editing=editing,
+        aoc_preview=aoc.preview_statement(form),
+        aoc_review=review,
+        generic_statement=aoc.GENERIC_STATEMENT,
+        capital_cities=aoc.CAPITAL_CITIES,
+    )
+
+@main_bp.route('/acknowledgement-of-country')
+def acknowledgement_guide():
+    return render_template(
+        'acknowledgement-of-country.html',
+        capital_cities=aoc.CAPITAL_CITIES,
+        resources=aoc.RESOURCES,
+        mistakes=aoc.MISTAKES,
+        contested=aoc.CONTESTED,
+        generic_statement=aoc.GENERIC_STATEMENT,
+    )
 
 @main_bp.route('/event/<int:event_id>/cancel', methods=['POST'])
 @login_required
