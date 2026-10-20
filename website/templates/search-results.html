@@ -8,31 +8,23 @@
     {% include "_search-bar.html" %}
 
     {% if not query %}
-    <p class="text-center text-muted">Enter a search term to find events by title, location, genre or description.</p>
+    <p class="text-center text-muted">Enter a search term to find festivals by meaning, title, location, genre or description.</p>
     {% else %}
-    <h2 class="mb-3 fs-4">{{ events|length }} result{{ '' if events|length == 1 else 's' }} for "{{ query }}"</h2>
-    {% if events %}
-    <div class="d-flex flex-row flex-wrap gap-3">
-        {% for event in events %}
-        <div class="card event-card" style="width: 18rem; max-width: 100%;">
-            <img src="{{ url_for('static', filename='img/' + event.image_filename) if event.image_filename else url_for('static', filename='img/festival-1.jpg') }}" class="card-img-top" alt="{{ event.title }}" style="height: 160px; object-fit: cover;">
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title">{{ event.title }}</h5>
-                <p class="card-subtitle mb-2 text-muted small">{{ event.date.strftime('%d %B %Y') }} &middot; {{ event.location }}</p>
-                <div class="mb-2">
-                    <span class="badge {{ 'text-bg-success' if event.status in ['Open', 'Sold Out'] else 'text-bg-danger' if event.status == 'Cancelled' else 'text-bg-secondary' }}">{{ event.status }}</span>
-                    <span class="badge text-bg-dark">18+</span>
-                </div>
-                <p class="card-text">{{ event.description }}</p>
-                <div class="mt-auto pt-2">
-                    <a href="{{ url_for('main.event_details', event_id=event.id) }}" class="btn btn-primary">View Details</a>
-                </div>
-            </div>
-        </div>
+    <h2 class="mb-1 fs-4">{{ results|length }} result{{ '' if results|length == 1 else 's' }} for "{{ query }}"</h2>
+    {% if ai_available %}
+    <p class="text-muted small mb-4">Ranked by AI similarity, with exact keyword matches boosted. Only the closest matches are shown.</p>
+    {% else %}
+    <p class="text-muted small mb-4">AI search is unavailable right now, so these results use keyword matching only.</p>
+    {% endif %}
+    {% if results %}
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
+        {% for result in results %}
+        {% set event = result.event %}
+        {% include "_event-card.html" %}
         {% endfor %}
     </div>
     {% else %}
-    <p class="text-center text-muted">No matching events found. Try a different search term.</p>
+    <p class="text-center text-muted">No matching festivals found. Try describing what you're after differently, e.g. a genre, city or mood.</p>
     {% endif %}
     {% endif %}
 </div>

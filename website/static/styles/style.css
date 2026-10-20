@@ -299,6 +299,55 @@ body {
     display: block;
 }
 
+/* AI search explanation and match badges */
+
+.ai-match-badge {
+    background-color: #F3E8FF;
+    color: #5B2A86;
+    border: 1px solid #D9C2F0;
+    font-weight: 600;
+    cursor: help;
+}
+
+.search-ai-note {
+    margin-top: -12px;
+    font-size: 0.9rem;
+    color: #555555;
+    text-align: left;
+}
+
+.search-ai-toggle {
+    color: #C96A4A;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.search-ai-toggle:hover {
+    color: #AD5135;
+}
+
+.search-ai-info {
+    background-color: #FFFFFF;
+    border: 1px solid #ECE7E1;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: #444444;
+}
+
+.festival-hero .search-ai-note {
+    color: #E9E5F1;
+}
+
+.festival-hero .search-ai-toggle {
+    color: #FFB38A;
+}
+
+.festival-hero .search-ai-toggle:hover {
+    color: #FFFFFF;
+}
+
 /* EventFM homepage category filters */
 
 .festival-categories {

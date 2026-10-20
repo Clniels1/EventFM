@@ -2,7 +2,7 @@ import os
 import calendar
 from datetime import date
 from flask import Blueprint, render_template, redirect, url_for, current_app, request, flash
-from .models import Event, Order, Comment
+from .models import Event, Order, Comment, GENRE_CHOICES
 from .forms import EventForm, BookingForm, CommentForm, SearchForm
 from . import db
 from .semantic import index_event, semantic_search
@@ -10,7 +10,12 @@ from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 main_bp = Blueprint('main', __name__)
 
-SEARCH_RESULT_LIMIT = 20
+SEARCH_RESULT_LIMIT = 10
+GENRE_LABELS = dict(GENRE_CHOICES)
+
+@main_bp.app_template_filter('genre_label')
+def genre_label(slug):
+    return GENRE_LABELS.get(slug, slug)
 
 def safe_index_event(event):
     try:
@@ -22,15 +27,15 @@ def safe_index_event(event):
 @main_bp.route('/')
 def index():
     selected_genre = request.args.get('genre')
+    query = Event.query.order_by(Event.date.asc(), Event.start_time.asc())
     if selected_genre:
-        events = Event.query.filter_by(genre=selected_genre).all()
-    else:
-        events = Event.query.all()
+        query = query.filter_by(genre=selected_genre)
+    events = query.all()
     for event in events:
         event.refresh_status()
     db.session.commit()
     upcoming_events = [event for event in events if event.status in ['Open', 'Sold Out']]
-    recent_events = [event for event in events if event.status == 'Inactive']
+    recent_events = [event for event in reversed(events) if event.status == 'Inactive']
     cancelled_events = [event for event in events if event.status == 'Cancelled']
     return render_template(
         'index.html',
@@ -38,6 +43,7 @@ def index():
         recent_events=recent_events,
         cancelled_events=cancelled_events,
         selected_genre=selected_genre,
+        genre_choices=GENRE_CHOICES,
         search_form=SearchForm(),
     )
 
@@ -45,7 +51,8 @@ def index():
 def search():
     search_form = SearchForm(formdata=request.args)
     query = (search_form.q.data or '').strip()
-    events = []
+    results = []
+    ai_available = True
 
     if query:
         search_filter = db.or_(
@@ -54,26 +61,38 @@ def search():
             Event.genre.ilike(f'%{query}%'),
             Event.description.ilike(f'%{query}%')
         )
-        keyword_events = Event.query.filter(search_filter).all()
+        keyword_ids = {e.id for e in Event.query.filter(search_filter).all()}
 
         # score each event by semantic similarity
-        scores = {}
+        semantic_scores = {}
         try:
-            scores = dict(semantic_search(query, limit=SEARCH_RESULT_LIMIT))
+            semantic_scores = dict(semantic_search(query, limit=SEARCH_RESULT_LIMIT))
         except Exception:
+            ai_available = False
             current_app.logger.exception('Semantic search failed, using keyword results only')
-        for event in keyword_events:
-            boost = 1.0 if query.lower() in event.title.lower() else 0.5
-            scores[event.id] = scores.get(event.id, 0) + boost
+
+        scores = dict(semantic_scores)
+        events_by_id = {e.id: e for e in Event.query.filter(Event.id.in_(set(scores) | keyword_ids)).all()}
+        for event_id in keyword_ids:
+            boost = 1.0 if query.lower() in events_by_id[event_id].title.lower() else 0.5
+            scores[event_id] = scores.get(event_id, 0) + boost
 
         ranked_ids = sorted(scores, key=scores.get, reverse=True)[:SEARCH_RESULT_LIMIT]
-        events_by_id = {e.id: e for e in Event.query.filter(Event.id.in_(ranked_ids)).all()}
-        events = [events_by_id[i] for i in ranked_ids if i in events_by_id]
-        for event in events:
+        for event_id in ranked_ids:
+            if event_id not in events_by_id:
+                continue
+            event = events_by_id[event_id]
             event.refresh_status()
+            semantic_score = semantic_scores.get(event_id)
+            results.append({
+                'event': event,
+                'match_percent': round(semantic_score * 100) if semantic_score is not None else None,
+                'keyword_match': event_id in keyword_ids,
+            })
         db.session.commit()
 
-    return render_template('search-results.html', search_form=search_form, query=query, events=events)
+    return render_template('search-results.html', search_form=search_form, query=query,
+                           results=results, ai_available=ai_available)
 
 @main_bp.route('/event/<int:event_id>')
 def event_details(event_id):
