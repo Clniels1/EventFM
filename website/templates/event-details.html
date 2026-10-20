@@ -1,9 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.0.2/dist/maplibre-gl.css" />
-
 <div class="container">
     <div class="card mt-4 mb-4 shadow-sm">
         <img src="{{ url_for('static', filename='img/' + event.image_filename) if event.image_filename else url_for('static', filename='img/festival-1.jpg') }}"
@@ -66,6 +63,40 @@
                         </a>
                     </div>
                     {% endif %}
+                    {% if current_user.is_authenticated and current_user.id == event.user_id %}
+                        <div class="mt-3">
+                            {% if event.status not in ['Cancelled', 'Inactive'] %}
+                                <a href="{{ url_for('main.edit_event', event_id=event.id) }}" class="btn btn-warning">Edit Event</a>
+                            {%endif %}
+                            {% if event.status in ['Open', 'Sold Out'] %}
+                                <form method="POST" action="{{ url_for('main.cancel_event', event_id=event.id) }}" class="d-inline" id="cancelEventForm">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelEventModal">Cancel Event</button>
+                                </form>
+                                <div class="modal fade" id="cancelEventModal" tabindex="-1" aria-labelledby="cancelEventModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="cancelEventModalLabel">Cancel Event?</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to cancel this event? This action cannot be undone.
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Keep Event</button>
+                                                <button type="submit" form="cancelEventForm" class="btn btn-danger">Yes, Cancel Event</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Right Column: Booking -->
+                <div class="col-lg-6 col-12 d-flex flex-column">
                     {% if order_id %}
                         <div class="alert alert-success">
                             <h4 class="alert-heading">Booking Confirmed!</h4>
@@ -132,45 +163,6 @@
                             This event is no longer available for booking.
                         </div>
                     {% endif %}
-                    {% if current_user.is_authenticated and current_user.id == event.user_id %}
-                        <div class="mt-3">
-                            {% if event.status not in ['Cancelled', 'Inactive'] %}
-                                <a href="{{ url_for('main.edit_event', event_id=event.id) }}" class="btn btn-warning">Edit Event</a>
-                            {%endif %}
-                            {% if event.status in ['Open', 'Sold Out'] %}
-                                <form method="POST" action="{{ url_for('main.cancel_event', event_id=event.id) }}" class="d-inline" id="cancelEventForm">
-                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelEventModal">Cancel Event</button>
-                                </form>
-                                <div class="modal fade" id="cancelEventModal" tabindex="-1" aria-labelledby="cancelEventModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="cancelEventModalLabel">Cancel Event?</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                Are you sure you want to cancel this event? This action cannot be undone.
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Keep Event</button>
-                                                <button type="submit" form="cancelEventForm" class="btn btn-danger">Yes, Cancel Event</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Right Column: Leaflet Map -->
-                <div class="col-lg-6 col-12 d-flex flex-column">
-                    <div class="card shadow-sm h-100 d-flex flex-column overflow-hidden mb-0">
-                        <div class="card-body p-0 flex-grow-1 position-relative" style="min-height: 300px;">
-                            <div id="event-map" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; width: 100%; height: 100%;"></div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -210,137 +202,5 @@
         </div>
     </div>
 </div>
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="https://unpkg.com/maplibre-gl@4.0.2/dist/maplibre-gl.js"></script>
-<script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.0.21/leaflet-maplibre-gl.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const locationString = {{ event.location|tojson }};
-    const eventTitle = {{ event.title|tojson }};
-
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text || '';
-        return div.innerHTML;
-    }
-
-    // Fix for Leaflet default icon paths with CDNs
-    delete L.Icon.Default.prototype._getIconUrl;
-    L.Icon.Default.mergeOptions({
-        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-    });
-
-    const venueCoords = {
-        'Riverstage, Brisbane, QLD': [-27.4777, 153.0289],
-        'Flemington Racecourse, Melbourne, VIC': [-37.7892, 144.9126],
-        'Sydney Opera House Forecourt, Sydney, NSW': [-33.8568, 151.2153],
-        'Roma Street Parkland, Brisbane, QLD': [-27.4628, 153.0189],
-        'Hordern Pavilion, Sydney, NSW': [-33.8942, 151.2227],
-        'Kings Park, Perth, WA': [-31.9609, 115.8328],
-        "Eaton's Hill Outdoor Arena, Brisbane, QLD": [-27.3524, 152.9366],
-        'Tyagarah Tea Tree Farm, Byron Bay, NSW': [-28.5991, 153.5471],
-        'Sydney Showground, Olympic Park, Sydney, NSW': [-33.8447, 151.0673],
-        'Sidney Myer Music Bowl, Melbourne, VIC': [-37.8228, 144.9754],
-        'Fortitude Music Hall, Brisbane, QLD': [-27.4578, 153.0345],
-        'Melbourne Showgrounds, Melbourne, VIC': [-37.7801, 144.9137],
-        'The Tivoli, Brisbane, QLD': [-27.4526, 153.0336],
-        'Enmore Theatre, Sydney, NSW': [-33.8998, 151.1738],
-        'Red Hill Auditorium, Perth, WA': [-31.8488, 116.0645],
-        'Adelaide Entertainment Centre, Adelaide, SA': [-34.9082, 138.5778],
-        'The Gov, Adelaide, SA': [-34.9073, 138.5768],
-        'Palais Theatre, Melbourne, VIC': [-37.8677, 144.9765],
-        'Manning Bar, Sydney, NSW': [-33.8893, 151.1896],
-        'Broadwater Parklands, Gold Coast, QLD': [-27.9657, 153.4182],
-        'Queensland Performing Arts Centre (QPAC), Brisbane, QLD': [-27.4746, 153.0188],
-        'Newcastle Entertainment Centre, Newcastle, NSW': [-32.9234, 151.7388],
-        'Overseas Passenger Terminal, Sydney, NSW': [-33.8587, 151.2098],
-        'Blue Mountains Cultural Centre, Katoomba, NSW': [-33.7142, 150.3117],
-        'Alice Springs Desert Park, Alice Springs, NT': [-23.7088, 133.8347],
-        'South Bank, Brisbane': [-27.4789, 153.0210],
-        'Fortitude Valley, Brisbane': [-27.4578, 153.0345],
-        'Street Food Festival': [-27.4578, 153.0345],
-        'Brisbane Food Festival': [-27.4789, 153.0210]
-    };
-
-    const cityCoords = {
-        'brisbane': [-27.4705, 153.0260],
-        'sydney': [-33.8688, 151.2093],
-        'melbourne': [-37.8136, 144.9631],
-        'perth': [-31.9505, 115.8605],
-        'adelaide': [-34.9285, 138.6007],
-        'gold coast': [-28.0167, 153.4000],
-        'byron bay': [-28.6474, 153.6120],
-        'newcastle': [-32.9283, 151.7817],
-        'canberra': [-35.2809, 149.1300],
-        'hobart': [-42.8821, 147.3272],
-        'darwin': [-12.4634, 130.8456],
-        'alice springs': [-23.6980, 133.8807]
-    };
-
-    let initialCoords = venueCoords[locationString];
-    if (!initialCoords) {
-        const lowerLoc = (locationString || '').toLowerCase();
-        for (const [city, coords] of Object.entries(cityCoords)) {
-            if (lowerLoc.includes(city)) {
-                initialCoords = coords;
-                break;
-            }
-        }
-    }
-    if (!initialCoords) {
-        initialCoords = [-27.4705, 153.0260];
-    }
-
-    const map = L.map('event-map').setView(initialCoords, 14);
-
-    // Positron theme by CARTO (vector tiles - no watermark & no API key required)
-    try {
-        L.maplibreGL({
-            style: 'https://tiles.openfreemap.org/styles/positron',
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank">CARTO</a>'
-        }).addTo(map);
-    } catch (err) {
-        // Fallback to light street tiles if WebGL is unavailable
-        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, TomTom',
-            maxZoom: 19
-        }).addTo(map);
-    }
-
-    function createPopupContent(title, loc) {
-        return `<div style="min-width: 140px;">
-                    <div class="fw-bold mb-1">${escapeHtml(title)}</div>
-                    <div class="text-muted small">${escapeHtml(loc)}</div>
-                </div>`;
-    }
-
-    const marker = L.marker(initialCoords).addTo(map);
-    marker.bindPopup(createPopupContent(eventTitle, locationString)).openPopup();
-
-    setTimeout(function () {
-        map.invalidateSize();
-    }, 250);
-
-    if (!venueCoords[locationString] && locationString) {
-        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationString)}`)
-            .then(res => res.json())
-            .then(data => {
-                if (data && data.length > 0) {
-                    const lat = parseFloat(data[0].lat);
-                    const lon = parseFloat(data[0].lon);
-                    marker.setLatLng([lat, lon]);
-                    map.setView([lat, lon], 14);
-                    marker.openPopup();
-                }
-            })
-            .catch(() => {
-                // Keep default/inferred coordinates on network failure
-            });
-    }
-});
-</script>
 
 {% endblock %}

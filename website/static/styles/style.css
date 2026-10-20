@@ -173,27 +173,6 @@ body {
     font-size: 0.9rem;
 }
 
-/* Event details Leaflet map */
-#event-map {
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-}
-
-.leaflet-container {
-    font-family: inherit;
-}
-
-.leaflet-popup-content-wrapper {
-    border-radius: 8px;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
-}
-
-.leaflet-popup-content {
-    margin: 12px 14px;
-    line-height: 1.4;
-}
-
 /* EventFM homepage hero */
 
 .festival-hero {
