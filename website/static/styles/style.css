@@ -635,3 +635,325 @@ header {
         padding-top: 35px;
     }
 }
+
+/* Acknowledgement of Country */
+
+.aoc-section {
+    margin: 32px 0 24px;
+    padding-top: 24px;
+    border-top: 1px solid #E4DFD5;
+}
+
+.aoc-heading {
+    font-size: 1.35rem;
+    font-weight: 500;
+}
+
+.aoc-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #6B6878;
+}
+
+.aoc-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.aoc-option-input {
+    position: absolute;
+    opacity: 0;
+}
+
+.aoc-option-label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    height: 100%;
+    padding: 14px 16px;
+    border: 2px solid #E4DFD5;
+    border-radius: 10px;
+    background-color: #ffffff;
+    cursor: pointer;
+}
+
+.aoc-option-title {
+    font-weight: 600;
+}
+
+.aoc-option-text {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+/* same blue as Bootstrap's checked and focused form controls */
+.aoc-option-input:checked + .aoc-option-label {
+    border-color: #0d6efd;
+}
+
+.aoc-option-input:focus-visible + .aoc-option-label {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.aoc-panel {
+    padding: 18px 20px;
+    border-radius: 10px;
+    background-color: #F7F7F8;
+    margin-bottom: 16px;
+}
+
+.aoc-citation {
+    font-size: 0.8rem;
+    color: #6B6878;
+}
+
+.aoc-citation a {
+    color: inherit;
+}
+
+/* yellow notice shown when no acknowledgement is chosen */
+.aoc-disclaimer {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background-color: #FFF8E1;
+    border: 1px solid #F2D27A;
+    color: #5C4A0E;
+}
+
+.aoc-disclaimer-icon {
+    flex-shrink: 0;
+    color: #B7860B;
+}
+
+/* show only the panel for the selected option (browsers without :has() show them all) */
+@supports selector(:has(*)) {
+    .aoc-panel {
+        display: none;
+    }
+    .aoc-section:has(input[value="none"]:checked) .aoc-panel-none {
+        display: flex;
+    }
+    .aoc-section:has(input[value="generic"]:checked) .aoc-panel-generic,
+    .aoc-section:has(input[value="enhanced"]:checked) .aoc-panel-enhanced {
+        display: block;
+    }
+}
+
+.aoc-statement {
+    margin: 0 0 16px;
+    padding: 12px 16px;
+    border: 1px solid #E4DFD5;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: #3A3744;
+}
+
+/* read-only statement template - tinted and dashed so it doesn't look like an input */
+.aoc-template {
+    background-color: #EFEFF2;
+    border: 1px dashed #C4C4CC;
+    line-height: 1.7;
+}
+
+.aoc-slot {
+    padding: 1px 6px;
+    border-radius: 4px;
+    background-color: #DCDCE2;
+    color: #4A4857;
+    font-size: 0.9em;
+    font-style: italic;
+}
+
+.required-mark {
+    color: #B42318;
+}
+
+.aoc-panel-enhanced {
+    background-color: #ffffff;
+    border: 1px solid #E6E6EA;
+}
+
+
+.aoc-step {
+    margin: 0;
+    padding: 16px 20px 18px;
+    border: 1px solid #E6E6EA;
+    border-radius: 8px;
+    background-color: #F7F7F8;
+}
+
+.aoc-step + .aoc-step {
+    margin-top: 16px;
+}
+
+.aoc-step legend {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #22212A;
+    margin-bottom: 12px;
+}
+
+.aoc-details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: #22212A;
+}
+
+.aoc-details[open] summary {
+    margin-bottom: 10px;
+}
+
+.aoc-table th {
+    white-space: nowrap;
+}
+
+.aoc-error {
+    margin-top: 4px;
+    font-size: 0.85rem;
+    color: #B42318;
+}
+
+.aoc-review {
+    padding: 12px 16px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    border: 1px solid #E4DFD5;
+    font-size: 0.9rem;
+}
+
+.aoc-review ul {
+    padding-left: 18px;
+}
+
+.aoc-review-warning {
+    color: #8A4A00;
+}
+
+.aoc-review-note {
+    color: #555;
+}
+
+/* Acknowledgement on the event details page */
+
+.aoc-event-panel {
+    padding: 18px 20px;
+    border-left: 4px solid #C96A4A;
+    border-radius: 8px;
+    background-color: #FBF1EC;
+}
+
+.aoc-event-text {
+    white-space: pre-line;
+    margin-bottom: 10px;
+}
+
+.aoc-event-meta {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px;
+    font-size: 0.9rem;
+}
+
+.aoc-event-meta li + li {
+    margin-top: 4px;
+}
+
+.aoc-event-link {
+    font-size: 0.9rem;
+    color: #8A4A33;
+}
+
+/* Acknowledgement of Country guide page */
+
+.aoc-guide-title {
+    font-weight: 600;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #D9D9DE;
+}
+
+/* Wikipedia-style contents list, stays in view while scrolling on wide screens */
+.aoc-guide-contents {
+    position: sticky;
+    top: 100px;
+    font-size: 0.9rem;
+}
+
+.aoc-guide-contents-title {
+    font-weight: 600;
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #D9D9DE;
+}
+
+.aoc-guide-contents ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.aoc-guide-contents ul ul {
+    padding-left: 14px;
+}
+
+.aoc-guide-contents li {
+    margin: 5px 0;
+}
+
+.aoc-guide-contents a {
+    text-decoration: none;
+}
+
+.aoc-guide-contents a:hover {
+    text-decoration: underline;
+}
+
+.aoc-guide-section {
+    margin-bottom: 32px;
+    scroll-margin-top: 100px; /* keep headings clear of the sticky header */
+}
+
+.aoc-guide-section h2 {
+    font-size: 1.45rem;
+    font-weight: 500;
+    padding-bottom: 6px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #D9D9DE;
+}
+
+.aoc-guide-subheading {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 24px;
+    scroll-margin-top: 100px;
+}
+
+.aoc-guide .aoc-table {
+    background-color: #ffffff;
+}
+
+.aoc-city-table td:first-child {
+    white-space: nowrap;
+}
+
+.aoc-resource-list {
+    padding-left: 18px;
+}
+
+.aoc-resource-list li + li {
+    margin-top: 6px;
+}
+
+.aoc-issue-list dt {
+    font-weight: 600;
+}
+
+.aoc-issue-list dd {
+    margin-bottom: 12px;
+    color: #555;
+}

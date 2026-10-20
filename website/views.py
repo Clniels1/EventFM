@@ -5,6 +5,7 @@ from flask import Blueprint, render_template, redirect, url_for, current_app, re
 from .models import Event, Order, Comment
 from .forms import EventForm, BookingForm, CommentForm, SearchForm
 from . import db
+from . import acknowledgement as aoc
 from .semantic import index_event, semantic_search
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
@@ -88,6 +89,8 @@ def event_details(event_id):
     return render_template(
         'event-details.html',
         event=event,
+        capital_cities=aoc.CAPITAL_CITIES,
+        source_labels=aoc.SOURCE_LABELS,
         booking_form=booking_form,
         comment_form=comment_form,
         order_id=order_id,
@@ -120,17 +123,16 @@ def create_event():
             price=float(form.price.data),
             capacity=form.capacity.data,
             image_filename=image_filename,
-            acknowledgement_type=form.acknowledgement_type.data,
-            acknowledgement_text=form.acknowledgement_text.data,
             user_id=current_user.id
         )
+        aoc.apply_to_event(form, event)
 
         db.session.add(event)
         db.session.commit()
         safe_index_event(event)
         return redirect(url_for('main.event_details', event_id=event.id))
 
-    return render_template('create-event.html', form=form)
+    return render_event_form(form)
 
 @main_bp.route('/event/<int:event_id>/edit', methods=['GET', 'POST'])
 @login_required
@@ -139,14 +141,17 @@ def edit_event(event_id):
     if event.user_id != current_user.id:
         return redirect(url_for('main.event_details', event_id=event.id))
     form = EventForm(obj=event)
+    if not form.is_submitted():
+        aoc.load_into_form(form, event)
     if form.validate_on_submit():
         # capacity above sold
         if form.capacity.data < event.tickets_sold:
             flash(f'Capacity cannot be less than the {event.tickets_sold} tickets already sold')
-            return render_template('create-event.html', form=form, editing=True)
+            return render_event_form(form, editing=True)
         existing_image = event.image_filename
         form.populate_obj(event)
         event.image_filename = existing_image
+        aoc.apply_to_event(form, event)
         if form.image.data:
             image = form.image.data
             image_filename = secure_filename(image.filename)
@@ -156,8 +161,34 @@ def edit_event(event_id):
         db.session.commit()
         safe_index_event(event)
         return redirect(url_for('main.event_details', event_id=event.id))
-    
-    return render_template('create-event.html', form=form, editing=True)
+
+    return render_event_form(form, editing=True)
+
+def render_event_form(form, editing=False):
+    # check custom wording for common mistakes
+    review = []
+    if form.acknowledgement_type.data == 'enhanced' and form.acknowledgement_text.data:
+        review = aoc.review_statement(form.acknowledgement_text.data, form.aoc_custodians.data or '')
+    return render_template(
+        'create-event.html',
+        form=form,
+        editing=editing,
+        aoc_preview=aoc.preview_statement(form),
+        aoc_review=review,
+        generic_statement=aoc.GENERIC_STATEMENT,
+        capital_cities=aoc.CAPITAL_CITIES,
+    )
+
+@main_bp.route('/acknowledgement-of-country')
+def acknowledgement_guide():
+    return render_template(
+        'acknowledgement-of-country.html',
+        capital_cities=aoc.CAPITAL_CITIES,
+        resources=aoc.RESOURCES,
+        mistakes=aoc.MISTAKES,
+        contested=aoc.CONTESTED,
+        generic_statement=aoc.GENERIC_STATEMENT,
+    )
 
 @main_bp.route('/event/<int:event_id>/cancel', methods=['POST'])
 @login_required
