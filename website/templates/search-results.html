@@ -1,21 +1,33 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container">
-    <div class="text-center py-4">
-        <h1 class="fs-2 fw-bold">Search Music Festivals</h1>
+<div class="festival-hero festival-hero-compact">
+    <div class="festival-hero-content">
+        <h1>Search Festivals</h1>
+        <p>Search by title, location or genre, or describe what you're after.</p>
+        {% include "_search-bar.html" %}
     </div>
-    {% include "_search-bar.html" %}
+</div>
 
+<div class="container search-results-page">
     {% if not query %}
-    <p class="text-center text-muted">Enter a search term to find festivals by meaning, title, location, genre or description.</p>
+    <div class="search-empty-state">
+        <i class="bi bi-search"></i>
+        <h2>Start with a search</h2>
+        <p>Try a genre, a city, or a mood like "chill outdoor music by the water".</p>
+    </div>
     {% else %}
-    <h2 class="mb-1 fs-4">{{ results|length }} result{{ '' if results|length == 1 else 's' }} for "{{ query }}"</h2>
-    {% if ai_available %}
-    <p class="text-muted small mb-4">Ranked by AI similarity, with exact keyword matches boosted. Only the closest matches are shown.</p>
-    {% else %}
-    <p class="text-muted small mb-4">AI search is unavailable right now, so these results use keyword matching only.</p>
-    {% endif %}
+    <div class="search-results-header">
+        <h2 class="festival-section-title">
+            {{ results|length }} result{{ '' if results|length == 1 else 's' }} for "{{ query }}"
+        </h2>
+        {% if ai_available %}
+        <p class="search-results-note">Ranked by similarity, with exact keyword matches boosted.</p>
+        {% else %}
+        <p class="search-results-note">AI search is unavailable right now, so these results use keyword matching only.</p>
+        {% endif %}
+    </div>
+
     {% if results %}
     <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
         {% for result in results %}
@@ -24,7 +36,10 @@
         {% endfor %}
     </div>
     {% else %}
-    <p class="text-center text-muted">No matching festivals found. Try describing what you're after differently, e.g. a genre, city or mood.</p>
+    <div class="search-empty-state">
+        <i class="bi bi-search"></i>
+        <h2>No matching festivals found</h2>
+        <p>Try describing what you're after differently, e.g. a genre, city or mood.</p>    </div>
     {% endif %}
     {% endif %}
 </div>
