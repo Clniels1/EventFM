@@ -71,7 +71,7 @@
                                         {{ booking_form.hidden_tag() }}
                                         <div class="mb-3">
                                             {{ booking_form.quantity.label(class="form-label") }}
-                                            {{ booking_form.quantity(class="form-control") }}
+                                            {{ booking_form.quantity(class="form-control", min="1", max="10") }}
                                         </div>
                                         {{ booking_form.submit(class="btn btn-success") }}
                                     </form>
@@ -96,12 +96,31 @@
                     {% endif %}
                     {% if current_user.is_authenticated and current_user.id == event.user_id %}
                         <div class="mt-3">
-                            <a href="{{ url_for('main.edit_event', event_id=event.id) }}" class="btn btn-warning">Edit Event</a>
+                            {% if event.status not in ['Cancelled', 'Inactive'] %}
+                                <a href="{{ url_for('main.edit_event', event_id=event.id) }}" class="btn btn-warning">Edit Event</a>
+                            {%endif %}
                             {% if event.status in ['Open', 'Sold Out'] %}
-                                <form method="POST" action="{{ url_for('main.cancel_event', event_id=event.id) }}" class="d-inline">
+                                <form method="POST" action="{{ url_for('main.cancel_event', event_id=event.id) }}" class="d-inline" id="cancelEventForm">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                    <button type="submit" class="btn btn-danger">Cancel Event</button>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelEventModal">Cancel Event</button>
                                 </form>
+                                <div class="modal fade" id="cancelEventModal" tabindex="-1" aria-labelledby="cancelEventModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="cancelEventModalLabel">Cancel Event?</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to cancel this event? This action cannot be undone.
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Keep Event</button>
+                                                <button type="submit" form="cancelEventForm" class="btn btn-danger">Yes, Cancel Event</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             {% endif %}
                         </div>
                     {% endif %}
