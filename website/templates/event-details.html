@@ -67,14 +67,32 @@
                             <div class="card-body">
                                 <h4>Book Tickets</h4>
                                 {% if current_user.is_authenticated %}
-                                    <form method="POST" action="{{ url_for('main.book_event', event_id=event.id) }}">
+                                    <form id="bookingForm" method="POST" action="{{ url_for('main.book_event', event_id=event.id) }}">
                                         {{ booking_form.hidden_tag() }}
                                         <div class="mb-3">
                                             {{ booking_form.quantity.label(class="form-label") }}
                                             {{ booking_form.quantity(class="form-control", min="1", max="10") }}
                                         </div>
-                                        {{ booking_form.submit(class="btn btn-success") }}
+                                        <button type="button" class="btn btn-success" onclick="if (document.getElementById('bookingForm').reportValidity()) { bootstrap.Modal.getOrCreateInstance(document.getElementById('bookingConfirmModal')).show(); }">Book Event</button>
                                     </form>
+                                    <div class="modal fade" id="bookingConfirmModal" tabindex="-1" aria-labelledby="bookingConfirmModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="bookingConfirmModalLabel">Confirm Booking</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Are you sure you want to proceed with this ticket booking?</p>
+                                                    <p>You will be taken to the payment page to complete your booking.</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Go Back</button>
+                                                    <button type="submit" form="bookingForm" class="btn btn-success">Continue to Payment</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 {% else %}
                                     <p class="mb-2">Please log in to book tickets.</p>
                                     <a href="{{ url_for('auth.login') }}" class="btn btn-success">Log In to Book</a>
