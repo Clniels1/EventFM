@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>IAB207 Assignment 3</title>
+    <title>EventFM</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link href="{{ url_for('static', filename='styles/style.css') }}" rel="stylesheet">
 
@@ -47,24 +47,25 @@
                 </div>
             </div>
         </nav>
-        <!-- Code for using Flask flash -->
-        <div class="container-fluid">
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-            {% for message in get_flashed_messages() %}
-            <div class="alert alert-warning">
-                <button type="button" class="close" data-dismiss="alert" aria-label="close">x</button>
-                {{message}}
-            </div>
-            {% endfor %}
-            {% endif %}
-            {% endwith %}
-        </div>
         {% block header %}
 
         {% endblock %}
 
     </header>
+
+    <!-- Code for using Flask flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container flash-messages mt-3">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category if category in ['success', 'danger', 'warning', 'info'] else 'info' }} alert-dismissible fade show shadow-sm" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
 
     {% block content %}
 

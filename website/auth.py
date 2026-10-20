@@ -23,12 +23,13 @@ def login():
             error = 'Incorrect user name or password'
         if error is None:
             login_user(user)
+            flash(f'Welcome back, {user.first_name}!', 'success')
             nextp = request.args.get('next') # this gives the url from where the login page was accessed
             if nextp is None or not nextp.startswith('/') or nextp.startswith(('//', '/\\')):
                 return redirect(url_for('main.index'))
             return redirect(nextp)
         else:
-            flash(error)
+            flash(error, 'danger')
     return render_template('account.html', form=login_form, heading='Login')
 
 # registration view function
@@ -45,9 +46,14 @@ def register():
         password = register_form.password.data
         user_type = register_form.user_type.data
 
-        existing_user = db.session.scalar(db.select(User).where(db.or_(User.name==user_name, db.func.lower(User.emailid)==email)))
-        if existing_user is not None:
-            flash('That user name or email is already registered')
+        name_taken = db.session.scalar(db.select(User).where(User.name==user_name)) is not None
+        email_taken = db.session.scalar(db.select(User).where(db.func.lower(User.emailid)==email)) is not None
+        if name_taken or email_taken:
+            if name_taken:
+                register_form.user_name.errors.append('That user name is already taken')
+            if email_taken:
+                register_form.email.errors.append('An account with this email already exists')
+            flash('Please fix the highlighted fields below', 'danger')
             return render_template('account.html', form=register_form, heading='Register')
 
         password_hash = generate_password_hash(password)
@@ -58,7 +64,7 @@ def register():
         db.session.commit()
 
         login_user(new_user)
-        flash('Registration successful, welcome!')
+        flash(f'Welcome to EventFM, {first_name}! Your account has been created.', 'success')
         return redirect(url_for('main.index'))
     return render_template('account.html', form=register_form, heading='Register')
 
@@ -67,5 +73,5 @@ def register():
 @login_required
 def logout():
     logout_user()
-    flash('You have been logged out')
+    flash('You have been logged out. See you at the next festival!', 'info')
     return redirect(url_for('main.index'))
