@@ -1,5 +1,6 @@
 import os
 import calendar
+from uuid import uuid4
 from datetime import date
 from flask import Blueprint, render_template, redirect, url_for, current_app, request, flash
 from .models import Event, Order, Comment, GENRE_CHOICES
@@ -126,19 +127,25 @@ def event_details(event_id):
         booking_error=booking_error
     )
 
+@main_bp.route('/my-events')
+@login_required
+def my_events():
+    events = Event.query.filter_by(user_id=current_user.id).order_by(Event.date.desc()).all()
+    for event in events:
+        event.refresh_status()
+    db.session.commit()
+
+    return render_template('my-events.html', events=events)
+
 @main_bp.route('/create-event', methods=['GET', 'POST'])
 @login_required
 def create_event():
-    # organisers only
-    if current_user.user_type != 'organiser':
-        flash('Only organiser accounts can create events', 'warning')
-        return redirect(url_for('main.index'))
     form = EventForm()
     if form.validate_on_submit():
         image_filename = None
         if form.image.data:
             image = form.image.data
-            image_filename = secure_filename(image.filename)
+            image_filename = f"{uuid4().hex}_{secure_filename(image.filename)}"
             image_path = os.path.join(current_app.root_path, 'static', 'img', image_filename)
             image.save(image_path)
         event = Event(
@@ -160,6 +167,7 @@ def create_event():
         db.session.add(event)
         db.session.commit()
         safe_index_event(event)
+        flash('Event created successfully!', 'success')
         return redirect(url_for('main.event_details', event_id=event.id))
 
     return render_template('create-event.html', form=form)
@@ -169,6 +177,11 @@ def create_event():
 def edit_event(event_id):
     event = Event.query.get_or_404(event_id)
     if event.user_id != current_user.id:
+        return redirect(url_for('main.event_details', event_id=event.id))
+    event.refresh_status()
+    db.session.commit()
+    if event.status in ['Cancelled', 'Inactive']:
+        flash('Cancelled or past events cannot be edited.', 'danger')
         return redirect(url_for('main.event_details', event_id=event.id))
     form = EventForm(obj=event)
     if form.validate_on_submit():
@@ -181,12 +194,13 @@ def edit_event(event_id):
         event.image_filename = existing_image
         if form.image.data:
             image = form.image.data
-            image_filename = secure_filename(image.filename)
+            image_filename = f"{uuid4().hex}_{secure_filename(image.filename)}"
             image_path = os.path.join(current_app.root_path, 'static', 'img', image_filename)
             image.save(image_path)
             event.image_filename = image_filename
         db.session.commit()
         safe_index_event(event)
+        flash('Event updated successfully!', 'success')
         return redirect(url_for('main.event_details', event_id=event.id))
     
     return render_template('create-event.html', form=form, editing=True)
@@ -203,6 +217,7 @@ def cancel_event(event_id):
         return redirect(url_for('main.event_details', event_id=event.id))
     event.status = 'Cancelled'
     db.session.commit()
+    flash('Event cancelled successfully.', 'success')
 
     return redirect(url_for('main.event_details', event_id=event.id))
 
@@ -214,6 +229,7 @@ def book_event(event_id):
     event.refresh_status()
     if event.status != 'Open':
         db.session.commit()
+        flash('This event is not available for booking.', 'danger')
         return redirect(url_for('main.event_details', event_id=event.id))
     if form.validate_on_submit():
         quantity = form.quantity.data
@@ -228,6 +244,7 @@ def book_event(event_id):
             event_id=event.id,
             quantity=quantity
             ))
+    flash('Invalid booking quantity. Please select between 1 and 10 tickets.', 'danger')
     return redirect(url_for('main.event_details', event_id=event.id))
 
 @main_bp.route('/booking-history')
@@ -262,6 +279,11 @@ def add_comment(event_id):
         )
         db.session.add(comment)
         db.session.commit()
+        flash('Your comment has been posted successfully.', 'success')
+    else:
+        for field_errors in form.errors.values():
+            for error in field_errors:
+                flash(error, 'danger')
 
     return redirect(url_for('main.event_details', event_id=event.id))
 
@@ -274,11 +296,13 @@ def profile():
 @login_required
 def payment(event_id):
     event = Event.query.get_or_404(event_id)
-    quantity = request.args.get('quantity', 1, type=int)
-    if quantity < 1:
-        quantity = 1
+    quantity = request.args.get('quantity', type=int)
+    event.refresh_status()
+    if event.status != 'Open' or quantity is None or not 1 <= quantity <= 10 or quantity > event.tickets_remaining:
+         db.session.commit()
+         flash('This event is unavailable or the ticket quantity is invalid.', 'danger')
+         return redirect(url_for('main.event_details', event_id=event.id))
     total_price = event.price * quantity
-
     return render_template(
         'payment.html',
         event=event,
@@ -292,13 +316,15 @@ def confirm_payment(event_id):
     event = Event.query.get_or_404(event_id)
     quantity = request.form.get('quantity', 1, type=int)
     event.refresh_status()
-    if event.status != 'Open' or quantity < 1 or quantity > event.tickets_remaining:
+    if event.status != 'Open' or quantity < 1 or quantity > 10 or quantity > event.tickets_remaining:
         db.session.commit()
-        return redirect(url_for(
-            'main.event_details',
-            event_id=event.id,
-            booking_error='not_enough_tickets'
-        ))
+        flash('Payment could not be completed. The event is unavailable or the ticket quantity is invalid.', 'danger')
+        return redirect(url_for('main.event_details', event_id=event.id))
+    card_name = request.form.get('card_name', '').strip()
+    billing_address = request.form.get('billing_address', '').strip()
+    if not 2 <= len(card_name) <= 100 or not 5 <= len(billing_address) <= 200:
+        flash('Please enter valid demo payment details.', 'danger')
+        return redirect(url_for('main.payment', event_id=event.id, quantity=quantity))
     order = Order(
         user_id=current_user.id,
         event_id=event.id,
