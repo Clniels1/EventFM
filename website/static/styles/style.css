@@ -1,5 +1,14 @@
 body {
     background-color: #F8F6F0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Main content grows to fill the page so the footer sits at the bottom */
+.site-main {
+    flex: 1 0 auto;
+    padding-bottom: 3rem;
 }
 .container {
     padding-top: 30px;
@@ -199,7 +208,7 @@ body {
 /* EventFM homepage hero */
 
 .festival-hero {
-    min-height: 440px;
+    min-height: 560px;
     width: 100%;
     background:
         linear-gradient(
@@ -231,25 +240,33 @@ body {
 
 .festival-hero h1 {
     font-size: clamp(36px, 5vw, 64px);
-    font-weight: 800;
+    font-weight: 600;
     line-height: 1.12;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
-.festival-hero p {
+.festival-hero-content > p {
     font-size: clamp(16px, 2vw, 20px);
     color: #e9e5f1;
     line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto 36px;
 }
 /* Search bar inside hero */
 
 .festival-hero .search-container {
     width: 100%;
     max-width: 650px;
+    margin-bottom: 16px !important;
 }
 
 .festival-hero .search-input-group {
     background: white;
+    border-radius: 10px;
+}
+
+/* Keep the focused wrapper's radius in step with the input and button so no white corners show */
+.festival-hero .search-container:focus-within .search-input-group {
     border-radius: 10px;
 }
 
@@ -338,6 +355,15 @@ body {
 
 .festival-hero .search-ai-note {
     color: #E9E5F1;
+    margin-top: 0;
+    margin-bottom: 0 !important;
+    font-size: 0.875rem;
+    line-height: 1.8;
+    text-align: center;
+}
+
+.festival-hero .search-ai-info {
+    text-align: left;
 }
 
 .festival-hero .search-ai-toggle {
@@ -356,17 +382,28 @@ body {
 
 .festival-categories h2 {
     font-size: 1.75rem;
-    font-weight: 750;
+    font-weight: 600;
     letter-spacing: -0.5px;
     margin-bottom: 20px !important;
 }
 
 .festival-categories .btn {
     border-radius: 50px;
-    padding: 10px 20px;
+    padding: 6px 16px;
     font-size: 0.9rem;
     font-weight: 600;
+    white-space: nowrap;
+    flex: 0 0 auto;
     transition: all 0.2s ease;
+}
+
+.festival-categories .category-pills {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: thin;
 }
 
 .festival-categories .btn-primary {
@@ -500,7 +537,7 @@ body {
 
 .festival-section-title {
     font-size: clamp(1.5rem, 2.5vw, 2rem);
-    font-weight: 750;
+    font-weight: 600;
     letter-spacing: -0.6px;
     color: #22212A;
     margin-bottom: 24px;
@@ -605,6 +642,12 @@ header {
     background-color: rgba(255, 255, 255, 0.12);
 }
 
+.festival-navbar .nav-link.nav-user-name:hover,
+.festival-navbar .nav-link.nav-user-name:focus {
+    color: #E8E3ED;
+    background-color: transparent;
+}
+
 .festival-navbar .navbar-toggler {
     border-color: rgba(255, 255, 255, 0.35);
 }
@@ -628,8 +671,8 @@ header {
 
 .eventfm-footer-brand {
     font-size: 2rem;
-    font-weight: 800;
-    letter-spacing: -1px;
+    font-weight: 600;
+    letter-spacing: -0.6px;
     margin-bottom: 15px;
 }
 
@@ -640,13 +683,14 @@ header {
 .eventfm-footer-description {
     color: #C9C3D3;
     font-size: 0.95rem;
+    font-weight: 500;
     line-height: 1.8;
     max-width: 380px;
 }
 
 .eventfm-footer-heading {
     font-size: 1.1rem;
-    font-weight: 700;
+    font-weight: 600;
     margin-bottom: 18px;
 }
 
@@ -660,6 +704,7 @@ header {
     color: #C9C3D3;
     text-decoration: none;
     font-size: 0.95rem;
+    font-weight: 500;
 }
 
 .eventfm-footer-links a:hover {
@@ -676,6 +721,7 @@ header {
 .eventfm-footer-bottom p {
     color: #AFA8BB;
     font-size: 0.85rem;
+    font-weight: 500;
     margin-bottom: 0;
 }
 

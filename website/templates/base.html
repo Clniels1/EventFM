@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>EventFM</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="{{ url_for('static', filename='styles/style.css') }}" rel="stylesheet">
 
 </head>
@@ -37,7 +38,7 @@
                         {% endif %}
 
                         {% if current_user.is_authenticated %}
-                            <span class="nav-link">Logged in as {{ current_user.name }}</span>
+                            <span class="nav-link nav-user-name">Logged in as {{ current_user.name }}</span>
                             <a class="btn btn-outline-light btn-sm" href="{{ url_for('auth.logout') }}">Logout</a>
                         {% else %}
                             <a class="btn btn-light btn-sm ms-md-3 me-md-2" href="{{ url_for('auth.register') }}">Sign Up</a>
@@ -53,6 +54,7 @@
 
     </header>
 
+    <main class="site-main">
     <!-- Code for using Flask flash -->
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -70,8 +72,9 @@
     {% block content %}
 
     {% endblock %}
+    </main>
 
-    <footer class="site-footer eventfm-footer mt-5">
+    <footer class="site-footer eventfm-footer">
     <div class="container">
         <div class="row gy-4 align-items-start">
             <div class="col-md-6">

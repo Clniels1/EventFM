@@ -3,11 +3,10 @@
 
 <div class="festival-hero">
     <div class="festival-hero-content">
-        <span class="hero-eyebrow">WELCOME TO EVENTFM</span>
         <h1>Discover Your Next Festival</h1>
         <p>
             Experience unforgettable live music, explore upcoming
-            festivals, and find your next adventure.
+            festivals, and find your next obsession.
         </p>
         {% include "_search-bar.html" %}
     </div>
@@ -15,7 +14,7 @@
 <div class="container">
     <section class="festival-categories">
     <h2 class="mb-3">Browse by Category</h2>
-    <div class="d-flex flex-wrap gap-2 mb-4">
+    <div class="category-pills mb-4">
         <a href="{{ url_for('main.index') }}" class="btn {{ 'btn-primary' if not selected_genre else 'btn-light filter-pill-unselected' }} btn-sm">All</a>
         {% for value, label in genre_choices %}
         <a href="{{ url_for('main.index', genre=value) }}" class="btn {{ 'btn-primary' if selected_genre == value else 'btn-light filter-pill-unselected' }} btn-sm">{{ label }}</a>
