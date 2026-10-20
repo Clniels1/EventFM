@@ -1,19 +1,42 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container">
-    <h1>Create Event</h1>
-        <div class="card mt-4 mb-4 shadow-sm">
-            <div class="card-body p-4">
-                <h2 class="card-title mb-3">Create a Music Festival</h2>
+<div class="container py-5" style="max-width: 1000px;">
+
+    <!-- Page Heading -->
+    <div class="mb-4">
+        <h1 class="h2 fw-bold mb-2">
+            {% if editing %}Edit Event{% else %}Create Event{% endif %}
+        </h1>
+        <p class="text-muted mb-0">
+            {% if editing %}
+                Update your festival details and keep your event information up to date.
+            {% else %}
+                Bring your music festival to life by sharing the details with the EventFM community.
+            {% endif %}
+        </p>
+    </div>
+    <!-- Main Form Card -->
+    <div class="card shadow-sm account-card border-0 mb-4">
+        <div class="card-body p-4 p-md-5">
+            <!-- Acknowledgement of Country -->
             <div class="alert alert-light border mb-4">
-            <strong>Acknowledgement of Country</strong>
-            <p class="mb-0">
-            We acknowledge the Traditional Custodians of the land on which our events are held and pay our respects to Elders past and present.
-            </p>
-        </div>
-            <form method="POST" enctype="multipart/form-data" class="mb-3">
+                <strong>Acknowledgement of Country</strong>
+                <p class="mb-0">
+                    We acknowledge the Traditional Custodians of the land on which our events are held and pay our respects to Elders past and present.
+                </p>
+            </div>
+            <!-- Event Form -->
+            <form method="POST" enctype="multipart/form-data" class="mb-0">
                 {{ form.hidden_tag() }}
+                <!-- Section 1: Event Information -->
+                <div class="mb-4">
+                    <h3 class="h5 fw-bold mb-2">Event Information</h3>
+                    <p class="text-muted small mb-0">
+                        Tell festivalgoers what makes your event special.
+                    </p>
+                </div>
+                <!-- Event Name -->
                 <div class="mb-3">
                     <label for="eventName" class="form-label">Event Name</label>
                     {{ form.title(class="form-control", id="eventName", placeholder="Enter music festival name", required=False) }}
@@ -21,13 +44,23 @@
                         <div class="text-danger small">{{ error }}</div>
                     {% endfor %}
                 </div>
-                <div class="mb-3">
+                <!-- Event Description -->
+                <div class="mb-4">
                     <label for="eventDescription" class="form-label">Event Description</label>
-                    {{ form.description(class="form-control", id="eventDescription", rows="3", placeholder="Describe the music festival, artists, and event details", required=False) }}
+                    {{ form.description(class="form-control", id="eventDescription", rows="4", placeholder="Describe the music festival, artists, and event details", required=False) }}
                     {% for error in form.description.errors %}
                         <div class="text-danger small">{{ error }}</div>
                     {% endfor %}
                 </div>
+                <hr class="my-4">
+                <!-- Section 2: Date and Time -->
+                <div class="mb-4">
+                    <h3 class="h5 fw-bold mb-2">Date &amp; Time</h3>
+                    <p class="text-muted small mb-0">
+                        Let attendees know when your festival will take place.
+                    </p>
+                </div>
+                <!-- Event Date -->
                 <div class="mb-3">
                     <label for="eventDate" class="form-label">Event Date</label>
                     {{ form.date(class="form-control", id="eventDate") }}
@@ -35,17 +68,29 @@
                         <div class="text-danger small">{{ error }}</div>
                     {% endfor %}
                 </div>
-                <div class="mb-3">
-                    <label for="startTime" class="form-label">Start Time</label>
-                    {{ form.start_time(class="form-control", id="startTime") }}
+                <!-- Start and End Time -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label for="startTime" class="form-label">Start Time</label>
+                        {{ form.start_time(class="form-control", id="startTime") }}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="endTime" class="form-label">End Time</label>
+                        {{ form.end_time(class="form-control", id="endTime") }}
+                        {% for error in form.end_time.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="endTime" class="form-label">End Time</label>
-                    {{ form.end_time(class="form-control", id="endTime") }}
-                    {% for error in form.end_time.errors %}
-                        <div class="text-danger small">{{ error }}</div>
-                    {% endfor %}
+                <hr class="my-4">
+                <!-- Section 3: Location and Tickets -->
+                <div class="mb-4">
+                    <h3 class="h5 fw-bold mb-2">Location &amp; Tickets</h3>
+                    <p class="text-muted small mb-0">
+                        Set your festival location, ticket price and capacity.
+                    </p>
                 </div>
+                <!-- Location -->
                 <div class="mb-3">
                     <label for="eventLocation" class="form-label">Location</label>
                     {{ form.location(class="form-control", id="eventLocation", placeholder="Enter event location") }}
@@ -53,20 +98,32 @@
                         <div class="text-danger small">{{ error }}</div>
                     {% endfor %}
                 </div>
-                <div class="mb-3">
-                    <label for="ticketPrice" class="form-label">Ticket Price ($)</label>
-                    {{ form.price(class="form-control", id="ticketPrice", min="0", step="0.01", placeholder="Enter ticket price") }}
-                    {% for error in form.price.errors %}
-                        <div class="text-danger small">{{ error }}</div>
-                    {% endfor %}
+                <!-- Ticket Price and Capacity -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label for="ticketPrice" class="form-label">Ticket Price ($)</label>
+                        {{ form.price(class="form-control", id="ticketPrice", min="0", step="0.01", placeholder="Enter ticket price") }}
+                        {% for error in form.price.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="ticketCapacity" class="form-label">Number of Tickets Available</label>
+                        {{ form.capacity(class="form-control", id="ticketCapacity", min="1", placeholder="Enter number of tickets available") }}
+                        {% for error in form.capacity.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="ticketCapacity" class="form-label">Number of Tickets Available</label>
-                    {{ form.capacity(class="form-control", id="ticketCapacity", min="1", placeholder="Enter number of tickets available") }}
-                    {% for error in form.capacity.errors %}
-                        <div class="text-danger small">{{ error }}</div>
-                    {% endfor %}
+                <hr class="my-4">
+                <!-- Section 4: Festival Details -->
+                <div class="mb-4">
+                    <h3 class="h5 fw-bold mb-2">Festival Details</h3>
+                    <p class="text-muted small mb-0">
+                        Help attendees discover the right festival for them.
+                    </p>
                 </div>
+                <!-- Event Image -->
                 <div class="mb-3">
                     <label for="eventImage" class="form-label">Event Image</label>
                     {{ form.image(class="form-control", id="eventImage", accept="image/*") }}
@@ -74,43 +131,68 @@
                         <div class="text-danger small">{{ error }}</div>
                     {% endfor %}
                 </div>
-                <div class="mb-3">
-                    <label for="eventCategory" class="form-label">Music Festival Category</label>
-                    {{ form.genre(class="form-select", id="eventCategory") }}
-                    {% for error in form.genre.errors %}
-                        <div class="text-danger small">{{ error }}</div>
-                    {% endfor %}
+                <!-- Genre and Age Restriction -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label for="eventCategory" class="form-label">Music Festival Category</label>
+                        {{ form.genre(class="form-select", id="eventCategory") }}
+                        {% for error in form.genre.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="ageLimit" class="form-label">Age Restriction</label>
+                        {{ form.age_limit(class="form-select", id="ageLimit") }}
+                        {% for error in form.age_limit.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="ageLimit" class="form-label">Age Restriction</label>
-                    {{ form.age_limit(class="form-select", id="ageLimit") }}
-                    {% for error in form.age_limit.errors %}
-                        <div class="text-danger small">{{ error }}</div>
-                    {% endfor %}
+                <hr class="my-4">
+                <!-- Section 5: Acknowledgement Information -->
+                <div class="mb-4">
+                    <h3 class="h5 fw-bold mb-2">Acknowledgement Information</h3>
+                    <p class="text-muted small mb-0">
+                        Provide the acknowledgement details required for your event.
+                    </p>
                 </div>
+                <!-- Acknowledgement Type -->
                 <div class="mb-3">
-                    <label for="acknowledgementType" class="form-label">Acknowledgement of Country Type</label>
+                    <label for="acknowledgementType" class="form-label">
+                        Acknowledgement of Country Type
+                    </label>
                     {{ form.acknowledgement_type(class="form-select", id="acknowledgementType") }}
                     {% for error in form.acknowledgement_type.errors %}
                         <div class="text-danger small">{{ error }}</div>
                     {% endfor %}
                 </div>
-                <div class="mb-3">
-                    <label for="acknowledgementText" class="form-label">Acknowledgement Information</label>
+                <!-- Acknowledgement Text -->
+                <div class="mb-4">
+                    <label for="acknowledgementText" class="form-label">
+                        Acknowledgement Information
+                    </label>
                     {{ form.acknowledgement_text(class="form-control", id="acknowledgementText", rows="3", placeholder="Enter additional acknowledgement information if required") }}
                     {% for error in form.acknowledgement_text.errors %}
                         <div class="text-danger small">{{ error }}</div>
                     {% endfor %}
                 </div>
-                {% if editing %}
-                    {{ form.submit(class="btn btn-warning mb-3", value="Update Event") }}
-                {% else %}
-                    {{ form.submit(class="btn btn-success mb-3") }}
-                {% endif %}
+                <hr class="my-4">
+                <!-- Form Actions -->
+                <div class="d-flex flex-wrap justify-content-end align-items-center gap-3">
+                    <a href="{{ url_for('main.index') }}"
+                       class="btn btn-outline-secondary px-4">
+                        Cancel
+                    </a>
+                    {% if editing %}
+                        {{ form.submit(class="btn btn-primary px-4", value="Update Event") }}
+                    {% else %}
+                        {{ form.submit(class="btn btn-primary px-4") }}
+                    {% endif %}
+                </div>
             </form>
+        </div>
     </div>
-</div>
-    <a href="{{ url_for('main.index') }}" class="btn btn-secondary mb-3">Back to Home</a>
 </div>
 
 {% endblock %}
+

@@ -1,97 +1,248 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container">
-    <h1 class="mb-4">Booking History</h1>
-    <ul class="nav nav-tabs mb-4">
-        <li class="nav-item">
-            <a class="nav-link active" href="#upcoming-bookings">Upcoming Bookings</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#past-bookings">Past Bookings</a>
-        </li>
-    </ul>
-    <div id="upcoming-bookings"></div>
-    {% for order in upcoming_orders %}
-    <div class="card mt-3 mb-3 col-md-7 mx-auto shadow-sm">
-        <img src="{{ url_for('static', filename='img/' + order.event.image_filename) if order.event.image_filename else url_for('static', filename='img/festival-1.jpg') }}"
-            class="card-img-top"
-            alt="{{ order.event.title }}"
-            style="height: 200px; object-fit: cover;"
-        >
-        <div class="card-body p-4">
-            <h2 class="card-title mb-3">{{ order.event.title }}</h2>
-            <p><strong>Order ID:</strong> #{{ order.id }}</p>
-            <p><strong>Event Date:</strong>
-                {{ order.event.date.strftime('%d %B %Y') }}
-            </p>
-            <p><strong>Location:</strong>
-                {{ order.event.location }}
-            </p>
-            <p><strong>Number of Tickets:</strong> {{ order.quantity }}</p>
-            <p><strong>Total Price:</strong> ${{ '%.2f'|format(order.total_price) }}</p>
-            <p>
-                <strong>Booking Status:</strong>
-                {% if order.event.status == 'Cancelled' %}
-                    <span class="badge bg-danger">Event Cancelled</span>
-                {% else %}
-                    <span class="badge bg-success">{{ order.booking_status }}</span>
-                {% endif %}
-            </p>
-            <p>
-                <strong>Booked:</strong>
-                {{ order.booking_date.strftime('%d %B %Y, %I:%M %p') }}
-            </p>
-            <a href="{{ url_for('main.event_details', event_id=order.event.id) }}"
-                class="btn btn-primary">View Event</a>
+<div class="container py-5">
+    <!-- Page Heading -->
+    <div class="mb-4">
+        <h1 class="h2 fw-bold mb-2">Booking History</h1>
+        <p class="text-muted mb-0">
+            Keep track of your festival tickets, upcoming experiences
+            and past events.
+        </p>
+    </div>
+    <!-- Booking Navigation -->
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <a href="#upcoming-bookings"
+           class="btn btn-primary rounded-pill px-4">
+            Upcoming Bookings
+        </a>
+        <a href="#past-bookings"
+           class="btn btn-outline-secondary rounded-pill px-4">
+            Past Bookings
+        </a>
+    </div>
+    <!-- Upcoming Bookings -->
+    <section id="upcoming-bookings" class="mb-5">
+        <h2 class="h4 fw-bold mb-4">Upcoming Bookings</h2>
+        <div class="row row-cols-1 row-cols-lg-2 g-4">
+            {% for order in upcoming_orders %}
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0 overflow-hidden"
+                         style="border-radius: 16px;">
+                        <!-- Festival Image -->
+                        <img
+                            src="{{ url_for('static', filename='img/' + order.event.image_filename) if order.event.image_filename else url_for('static', filename='img/festival-1.jpg') }}"
+                            class="card-img-top"
+                            alt="{{ order.event.title }}"
+                            style="height: 200px; object-fit: cover;"
+                        >
+                        <div class="card-body p-4 d-flex flex-column">
+                            <!-- Festival Name -->
+                            <h3 class="h5 fw-bold mb-3">
+                                {{ order.event.title }}
+                            </h3>
+                            <!-- Booking Status -->
+                            <div class="mb-3">
+                                {% if order.event.status == 'Cancelled' %}
+                                    <span class="badge bg-danger">
+                                        Event Cancelled
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-success">
+                                        {{ order.booking_status }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                            <!-- Booking Information -->
+                            <div class="row g-3 mb-3">
+
+                                <div class="col-6">
+                                    <span class="text-muted small d-block">
+                                        Order ID
+                                    </span>
+                                    <strong>#{{ order.id }}</strong>
+                                </div>
+                                <div class="col-6">
+                                    <span class="text-muted small d-block">
+                                        Event Date
+                                    </span>
+                                    <strong>
+                                        {{ order.event.date.strftime('%d %b %Y') }}
+                                    </strong>
+                                </div>
+                                <div class="col-12">
+                                    <span class="text-muted small d-block">
+                                        Location
+                                    </span>
+                                    <strong>{{ order.event.location }}</strong>
+                                </div>
+                                <div class="col-6">
+                                    <span class="text-muted small d-block">
+                                        Number of Tickets
+                                    </span>
+                                    <strong>{{ order.quantity }}</strong>
+                                </div>
+                                <div class="col-6">
+                                    <span class="text-muted small d-block">
+                                        Total Price
+                                    </span>
+                                    <strong>
+                                        ${{ '%.2f'|format(order.total_price) }}
+                                    </strong>
+                                </div>
+                                <div class="col-12">
+                                    <span class="text-muted small d-block">
+                                        Booked On
+                                    </span>
+                                    <strong>
+                                        {{ order.booking_date.strftime('%d %B %Y, %I:%M %p') }}
+                                    </strong>
+                                </div>
+                            </div>
+                            <!-- View Event -->
+                            <div class="mt-auto pt-3 text-end">
+                                <a href="{{ url_for('main.event_details', event_id=order.event.id) }}"
+                                   class="btn btn-primary">
+                                    View Event
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <!-- No Upcoming Bookings -->
+                <div class="col-12">
+                    <div class="card shadow-sm border-0 text-center py-5 px-4"
+                         style="border-radius: 16px;">
+                        <div class="mb-3">
+                            <span style="font-size: 40px;">🎟️</span>
+                        </div>
+                        <h3 class="h5 fw-bold mb-2">
+                            No upcoming bookings yet
+                        </h3>
+                        <p class="text-muted mb-4">
+                            Your next unforgettable festival experience
+                            is waiting for you.
+                        </p>
+                        <div>
+                            <a href="{{ url_for('main.index') }}"
+                               class="btn btn-primary px-4">
+                                Discover Festivals
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-    </div>
-    {% else %}
-    <div class="alert alert-info">
-        You have not made any bookings yet.
-    </div>
-    {% endfor %}
-    <h2 id="past-bookings" class="mt-5 mb-3">Past Bookings</h2>
-    {% for order in past_orders %}
-    <div class="card mt-3 mb-3 col-md-7 mx-auto shadow-sm">
-        <img src="{{ url_for('static', filename='img/' + order.event.image_filename) if order.event.image_filename else url_for('static', filename='img/festival-1.jpg') }}"
-            class="card-img-top"
-            alt="{{ order.event.title }}"
-            style="height: 200px; object-fit: cover;"
-        >
-        <div class="card-body p-4">
-            <h2 class="card-title mb-3">{{ order.event.title }}</h2>
-            <p><strong>Order ID:</strong> #{{ order.id }}</p>
-            <p><strong>Event Date:</strong>
-                {{ order.event.date.strftime('%d %B %Y') }}
-            </p>
-            <p><strong>Location:</strong>
-                {{ order.event.location }}
-            </p>
-            <p><strong>Number of Tickets:</strong> {{ order.quantity }}</p>
-            <p><strong>Total Price:</strong> ${{ '%.2f'|format(order.total_price) }}</p>
-            <p>
-                <strong>Booking Status:</strong>
-                {% if order.event.status == 'Cancelled' %}
-                    <span class="badge bg-danger">Event Cancelled</span>
-                {% else %}
-                    <span class="badge bg-secondary">{{ order.booking_status }}</span>
-                {% endif %}
-            </p>
-            <p>
-                <strong>Booked:</strong>
-                {{ order.booking_date.strftime('%d %B %Y, %I:%M %p') }}
-            </p>
-            <a href="{{ url_for('main.event_details', event_id=order.event.id) }}"
-               class="btn btn-primary">View Event</a>
+    </section>
+    <!-- Past Bookings -->
+    <section id="past-bookings" class="mb-4">
+        <h2 class="h4 fw-bold mb-4">Past Bookings</h2>
+        <div class="row row-cols-1 row-cols-lg-2 g-4">
+            {% for order in past_orders %}
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0 overflow-hidden"
+                         style="border-radius: 16px;">
+                        <!-- Festival Image -->
+                        <img
+                            src="{{ url_for('static', filename='img/' + order.event.image_filename) if order.event.image_filename else url_for('static', filename='img/festival-1.jpg') }}"
+                            class="card-img-top"
+                            alt="{{ order.event.title }}"
+                            style="height: 200px; object-fit: cover;"
+                        >
+                        <div class="card-body p-4 d-flex flex-column">
+                            <!-- Festival Name -->
+                            <h3 class="h5 fw-bold mb-3">
+                                {{ order.event.title }}
+                            </h3>
+                            <!-- Booking Status -->
+                            <div class="mb-3">
+                                {% if order.event.status == 'Cancelled' %}
+                                    <span class="badge bg-danger">
+                                        Event Cancelled
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-secondary">
+                                        {{ order.booking_status }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                            <!-- Booking Information -->
+                            <div class="row g-3 mb-3">
+
+                                <div class="col-6">
+                                    <span class="text-muted small d-block">
+                                        Order ID
+                                    </span>
+                                    <strong>#{{ order.id }}</strong>
+                                </div>
+                                <div class="col-6">
+                                    <span class="text-muted small d-block">
+                                        Event Date
+                                    </span>
+                                    <strong>
+                                        {{ order.event.date.strftime('%d %b %Y') }}
+                                    </strong>
+                                </div>
+                                <div class="col-12">
+                                    <span class="text-muted small d-block">
+                                        Location
+                                    </span>
+                                    <strong>{{ order.event.location }}</strong>
+                                </div>
+                                <div class="col-6">
+                                    <span class="text-muted small d-block">
+                                        Number of Tickets
+                                    </span>
+                                    <strong>{{ order.quantity }}</strong>
+                                </div>
+                                <div class="col-6">
+                                    <span class="text-muted small d-block">
+                                        Total Price
+                                    </span>
+                                    <strong>
+                                        ${{ '%.2f'|format(order.total_price) }}
+                                    </strong>
+                                </div>
+                                <div class="col-12">
+                                    <span class="text-muted small d-block">
+                                        Booked On
+                                    </span>
+                                    <strong>
+                                        {{ order.booking_date.strftime('%d %B %Y, %I:%M %p') }}
+                                    </strong>
+                                </div>
+                            </div>
+                            <!-- View Event -->
+                            <div class="mt-auto pt-3 text-end">
+                                <a href="{{ url_for('main.event_details', event_id=order.event.id) }}"
+                                   class="btn btn-primary">
+                                    View Event
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <!-- No Past Bookings -->
+                <div class="col-12">
+                    <div class="card shadow-sm border-0 text-center py-5 px-4"
+                         style="border-radius: 16px;">
+                        <div class="mb-3">
+                            <span style="font-size: 40px;">🎵</span>
+                        </div>
+                        <h3 class="h5 fw-bold mb-2">
+                            No past bookings
+                        </h3>
+                        <p class="text-muted mb-0">
+                            Your festival memories will appear here
+                            after your events have passed.
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-    </div>
-    {% else %}
-    <div class="alert alert-info">
-        You have no past bookings.
-    </div>
-    {% endfor %}
-    <a href="{{ url_for('main.index') }}" class="btn btn-secondary mb-3">Back to Home</a>
+    </section>
 </div>
 
 {% endblock %}
