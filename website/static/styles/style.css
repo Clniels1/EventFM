@@ -489,19 +489,37 @@ body {
 
 /* EventFM Navigation Bar */
 
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+}
+
 .festival-navbar {
     background-color: #201C2B;
-    padding: 14px 0;
+    padding: 18px 0;
     box-shadow: 0 3px 14px rgba(0, 0, 0, 0.12);
+}
+
+.festival-navbar .container {
+    align-items: center;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.festival-navbar .navbar-nav {
+    align-items: center;
 }
 
 .festival-navbar .eventfm-brand {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-size: 1.65rem;
-    font-weight: 800;
-    letter-spacing: -0.8px;
+    padding: 0;
+    font-size: 1.35rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.6px;
     color: #ffffff;
     text-decoration: none;
 }
@@ -510,12 +528,13 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
     background-color: #C96A4A;
     color: #ffffff;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
+    line-height: 1;
 }
 
 .eventfm-brand-accent {
@@ -526,7 +545,7 @@ body {
     color: #E8E3ED;
     font-weight: 500;
     font-size: 0.95rem;
-    padding: 9px 14px !important;
+    padding: 6px 14px !important;
     border-radius: 8px;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
