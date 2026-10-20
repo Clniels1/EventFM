@@ -266,6 +266,11 @@ def add_comment(event_id):
         )
         db.session.add(comment)
         db.session.commit()
+        flash('Your comment has been posted successfully.', 'success')
+    else:
+        for field_errors in form.errors.values():
+            for error in field_errors:
+                flash(error, 'danger')
 
     return redirect(url_for('main.event_details', event_id=event.id))
 

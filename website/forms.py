@@ -114,7 +114,13 @@ class EventForm(FlaskForm):
                 raise ValidationError("End time must be later than start time.")
             
 class CommentForm(FlaskForm):
-    content = TextAreaField("Your Comment", validators=[InputRequired(), Length(max=2000)])
+    content = TextAreaField(
+        "Your Comment",
+        validators=[
+            InputRequired(message="Please enter a comment before submitting."),
+            Length(max=2000, message="Your comment cannot exceed 2,000 characters.")
+        ]
+    )
     submit = SubmitField("Post Comment")
 
 class BookingForm(FlaskForm):
