@@ -118,7 +118,7 @@ def event_details(event_id):
 def create_event():
     # organisers only
     if current_user.user_type != 'organiser':
-        flash('Only organiser accounts can create events')
+        flash('Only organiser accounts can create events', 'warning')
         return redirect(url_for('main.index'))
     form = EventForm()
     if form.validate_on_submit():
@@ -161,7 +161,7 @@ def edit_event(event_id):
     if form.validate_on_submit():
         # capacity above sold
         if form.capacity.data < event.tickets_sold:
-            flash(f'Capacity cannot be less than the {event.tickets_sold} tickets already sold')
+            flash(f'Capacity cannot be less than the {event.tickets_sold} tickets already sold', 'danger')
             return render_template('create-event.html', form=form, editing=True)
         existing_image = event.image_filename
         form.populate_obj(event)

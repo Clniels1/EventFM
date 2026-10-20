@@ -1,10 +1,11 @@
 import os
 # import flask - from 'package' import 'Class'
-from flask import Flask 
+from flask import Flask, render_template
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
+from sqlalchemy.exc import SQLAlchemyError
 
 db = SQLAlchemy()
 csrf = CSRFProtect()
@@ -14,9 +15,6 @@ csrf = CSRFProtect()
 def create_app():
   
     app = Flask(__name__)  # this is the name of the module/package that is calling this app
-    # Should be set to false in a production environment
-    app.debug = True
-    app.config['PROPAGATE_EXCEPTIONS'] = False
     app.secret_key = '{=i?D@bc3L&lF(=T'
     # set the app configuration data 
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sitedata.sqlite'
@@ -41,7 +39,12 @@ def create_app():
     from .models import User
     @login_manager.user_loader
     def load_user(user_id):
-       return db.session.scalar(db.select(User).where(User.id==user_id))
+       # treat the user as logged out if the database is unavailable, so error pages can still render
+       try:
+          return db.session.scalar(db.select(User).where(User.id==user_id))
+       except SQLAlchemyError:
+          db.session.rollback()
+          return None
 
     from . import views
     app.register_blueprint(views.main_bp)
@@ -49,8 +52,15 @@ def create_app():
     from . import auth
     app.register_blueprint(auth.auth_bp)
 
-    from . import errors
-    app.register_blueprint(errors.errors_bp)
+    # error handlers
+    @app.errorhandler(404)
+    def not_found_error(error):
+        return render_template('404.html'), 404
+
+    @app.errorhandler(500)
+    def internal_error(error):
+        db.session.rollback()
+        return render_template('500.html'), 500
 
     with app.app_context():
         db.create_all()

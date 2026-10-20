@@ -3,7 +3,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms.fields import (TextAreaField, SubmitField, StringField, PasswordField,
                              SelectField, DateField, TimeField, FloatField, IntegerField)
-from wtforms.validators import InputRequired, Length, Email, EqualTo, NumberRange, ValidationError
+from wtforms.validators import InputRequired, DataRequired, Length, Email, EqualTo, NumberRange, ValidationError
 from .models import GENRE_CHOICES
 
 CONTACT_NUMBER_RE = re.compile(r'^(?:\+?61|0)[2-478]\d{8}$')
@@ -23,25 +23,53 @@ def validate_street_address(form, field):
         raise ValidationError('Enter a full street address with a street number and name, e.g. 12 Example Street')
 
 
+def strip_whitespace(value):
+    return value.strip() if isinstance(value, str) else value
+
+
 # Login form
 class LoginForm(FlaskForm):
-    user_name=StringField("User Name", validators=[InputRequired('Enter user name')])
-    password=PasswordField("Password", validators=[InputRequired('Enter user password')])
-    submit = SubmitField("Login")
+    user_name=StringField("User Name", filters=[strip_whitespace],
+                          validators=[DataRequired('Enter your user name'), Length(max=100)],
+                          render_kw={'placeholder': 'Enter your user name', 'autocomplete': 'username'})
+    password=PasswordField("Password", validators=[InputRequired('Enter your password')],
+                           render_kw={'placeholder': 'Enter your password', 'autocomplete': 'current-password'})
+    submit = SubmitField("Log In")
 
 # Registration form
 class RegisterForm(FlaskForm):
-    user_name=StringField("User Name", validators=[InputRequired()])
-    first_name = StringField("First Name", validators=[InputRequired()])
-    surname = StringField("Surname", validators=[InputRequired()])
-    email = StringField("Email Address", validators=[InputRequired(), Email("Please enter a valid email")])
-    contact_number = StringField("Contact Number", validators=[InputRequired(), validate_contact_number])
-    street_address = StringField("Street Address", validators=[InputRequired(), validate_street_address])
+    user_name=StringField("User Name", filters=[strip_whitespace],
+                          validators=[DataRequired('Choose a user name'),
+                                      Length(min=3, max=30, message='User name must be between 3 and 30 characters')],
+                          render_kw={'placeholder': 'e.g. festivalfan99', 'autocomplete': 'username'})
+    first_name = StringField("First Name", filters=[strip_whitespace],
+                             validators=[DataRequired('Enter your first name'),
+                                         Length(max=50, message='First name must be 50 characters or fewer')],
+                             render_kw={'placeholder': 'e.g. Alex', 'autocomplete': 'given-name'})
+    surname = StringField("Surname", filters=[strip_whitespace],
+                          validators=[DataRequired('Enter your surname'),
+                                      Length(max=50, message='Surname must be 50 characters or fewer')],
+                          render_kw={'placeholder': 'e.g. Smith', 'autocomplete': 'family-name'})
+    email = StringField("Email Address", filters=[strip_whitespace],
+                        validators=[DataRequired('Enter your email address'), Email("Please enter a valid email"),
+                                    Length(max=100, message='Email must be 100 characters or fewer')],
+                        render_kw={'placeholder': 'e.g. alex@example.com', 'autocomplete': 'email'})
+    contact_number = StringField("Contact Number", filters=[strip_whitespace],
+                                 validators=[DataRequired('Enter your contact number'), Length(max=20), validate_contact_number],
+                                 render_kw={'placeholder': 'e.g. 0412 345 678', 'autocomplete': 'tel'})
+    street_address = StringField("Street Address", filters=[strip_whitespace],
+                                 validators=[DataRequired('Enter your street address'),
+                                             Length(max=200, message='Street address must be 200 characters or fewer'),
+                                             validate_street_address],
+                                 render_kw={'placeholder': 'e.g. 12 Example Street, Brisbane QLD 4000', 'autocomplete': 'street-address'})
     user_type = SelectField("Account Type", choices=[('attendee', 'Attendee'), ('organiser', 'Organiser')], validators=[InputRequired()])
-    password=PasswordField("Password", validators=[InputRequired(), Length(min=6, message="Password must be at least 6 characters"),
-                  EqualTo('confirm', message="Passwords should match")]) # Password hashed and stored in database, not stored in plaintext + check for length and matching below
-    confirm = PasswordField("Confirm Password")
-    submit = SubmitField("Register")
+    password=PasswordField("Password", validators=[InputRequired('Enter a password'),
+                  Length(min=6, max=128, message="Password must be between 6 and 128 characters"),
+                  EqualTo('confirm', message="Passwords should match")],
+                  render_kw={'placeholder': 'At least 6 characters', 'autocomplete': 'new-password'}) # Password hashed and stored in database, not stored in plaintext + check for length and matching below
+    confirm = PasswordField("Confirm Password", validators=[InputRequired('Confirm your password')],
+                            render_kw={'placeholder': 'Re-enter your password', 'autocomplete': 'new-password'})
+    submit = SubmitField("Create Account")
 
 # Acknowledgement of Country selector shown on event creation
 AOC_CHOICES = [('none', 'No Acknowledgement of Country'),
