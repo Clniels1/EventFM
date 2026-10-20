@@ -834,9 +834,35 @@ header {
 }
 
 .eventfm-footer-links {
+    display: block;
+    text-align: left;
+}
+
+.eventfm-footer-links .text-center {
+    text-align: left !important;
+}
+
+.eventfm-footer-links .row {
+    text-align: left !important;
+}
+
+.eventfm-footer-links .col-6 {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    align-items: flex-start;
+    text-align: left;
+    gap: 14px;
+}
+
+.eventfm-footer-links .col-6 a {
+    margin-left: 0;
+    margin-right: 0;
+    text-align: left;
+}
+
+.eventfm-footer-links a {
+    display: block;
+    width: fit-content;
 }
 
 .eventfm-footer-links a {
