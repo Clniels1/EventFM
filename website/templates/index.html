@@ -1,112 +1,64 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container">
-    <div class="text-center py-4">
-        <h1 class="fs-2 fw-bold">Discover Music Festivals</h1>
-        <p>Explore upcoming music festivals, discover new artists, and find your next event.</p>
-    </div>
-    <div class="input-group mb-4 mx-auto" style="max-width: 650px;">
-        <input type="text" class="form-control" placeholder="Search music festivals...">
-        <button class="btn btn-outline-secondary" type="button">Search</button>
-    </div>
-    <h2 class="mb-3">Browse by Category</h2>
-    <div class="d-flex flex-wrap gap-2 mb-4">
-        <a href="#" class="btn btn-primary btn-sm">All</a>
-        <a href="#" class="btn btn-light btn-sm">Pop</a>
-        <a href="#" class="btn btn-light btn-sm">Hip-Hop & Rap</a>
-        <a href="#" class="btn btn-light btn-sm">R&B & Soul</a>
-        <a href="#" class="btn btn-light btn-sm">Alternative</a>
-        <a href="#" class="btn btn-light btn-sm">Indie Rock</a>
-        <a href="#" class="btn btn-light btn-sm">Electronic & Dance</a>
-        <a href="#" class="btn btn-light btn-sm">Heavy Metal</a>
-        <a href="#" class="btn btn-light btn-sm">Folk & Acoustic</a>
-        <a href="#" class="btn btn-light btn-sm">Punk & Hardcore</a>
-        <a href="#" class="btn btn-light btn-sm">Jazz & Blues</a>
-    </div>
-    <h2 class="mb-3">Upcoming</h2>
-    <div class="d-flex flex-row flex-wrap gap-3">
-        <div class="card event-card" style="width: 18rem; max-width: 100%;">
-            <img src="{{ url_for('static', filename='img/festival-1.jpg') }}" class="card-img-top" alt="Awesome Music Festival 2026" style="height: 160px; object-fit: cover;">
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title">Awesome Music Festival 2026</h5>
-                <p class="card-subtitle mb-2 text-muted small">19th September 2026</p>
-                <div class="mb-2">
-                    <span class="badge text-bg-success">Open</span>
-                    <span class="badge text-bg-dark">18+</span>
-                </div>
-                <p class="card-text">Come see your favourite artists at the annual Awesome Music Festival.</p>
-                <div class="mt-auto pt-2">
-                    <a href="event-details.html" class="btn btn-primary">View Details</a>
-                </div>
-            </div>
-        </div>
-        <div class="card event-card" style="width: 18rem; max-width: 100%;">
-            <img src="{{ url_for('static', filename='img/festival-2.jpg') }}" class="card-img-top" alt="Live Music Night" style="height: 160px; object-fit: cover;">
-            <div class="card-body d-flex flex-column">
-                <p class="card-subtitle mb-2 text-muted small">25th September 2026</p>
-                <div class="mb-2">
-                    <span class="badge text-bg-danger">Sold Out</span>
-                </div>
-                <p class="card-text">A fun night full of live music.</p>
-                <div class="mt-auto pt-2">
-                    <a href="event-details.html" class="btn btn-primary">View Details</a>
-                </div>
-            </div>
-        </div>
-        <div class="card event-card" style="width: 18rem; max-width: 100%;">
-            <img src="{{ url_for('static', filename='img/rap.jpg') }}" class="card-img-top" alt="Epic Rap Battles" style="height: 160px; object-fit: cover;">
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title">Epic Rap Battles</h5>
-                <p class="card-subtitle mb-2 text-muted small">3rd October 2026</p>
-                <div class="mb-2">
-                    <span class="badge text-bg-warning">Cancelled</span>
-                    <span class="badge text-bg-dark">18+</span>
-                </div>
-                <p class="card-text">A series of ultimate rap battles.</p>
-                <div class="mt-auto pt-2">
-                    <a href="event-details.html" class="btn btn-primary">View Details</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <h2 class="mb-3 mt-4">Recent</h2>
-    <div class="d-flex flex-row flex-wrap gap-3">
-        <div class="card event-card" style="width: 18rem; max-width: 100%;">
-            <img src="{{ url_for('static', filename='img/festival-3.jpg') }}" class="card-img-top" alt="IAB207 Block Party" style="height: 160px; object-fit: cover;">
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title">IAB207 Block Party</h5>
-                <p class="card-subtitle mb-2 text-muted small">5th September 2026</p>
-                <div class="mb-2">
-                    <span class="badge text-bg-secondary">Inactive</span>
-                    <span class="badge text-bg-dark">18+</span>
-                </div>
-                <p class="card-text">Enjoy the end of assessment 1 at the IAB207 Block Party.</p>
-                <div class="mt-auto pt-2">
-                    <a href="event-details.html" class="btn btn-primary">View Details</a>
-                </div>
-            </div>
-        </div>
-        <div class="card event-card" style="width: 18rem; max-width: 100%;">
-            <img src="{{ url_for('static', filename='img/jazz.jpg') }}" class="card-img-top" alt="Brisbane Jazz Concert" style="height: 160px; object-fit: cover;">
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title">Brisbane Jazz Concert</h5>
-                <p class="card-subtitle mb-2 text-muted small">29th August 2026</p>
-                <div class="mb-2">
-                    <span class="badge text-bg-secondary">Inactive</span>
-                </div>
-                <p class="card-text">Jazz at just quite the right tempo.</p>
-                <div class="mt-auto pt-2">
-                    <a href="event-details.html" class="btn btn-primary">View Details</a>
-                </div>
-            </div>
-        </div>
+<div class="festival-hero">
+    <div class="festival-hero-content">
+        <span class="hero-eyebrow">WELCOME TO EVENTFM</span>
+        <h1>Discover Your Next Festival</h1>
+        <p>
+            Experience unforgettable live music, explore upcoming
+            festivals, and find your next adventure.
+        </p>
+        {% include "_search-bar.html" %}
     </div>
 </div>
-<footer class="bg-dark text-white text-center py-3 mt-5">
-    <div class="container">
-        <p class="mb-0">&copy; 2026 Music Festival. All rights reserved.</p>
+<div class="container">
+    <section class="festival-categories">
+    <h2 class="mb-3">Browse by Category</h2>
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <a href="{{ url_for('main.index') }}" class="btn {{ 'btn-primary' if not selected_genre else 'btn-light filter-pill-unselected' }} btn-sm">All</a>
+        {% for value, label in genre_choices %}
+        <a href="{{ url_for('main.index', genre=value) }}" class="btn {{ 'btn-primary' if selected_genre == value else 'btn-light filter-pill-unselected' }} btn-sm">{{ label }}</a>
+        {% endfor %}
     </div>
-</footer>
+    </section>
+
+    {% if selected_genre and not (upcoming_events or recent_events or cancelled_events) %}
+    <div class="alert alert-light border text-center">
+        No {{ selected_genre | genre_label }} festivals yet.
+        <a href="{{ url_for('main.index') }}">View all festivals</a>
+    </div>
+    {% endif %}
+
+    <h2 class="festival-section-title">Upcoming Festivals</h2>
+    {% if upcoming_events %}
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
+        {% for event in upcoming_events %}
+        {% include "_event-card.html" %}
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-muted">No upcoming festivals{{ ' in this category' if selected_genre }} right now. Check back soon!</p>
+    {% endif %}
+
+    {% if recent_events %}
+    <h2 class="festival-section-title mt-5">Past Festivals</h2>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
+        {% for event in recent_events %}
+        {% include "_event-card.html" %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if cancelled_events %}
+    <h2 class="festival-section-title mt-5">Cancelled Festivals</h2>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
+        {% for event in cancelled_events %}
+        {% include "_event-card.html" %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+</div>
 
 {% endblock %}

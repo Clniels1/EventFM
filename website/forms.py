@@ -1,11 +1,28 @@
+import re
 from datetime import date
-from wtforms.validators import ValidationError
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms.fields import (TextAreaField, SubmitField, StringField, PasswordField,
                              SelectField, DateField, TimeField, FloatField, IntegerField)
-from wtforms.validators import InputRequired, Length, Email, EqualTo, NumberRange
+from wtforms.validators import InputRequired, Length, Email, EqualTo, NumberRange, ValidationError
 from .models import GENRE_CHOICES
+
+CONTACT_NUMBER_RE = re.compile(r'^(?:\+?61|0)[2-478]\d{8}$')
+
+STREET_ADDRESS_RE = re.compile(r'^\d+[a-zA-Z]?(?:[\/-]\d+[a-zA-Z]?)?\s+[a-zA-Z].{2,}$')
+
+
+def validate_contact_number(form, field):
+    digits_only = re.sub(r'[^\d+]', '', field.data or '')
+    if not CONTACT_NUMBER_RE.match(digits_only):
+        raise ValidationError('Enter a valid Australian contact number, e.g. 0412 345 678')
+
+
+def validate_street_address(form, field):
+    value = (field.data or '').strip()
+    if not STREET_ADDRESS_RE.match(value):
+        raise ValidationError('Enter a full street address with a street number and name, e.g. 12 Example Street')
+
 
 # Login form
 class LoginForm(FlaskForm):
@@ -19,8 +36,8 @@ class RegisterForm(FlaskForm):
     first_name = StringField("First Name", validators=[InputRequired()])
     surname = StringField("Surname", validators=[InputRequired()])
     email = StringField("Email Address", validators=[InputRequired(), Email("Please enter a valid email")])
-    contact_number = StringField("Contact Number", validators=[InputRequired()])
-    street_address = StringField("Street Address", validators=[InputRequired()])
+    contact_number = StringField("Contact Number", validators=[InputRequired(), validate_contact_number])
+    street_address = StringField("Street Address", validators=[InputRequired(), validate_street_address])
     user_type = SelectField("Account Type", choices=[('attendee', 'Attendee'), ('organiser', 'Organiser')], validators=[InputRequired()])
     password=PasswordField("Password", validators=[InputRequired(), Length(min=6, message="Password must be at least 6 characters"),
                   EqualTo('confirm', message="Passwords should match")]) # Password hashed and stored in database, not stored in plaintext + check for length and matching below
@@ -113,3 +130,9 @@ class BookingForm(FlaskForm):
         ]
     )
     submit = SubmitField("Book Event")
+# Search form, submitted with GET so results pages can be linked to
+class SearchForm(FlaskForm):
+    class Meta:
+        csrf = False
+
+    q = StringField("Search")

@@ -37,3 +37,650 @@ body {
 .location-link:hover {
     text-decoration: underline;
 }
+
+/* Search focus backdrop effect */
+.search-container {
+    position: relative;
+}
+
+.search-input-group {
+    position: relative;
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.search-container:focus-within .search-input-group {
+    z-index: 1050;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+    border-radius: 0.375rem;
+    background-color: #ffffff;
+}
+
+.search-container:focus-within .search-btn {
+    background-color: #ffffff;
+}
+
+.search-container:focus-within .search-btn:hover {
+    background-color: #6c757d;
+    color: #ffffff;
+}
+
+.search-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+    z-index: 1040;
+}
+
+.search-container:focus-within .search-backdrop {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Wrapper containing only the search input and its attached dropdown */
+.search-input-wrapper {
+    position: relative;
+    flex: 1 1 auto;
+    width: 1%;
+    min-width: 0;
+}
+
+.search-input-wrapper .search-input {
+    width: 100%;
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+/* Connected search results dropdown box (matches only search input width) */
+.search-results-box {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #ffffff;
+    border: 1px solid #ced4da;
+    border-top: none;
+    border-bottom-left-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+    z-index: 1051;
+    overflow: hidden;
+    margin-top: -1px;
+}
+
+/* Seamless connection with input when results are shown */
+.search-container.has-results .search-input-group {
+    border-bottom-left-radius: 0 !important;
+}
+
+.search-container.has-results .search-input {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-color: #ced4da;
+}
+
+/* Search result item */
+.search-result-item {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: #212529;
+    text-decoration: none;
+    border-bottom: 1px solid #f1f3f5;
+    transition: background-color 0.15s ease-in-out;
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.search-result-item:hover,
+.search-result-item:focus {
+    background-color: #f8f9fa;
+    color: #212529;
+    text-decoration: none;
+}
+
+.search-result-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #212529;
+    margin-bottom: 0.15rem;
+}
+
+.search-result-location {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.search-result-empty {
+    padding: 1rem;
+    text-align: center;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* Unselected category filter pills */
+.filter-pill-unselected,
+.unselected-pill {
+    border: 1px solid #ced4da;
+}
+
+.filter-pill-unselected:hover,
+.unselected-pill:hover {
+    border-color: #adb5bd;
+}
+
+/* Event details Leaflet map */
+#event-map {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.leaflet-container {
+    font-family: inherit;
+}
+
+.leaflet-popup-content-wrapper {
+    border-radius: 8px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+.leaflet-popup-content {
+    margin: 12px 14px;
+    line-height: 1.4;
+}
+
+/* EventFM homepage hero */
+
+.festival-hero {
+    min-height: 440px;
+    width: 100%;
+    background:
+        linear-gradient(
+            rgba(12, 10, 24, 0.45),
+            rgba(12, 10, 24, 0.75)
+        ),
+        url("../img/festival-1.jpg") center 52% / cover no-repeat;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 70px 24px;
+}
+
+.festival-hero-content {
+    max-width: 850px;
+    color: white;
+}
+
+.hero-eyebrow {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: #ffb38a;
+    margin-bottom: 18px;
+}
+
+.festival-hero h1 {
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 800;
+    line-height: 1.12;
+    margin-bottom: 20px;
+}
+
+.festival-hero p {
+    font-size: clamp(16px, 2vw, 20px);
+    color: #e9e5f1;
+    line-height: 1.6;
+}
+/* Search bar inside hero */
+
+.festival-hero .search-container {
+    width: 100%;
+    max-width: 650px;
+}
+
+.festival-hero .search-input-group {
+    background: white;
+    border-radius: 10px;
+}
+
+.festival-hero .search-input {
+    min-height: 54px;
+    border-radius: 10px 0 0 10px;
+    padding: 12px 18px;
+    font-size: 16px;
+}
+
+.festival-hero .search-btn {
+    background-color: #C96A4A;
+    border-color: #C96A4A;
+    color: white;
+    padding: 0 26px;
+    border-radius: 0 10px 10px 0;
+    font-weight: 600;
+}
+
+.festival-hero .search-btn:hover {
+    background-color: #ad5135;
+    border-color: #ad5135;
+    color: white;
+}
+
+/* EventFM search icon button */
+
+.festival-hero .search-btn {
+    min-width: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #C96A4A;
+    border-color: #C96A4A;
+    color: #ffffff;
+}
+
+.festival-hero .search-btn:hover,
+.festival-hero .search-btn:focus,
+.festival-hero .search-container:focus-within .search-btn {
+    background-color: #ad5135;
+    border-color: #ad5135;
+    color: #ffffff;
+}
+
+.festival-hero .search-btn svg {
+    display: block;
+}
+
+/* AI search explanation and match badges */
+
+.ai-match-badge {
+    background-color: #F3E8FF;
+    color: #5B2A86;
+    border: 1px solid #D9C2F0;
+    font-weight: 600;
+    cursor: help;
+}
+
+.search-ai-note {
+    margin-top: -12px;
+    font-size: 0.9rem;
+    color: #555555;
+    text-align: left;
+}
+
+.search-ai-toggle {
+    color: #C96A4A;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.search-ai-toggle:hover {
+    color: #AD5135;
+}
+
+.search-ai-info {
+    background-color: #FFFFFF;
+    border: 1px solid #ECE7E1;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: #444444;
+}
+
+.festival-hero .search-ai-note {
+    color: #E9E5F1;
+}
+
+.festival-hero .search-ai-toggle {
+    color: #FFB38A;
+}
+
+.festival-hero .search-ai-toggle:hover {
+    color: #FFFFFF;
+}
+
+/* EventFM homepage category filters */
+
+.festival-categories {
+    padding: 42px 0 18px;
+}
+
+.festival-categories h2 {
+    font-size: 1.75rem;
+    font-weight: 750;
+    letter-spacing: -0.5px;
+    margin-bottom: 20px !important;
+}
+
+.festival-categories .btn {
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.festival-categories .btn-primary {
+    background-color: #C96A4A;
+    border-color: #C96A4A;
+    color: white;
+}
+
+.festival-categories .btn-primary:hover {
+    background-color: #AD5135;
+    border-color: #AD5135;
+}
+
+.festival-categories .filter-pill-unselected {
+    background-color: #FFFFFF;
+    border: 1px solid #E0DDD6;
+    color: #333333;
+}
+
+.festival-categories .filter-pill-unselected:hover {
+    background-color: #FFF0E9;
+    border-color: #C96A4A;
+    color: #AD5135;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 576px) {
+    .festival-categories {
+        padding-top: 28px;
+    }
+
+    .festival-categories .btn {
+        padding: 8px 14px;
+        font-size: 0.82rem;
+    }
+}
+
+/* EventFM homepage event cards */
+
+.event-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100%;
+    border: 1px solid #ece7e1;
+    border-radius: 16px;
+    overflow: hidden;
+    background-color: #ffffff;
+    box-shadow: 0 4px 16px rgba(20, 20, 30, 0.06);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(20, 20, 30, 0.14);
+}
+
+.event-card .card-img-top {
+    width: 100%;
+    height: 210px !important;
+    object-fit: cover;
+}
+
+.event-card .card-body {
+    padding: 22px;
+}
+
+.event-card .card-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.event-card .card-text {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #666666;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+}
+
+.event-card .btn-primary {
+    background-color: #C96A4A;
+    border-color: #C96A4A;
+    border-radius: 9px;
+    font-weight: 600;
+    padding: 10px 18px;
+}
+
+.event-card .btn-primary:hover {
+    background-color: #AD5135;
+    border-color: #AD5135;
+}
+
+.event-card .badge {
+    border-radius: 6px;
+    padding: 6px 9px;
+}
+
+/* Compact EventFM event cards */
+
+.event-card .card-text {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+    line-height: 1.5;
+    max-height: 4.5em;
+    margin-bottom: 16px;
+}
+
+.event-card .card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    min-height: 2.8em;
+}
+
+.event-card .card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.event-card .mt-auto .btn {
+    width: 100%;
+}
+
+/* EventFM homepage section headings */
+
+.festival-section-title {
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    font-weight: 750;
+    letter-spacing: -0.6px;
+    color: #22212A;
+    margin-bottom: 24px;
+    padding-left: 16px;
+    border-left: 5px solid #C96A4A;
+}
+
+@media (max-width: 576px) {
+    .festival-section-title {
+        font-size: 1.4rem;
+        padding-left: 12px;
+        margin-bottom: 18px;
+    }
+}
+
+/* EventFM card information */
+
+.event-card-info {
+    margin: 12px 0;
+}
+
+.event-card-info p {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 7px;
+    line-height: 1.4;
+}
+
+.event-card-info .event-card-price {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #C96A4A;
+    margin-top: 10px;
+}
+
+/* EventFM Navigation Bar */
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+}
+
+.festival-navbar {
+    background-color: #201C2B;
+    padding: 18px 0;
+    box-shadow: 0 3px 14px rgba(0, 0, 0, 0.12);
+}
+
+.festival-navbar .container {
+    align-items: center;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.festival-navbar .navbar-nav {
+    align-items: center;
+}
+
+.festival-navbar .eventfm-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+    font-size: 1.35rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.6px;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.eventfm-logo-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background-color: #C96A4A;
+    color: #ffffff;
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+.eventfm-brand-accent {
+    color: #F2A17F;
+}
+
+.festival-navbar .nav-link {
+    color: #E8E3ED;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 6px 14px !important;
+    border-radius: 8px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.festival-navbar .nav-link:hover,
+.festival-navbar .nav-link:focus {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.festival-navbar .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+/* EventFM Footer */
+
+.eventfm-footer {
+    background-color: #201C2B;
+    color: #ffffff;
+    padding: 55px 0 20px;
+}
+
+.eventfm-footer .container {
+    padding-top: 0;
+}
+
+.eventfm-footer .col-md-6 {
+    border: none;
+    padding: 15px;
+}
+
+.eventfm-footer-brand {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 15px;
+}
+
+.eventfm-footer-brand span {
+    color: #F2A17F;
+}
+
+.eventfm-footer-description {
+    color: #C9C3D3;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    max-width: 380px;
+}
+
+.eventfm-footer-heading {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.eventfm-footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.eventfm-footer-links a {
+    color: #C9C3D3;
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+.eventfm-footer-links a:hover {
+    color: #F2A17F;
+}
+
+.eventfm-footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    margin-top: 35px;
+    padding-top: 20px;
+    text-align: center;
+}
+
+.eventfm-footer-bottom p {
+    color: #AFA8BB;
+    font-size: 0.85rem;
+    margin-bottom: 0;
+}
+
+@media (max-width: 767px) {
+    .eventfm-footer {
+        padding-top: 35px;
+    }
+}

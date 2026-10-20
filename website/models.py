@@ -24,7 +24,7 @@ GENRE_CHOICES = [
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(100), unique=True, nullable=False)
     first_name = db.Column(db.String(100), nullable=False)
     surname = db.Column(db.String(100), nullable=False)
     emailid = db.Column(db.String(100), unique=True, nullable=False)
@@ -63,6 +63,7 @@ class Event(db.Model):
     # Similar to user model, event has comments owned by it 
     comments = db.relationship('Comment', backref='event', lazy=True)
     orders = db.relationship('Order', backref='event', lazy=True)
+    chunks = db.relationship('EventChunk', backref='event', lazy=True, cascade='all, delete-orphan')
 
     @property
     def tickets_sold(self):
@@ -76,12 +77,21 @@ class Event(db.Model):
     def refresh_status(self):
         if self.status == 'Cancelled':
             return
-        if self.date < datetime.now(timezone.utc).date():
+        if self.date < datetime.now().date():
             self.status = 'Inactive'
         elif self.tickets_remaining <= 0:
             self.status = 'Sold Out'
         else:
             self.status = 'Open'
+
+# Text chunk of an event with its semantic-search embedding
+class EventChunk(db.Model):
+    __tablename__ = 'event_chunks'
+    id = db.Column(db.Integer, primary_key=True)
+    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
+    chunk_index = db.Column(db.Integer, nullable=False)
+    text = db.Column(db.Text, nullable=False)
+    embedding = db.Column(db.LargeBinary, nullable=False)
 
 # Comment model, passed to user and event models to link comments to both users and events
 class Comment(db.Model):

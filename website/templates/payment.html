@@ -1,24 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 
-<nav class="navbar navbar-expand-md festival-navbar navbar-dark">
-    <div class="container">
-        <a class="navbar-brand" href="index.html">Music Festival</a>
-        <button class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#mainNavbar">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="mainNavbar">
-            <div class="navbar-nav ms-auto align-items-md-center">
-                <a class="nav-link" href="index.html">Home</a>
-                <a class="nav-link" href="create-event.html">Create Event</a>
-                <a class="nav-link" href="booking-history.html">Booking History</a>
-            </div>
-        </div>
-    </div>
-</nav>
 <div class="container py-5">
     <div class="text-center mb-4">
         <h1 class="fw-bold">Complete Your Payment</h1>
@@ -31,27 +13,27 @@
                     <h2 class="mb-4">Booking Summary</h2>
                     <p>
                         <strong>Event:</strong>
-                        Awesome Music Festival 2026
+                        {{ event.title }}
                     </p>
                     <p>
                         <strong>Date:</strong>
-                        <a href="festival-calendar.html" class="date-link">19 September 2026</a>
+                        {{ event.date.strftime('%d %B %Y') }}
                     </p>
                     <p>
                         <strong>Location:</strong>
-                        <a href="https://www.google.com/maps/search/?api=1&query=Riverstage+Brisbane"
-                        class="location-link"
-                        target="_blank">
-                        Riverstage, Brisbane
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ event.location }}"
+                           class="location-link"
+                            target="_blank">
+                            {{ event.location }}
                         </a>
                     </p>
                     <p>
                         <strong>Number of Tickets:</strong>
-                        2
+                        {{ quantity }}
                     </p>
                     <hr>
                     <h4>
-                        Total: $239.98
+                        Total: ${{ '%.2f'|format(total_price) }}
                     </h4>
                 </div>
             </div>
@@ -60,7 +42,9 @@
             <div class="card shadow-sm">
                 <div class="card-body p-4">
                     <h2 class="mb-4">Payment Details</h2>
-                    <form>
+                    <form method="POST" action="{{ url_for('main.confirm_payment', event_id=event.id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="quantity" value="{{ quantity }}">
                         <div class="mb-3">
                             <label for="cardName"
                                    class="form-label">
@@ -120,7 +104,7 @@
                         </div>
                         <button type="submit"
                                 class="btn btn-success w-100">
-                            Pay $239.98
+                            Pay ${{ '%.2f'|format(total_price) }}
                         </button>
                     </form>
                 </div>
@@ -128,12 +112,5 @@
         </div>
     </div>
 </div>
-<footer class="bg-dark text-white text-center py-3 mt-5">
-    <div class="container">
-        <p class="mb-0">
-            &copy; 2026 Music Festival. All rights reserved.
-        </p>
-    </div>
-</footer>
 
 {% endblock %}
