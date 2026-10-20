@@ -7,7 +7,7 @@ from .models import Event, EventChunk, GENRE_CHOICES
 MODEL_NAME = 'all-MiniLM-L6-v2'
 EMBEDDING_DIM = 384    # output size of MODEL_NAME; stored vectors of any other size are ignored
 CHUNK_WORDS = 70        # target words per chunk (model truncates at 256 word-pieces)
-MIN_SCORE = 0.25        # minimum cosine similarity to count as a match
+MIN_SCORE = 0.30        # minimum cosine similarity to count as a match
 
 _model = None
 _matrix_cache = None    # (event_ids array, embedding matrix), rebuilt after any reindex
