@@ -2,7 +2,8 @@ import os
 import calendar
 from uuid import uuid4
 from datetime import date
-from flask import Blueprint, render_template, redirect, url_for, current_app, request, flash
+from urllib.parse import urlparse
+from flask import Blueprint, render_template, redirect, url_for, current_app, request, flash, session
 from .models import Event, Order, Comment, GENRE_CHOICES, AGE_LIMIT_CHOICES
 from .forms import EventForm, BookingForm, CommentForm, SearchForm
 from . import db
@@ -168,6 +169,24 @@ def search():
                            cancelled_events=cancelled_events,
                            **filter_context(filters))
 
+# Where the event page's back button goes: the page the visitor came from.
+# It's kept in the session so it survives commenting, booking or editing, which
+# all redirect back to the event page and would otherwise replace the referrer.
+def event_back_url(event_id):
+    referrer = urlparse(request.referrer or '')
+    event_path = f'/event/{event_id}'
+    from_this_event = referrer.path == event_path or referrer.path.startswith(event_path + '/')
+    from_form = referrer.path in ('/create-event', '/login', '/register')
+    if referrer.netloc == request.host and not from_this_event and not from_form:
+        url = referrer.path + (f'?{referrer.query}' if referrer.query else '')
+        session['event_back'] = {'event_id': event_id, 'url': url}
+        return url
+
+    saved = session.get('event_back')
+    if saved and saved.get('event_id') == event_id:
+        return saved['url']
+    return url_for('main.index')
+
 @main_bp.route('/event/<int:event_id>')
 def event_details(event_id):
     event = Event.query.get_or_404(event_id)
@@ -181,6 +200,7 @@ def event_details(event_id):
     return render_template(
         'event-details.html',
         event=event,
+        back_url=event_back_url(event.id),
         capital_cities=aoc.CAPITAL_CITIES,
         source_labels=aoc.SOURCE_LABELS,
         booking_form=booking_form,

@@ -897,6 +897,63 @@ header {
     border-radius: 10px;
 }
 
+/* Floating flash toasts (event details page) */
+
+.flash-toasts {
+    position: fixed;
+    top: 88px; /* just below the sticky navbar */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1080;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: min(480px, calc(100% - 32px));
+    pointer-events: none;
+}
+
+.flash-toast {
+    margin: 0;
+    border-radius: 10px;
+    pointer-events: auto;
+    animation: flash-toast 5s ease forwards;
+}
+
+/* hovering keeps the message up so it can be read */
+.flash-toast:hover {
+    animation-play-state: paused;
+}
+
+@keyframes flash-toast {
+    0% {
+        opacity: 0;
+        transform: translateY(-12px);
+    }
+    6%,
+    88% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-12px);
+        visibility: hidden;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    @keyframes flash-toast {
+        0%,
+        88% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+            visibility: hidden;
+        }
+    }
+}
+
 /* EventFM error pages */
 
 .error-page {
@@ -1217,9 +1274,15 @@ header {
 
 .aoc-event-panel {
     padding: 18px 20px;
-    border-left: 4px solid #C96A4A;
-    border-radius: 8px;
-    background-color: #FBF1EC;
+    border: 1px solid #E4E2DD;
+    border-radius: 10px;
+    background-color: #F3F2EF;
+}
+
+.aoc-event-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #22212A;
 }
 
 .aoc-event-text {
@@ -1240,7 +1303,7 @@ header {
 
 .aoc-event-link {
     font-size: 0.9rem;
-    color: #8A4A33;
+    color: #5C5966;
 }
 
 /* Acknowledgement of Country guide page */
@@ -1331,4 +1394,234 @@ header {
 .aoc-issue-list dd {
     margin-bottom: 12px;
     color: #555;
+}
+
+/* Event details page, styled to match the homepage */
+
+/* Event image sits behind the top of the page; the card blurs whatever is behind it */
+.event-details-card {
+    border: 1px solid #ECE7E1;
+    border-radius: 16px;
+    overflow: clip; /* not hidden, which would stop the ticket panel from sticking */
+    background-color: #ffffff;
+    box-shadow: 0 4px 16px rgba(20, 20, 30, 0.06);
+}
+
+.event-details-title {
+    font-size: clamp(1.9rem, 4vw, 2.6rem);
+    font-weight: 600;
+    letter-spacing: -0.6px;
+    color: #22212A;
+}
+
+/* smaller section headings, without the accent bar used on the big page titles */
+.event-details-heading {
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    color: #22212A;
+}
+
+.event-details-page .badge {
+    border-radius: 6px;
+    padding: 6px 9px;
+}
+
+/* Location and date rows under the title */
+.event-details-meta p {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #22212A;
+}
+
+.event-details-meta .bi {
+    color: #C96A4A;
+}
+
+/* Status, genre and age badges under the date row, same as the homepage cards */
+.event-details-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.event-details-tags .badge {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Header and about stack on the left, tickets span both rows on the right.
+   On phones the tickets come straight after the header. */
+.event-details-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+        "header"
+        "tickets"
+        "about";
+    gap: 24px;
+}
+
+.event-details-header {
+    grid-area: header;
+}
+
+.event-details-about {
+    grid-area: about;
+}
+
+/* no trailing margin, so the sticky ticket box stops level with the last item */
+.event-details-about > :last-child {
+    margin-bottom: 0 !important;
+}
+
+.event-details-tickets {
+    grid-area: tickets;
+}
+
+@media (min-width: 992px) {
+    .event-details-layout {
+        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+        grid-template-areas:
+            "header tickets"
+            "about tickets";
+        grid-template-rows: auto 1fr;
+        column-gap: 32px;
+    }
+
+    /* Ticket box follows the page while the about column scrolls past */
+    .event-ticket-panel {
+        position: sticky;
+        top: 100px; /* clears the sticky navbar */
+    }
+}
+
+.event-ticket-price {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #C96A4A;
+}
+
+.event-ticket-price span {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #6b6874;
+}
+
+.event-ticket-remaining {
+    font-size: 0.9rem;
+    color: #555555;
+}
+
+/* quantity input and Book button share the row evenly */
+.event-ticket-half {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.event-details-page .event-back-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 16px;
+    border: 1px solid #E0DDD6;
+    border-radius: 50px;
+    background-color: #EFEDE8;
+    font-size: 0.9rem;
+    color: #5C5966;
+}
+
+.event-details-page .event-back-btn:hover,
+.event-details-page .event-back-btn:focus {
+    background-color: #E4E1DA;
+    border-color: #D3CFC6;
+    color: #22212A;
+}
+
+.event-booking-card {
+    border: 1px solid #E4E2DD;
+    border-radius: 14px;
+    background-color: #F3F2EF;
+}
+
+.event-details-description {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #444444;
+    white-space: pre-line;
+}
+
+.event-details-page .form-control:focus {
+    border-color: #C96A4A;
+    box-shadow: 0 0 0 0.2rem rgba(201, 106, 74, 0.2);
+}
+
+.event-details-page .form-control {
+    border-radius: 9px;
+}
+
+.event-details-page .btn {
+    border-radius: 9px;
+    font-weight: 600;
+}
+
+.event-details-page .btn-primary,
+.event-details-page .btn-success {
+    background-color: #C96A4A;
+    border-color: #C96A4A;
+}
+
+.event-details-page .btn-primary:hover,
+.event-details-page .btn-primary:focus,
+.event-details-page .btn-success:hover,
+.event-details-page .btn-success:focus {
+    background-color: #AD5135;
+    border-color: #AD5135;
+}
+
+.event-details-page .alert {
+    border-radius: 10px;
+}
+
+/* Grey panel separating the comments from the event details */
+.event-comments {
+    padding: 24px;
+    border: 1px solid #E4E2DD;
+    border-radius: 14px;
+    background-color: #F3F2EF;
+}
+
+.event-comments textarea.form-control {
+    resize: vertical;
+}
+
+.event-details-page .event-comments .btn-sm {
+    padding: 6px 14px;
+}
+
+/* the last comment's margin would make the bottom padding deeper than the sides */
+.event-comments > :last-child {
+    margin-bottom: 0 !important;
+}
+
+.event-comment-card {
+    border: 1px solid #ECE7E1;
+    border-radius: 12px;
+}
+
+.event-comment-card .card-title {
+    font-weight: 600;
+    color: #22212A;
+}
+
+.event-comment-avatar {
+    background-color: #C96A4A;
+}
+
+.event-details-page hr {
+    border-color: #E4DFD5;
+    opacity: 1;
 }

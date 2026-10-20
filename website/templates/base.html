@@ -57,6 +57,7 @@
 
     <main class="site-main">
     <!-- Code for using Flask flash -->
+    {% block flash_messages %}
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     <div class="container flash-messages mt-3">
@@ -69,6 +70,7 @@
     </div>
     {% endif %}
     {% endwith %}
+    {% endblock %}
 
     {% block content %}
 
