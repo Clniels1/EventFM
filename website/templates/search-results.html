@@ -10,12 +10,31 @@
 </div>
 
 <div class="container search-results-page">
+    {% set card_horizontal = true %}
     {% if not query %}
+    <div class="search-results-header">
+        <h2 class="festival-section-title">All {% if selected_genre %}{{ selected_genre | genre_label }} {% endif %}Festivals</h2>
+        {% if selected_genre %}
+        <p class="search-results-note">Showing {{ selected_genre | genre_label }} only. <a href="{{ url_for('main.search') }}">Show every genre</a></p>
+        {% endif %}
+    </div>
+
+    {% if not (upcoming_events or recent_events or cancelled_events) %}
     <div class="search-empty-state">
         <i class="bi bi-search"></i>
-        <h2>Start with a search</h2>
-        <p>Try a genre, a city, or a mood like "chill outdoor music by the water".</p>
+        <h2>No festivals yet</h2>
+        <p>Check back soon for upcoming festivals.</p>
     </div>
+    {% endif %}
+
+    {% for section_title, section_events in [('Upcoming', upcoming_events), ('Past', recent_events), ('Cancelled', cancelled_events)] if section_events %}
+    <h3 class="all-events-subheading{{ ' mt-5' if not loop.first }}">{{ section_title }} <span>{{ section_events|length }}</span></h3>
+    <div class="row row-cols-1 row-cols-lg-2 g-4">
+        {% for event in section_events %}
+        {% include "_event-card.html" %}
+        {% endfor %}
+    </div>
+    {% endfor %}
     {% else %}
     <div class="search-results-header">
         <h2 class="festival-section-title">
@@ -29,7 +48,7 @@
     </div>
 
     {% if results %}
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
+    <div class="row row-cols-1 row-cols-lg-2 g-4">
         {% for result in results %}
         {% set event = result.event %}
         {% include "_event-card.html" %}
