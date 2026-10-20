@@ -173,17 +173,6 @@ body {
     font-size: 0.9rem;
 }
 
-/* Unselected category filter pills */
-.filter-pill-unselected,
-.unselected-pill {
-    border: 1px solid #ced4da;
-}
-
-.filter-pill-unselected:hover,
-.unselected-pill:hover {
-    border-color: #adb5bd;
-}
-
 /* Event details Leaflet map */
 #event-map {
     width: 100%;
@@ -318,6 +307,12 @@ body {
 
 /* AI search explanation and match badges */
 
+/* Keep badges with explanations above the card-wide link so their tooltips still show */
+.event-card .badge[title] {
+    position: relative;
+    z-index: 2;
+}
+
 .ai-match-badge {
     background-color: #F3E8FF;
     color: #5B2A86;
@@ -376,68 +371,133 @@ body {
 
 /* EventFM homepage category filters */
 
-.festival-categories {
-    padding: 42px 0 18px;
+/* Filter bar (genre / price / age dropdowns) */
+
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
 }
 
-.festival-categories h2 {
-    font-size: 1.75rem;
-    font-weight: 600;
-    letter-spacing: -0.5px;
-    margin-bottom: 20px !important;
-}
-
-.festival-categories .btn {
+.filter-dropdown-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
     border-radius: 50px;
-    padding: 6px 16px;
+    padding: 8px 16px;
     font-size: 0.9rem;
     font-weight: 600;
-    white-space: nowrap;
-    flex: 0 0 auto;
-    transition: all 0.2s ease;
-}
-
-.festival-categories .category-pills {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 8px;
-    scrollbar-width: thin;
-}
-
-.festival-categories .btn-primary {
-    background-color: #C96A4A;
-    border-color: #C96A4A;
-    color: white;
-}
-
-.festival-categories .btn-primary:hover {
-    background-color: #AD5135;
-    border-color: #AD5135;
-}
-
-.festival-categories .filter-pill-unselected {
     background-color: #FFFFFF;
     border: 1px solid #E0DDD6;
     color: #333333;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
-.festival-categories .filter-pill-unselected:hover {
+.filter-dropdown-btn .bi-chevron-down {
+    font-size: 0.7rem;
+}
+
+.filter-dropdown-btn:hover,
+.filter-dropdown-btn.show {
     background-color: #FFF0E9;
     border-color: #C96A4A;
     color: #AD5135;
-    transform: translateY(-2px);
+}
+
+.filter-dropdown-btn.active,
+.filter-dropdown-btn.active:hover {
+    background-color: #C96A4A;
+    border-color: #C96A4A;
+    color: #FFFFFF;
+}
+
+.filter-menu {
+    min-width: 220px;
+    padding: 8px;
+    border: 1px solid #ECE7E1;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(20, 20, 30, 0.12);
+}
+
+.filter-menu-scroll {
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.filter-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 7px 10px 7px 34px;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    cursor: pointer;
+}
+
+.filter-option:hover {
+    background-color: #F8F6F0;
+}
+
+.filter-option .form-check-input {
+    cursor: pointer;
+}
+
+.filter-option .form-check-input:checked {
+    background-color: #C96A4A;
+    border-color: #C96A4A;
+}
+
+.filter-option .form-check-input:focus {
+    border-color: #C96A4A;
+    box-shadow: 0 0 0 0.2rem rgba(201, 106, 74, 0.2);
+}
+
+.filter-apply-btn {
+    border-radius: 50px;
+    padding: 8px 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    background-color: #22212A;
+    border-color: #22212A;
+    color: #FFFFFF;
+}
+
+.filter-apply-btn:hover,
+.filter-apply-btn:focus {
+    background-color: #000000;
+    border-color: #000000;
+    color: #FFFFFF;
+}
+
+.filter-clear-link {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #AD5135;
+}
+
+.home-section-title {
+    margin-top: 48px;
+}
+
+.home-filters {
+    margin-bottom: 28px;
+}
+
+.search-filters {
+    margin-bottom: 32px;
 }
 
 @media (max-width: 576px) {
-    .festival-categories {
-        padding-top: 28px;
+    .home-section-title {
+        margin-top: 32px;
     }
 
-    .festival-categories .btn {
-        padding: 8px 14px;
-        font-size: 0.82rem;
+    .filter-dropdown-btn,
+    .filter-apply-btn {
+        padding: 7px 13px;
+        font-size: 0.84rem;
     }
 }
 
@@ -472,7 +532,7 @@ body {
 
 .event-card .card-title {
     font-size: 1.2rem;
-    font-weight: 700;
+    font-weight: 600;
     line-height: 1.4;
 }
 
@@ -520,7 +580,7 @@ body {
 
 .event-card .card-title {
     font-size: 1.1rem;
-    font-weight: 700;
+    font-weight: 600;
     min-height: 2.8em;
 }
 
@@ -647,7 +707,7 @@ body {
 
 .event-card-info .event-card-price {
     font-size: 1.05rem;
-    font-weight: 700;
+    font-weight: 600;
     color: #C96A4A;
     margin-top: 10px;
 }

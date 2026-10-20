@@ -20,6 +20,14 @@ GENRE_CHOICES = [
     ('classical', 'Classical')
 ]
 
+# Age restriction choices for events
+AGE_LIMIT_CHOICES = [
+    ('all-ages', 'All ages'),
+    ('15-plus', '15+'),
+    ('18-plus', '18+'),
+    ('under-18', 'Under 18 only')
+]
+
 # Create user model 
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
@@ -52,6 +60,7 @@ class Event(db.Model):
     end_time = db.Column(db.Time, nullable=False)
     location = db.Column(db.String(200), nullable=False)
     genre = db.Column(db.String(30), nullable=False)
+    age_limit = db.Column(db.String(20), nullable=False, default='all-ages')
     price = db.Column(db.Float, nullable=False)
     capacity = db.Column(db.Integer, nullable=False)
     image_filename = db.Column(db.String(200))

@@ -13,7 +13,7 @@
                 <span class="badge text-bg-light border"><i class="bi bi-music-note-beamed me-1"></i>{{ event.genre | genre_label }}</span>
             </div>
             <div class="event-card-footer">
-                <a href="{{ url_for('main.event_details', event_id=event.id) }}" class="btn btn-primary btn-sm">View Details</a>
+                <a href="{{ url_for('main.event_details', event_id=event.id) }}" class="btn btn-primary btn-sm stretched-link">View Details</a>
             </div>
         </div>
         {% else %}
@@ -34,7 +34,7 @@
                 </p>
             </div>
             <div class="mt-auto pt-2">
-                <a href="{{ url_for('main.event_details', event_id=event.id) }}" class="btn btn-primary">View Details</a>
+                <a href="{{ url_for('main.event_details', event_id=event.id) }}" class="btn btn-primary stretched-link">View Details</a>
             </div>
         </div>
         {% endif %}

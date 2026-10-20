@@ -34,6 +34,7 @@
                             {{ event.location }}
                             </a>
                         </li>
+                        <li class="list-group-item"><i class="bi bi-person-check me-2" aria-hidden="true"></i><strong>Age Restriction:</strong> {{ event.age_limit | age_label }}</li>
                         <li class="list-group-item"><i class="bi bi-cash-coin me-2" aria-hidden="true"></i><strong>Price:</strong> ${{ '%.2f'|format(event.price) }} per ticket</li>
                         <li class="list-group-item"><i class="bi bi-ticket-perforated me-2" aria-hidden="true"></i><strong>Tickets Available:</strong> {{ event.tickets_remaining }}</li>
                         <li class="list-group-item">

@@ -82,6 +82,13 @@
                     {% endfor %}
                 </div>
                 <div class="mb-3">
+                    <label for="ageLimit" class="form-label">Age Restriction</label>
+                    {{ form.age_limit(class="form-select", id="ageLimit") }}
+                    {% for error in form.age_limit.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="mb-3">
                     <label for="acknowledgementType" class="form-label">Acknowledgement of Country Type</label>
                     {{ form.acknowledgement_type(class="form-select", id="acknowledgementType") }}
                     {% for error in form.acknowledgement_type.errors %}
