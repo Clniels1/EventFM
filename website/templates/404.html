@@ -2,11 +2,12 @@
 {% block content %}
 
 <div class="container">
-    <div class="text-center py-5">
-        <h1 class="fs-1 fw-bold">404</h1>
-        <p class="fs-4">Page Not Found</p>
-        <p class="text-muted">The page or event you're looking for doesn't exist or may have been removed.</p>
-        <a href="{{ url_for('main.index') }}" class="btn btn-primary mt-3">Back to Home</a>
+    <div class="error-page text-center">
+        <img src="{{ url_for('static', filename='img/festival-2.jpg') }}" class="error-image" alt="Festival crowd in front of a lit stage">
+        <h1>404 - Page Not Found</h1>
+        <p class="text-muted">Not sure how you ended up here, but this page doesn't exist. Head back home to find your next festival.</p>
+        <a href="{{ url_for('main.index') }}" class="btn btn-primary">Back to Home</a>
+        <a href="{{ url_for('main.festival_calendar') }}" class="btn btn-outline-secondary">Festival Calendar</a>
     </div>
 </div>
 

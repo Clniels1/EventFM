@@ -732,3 +732,18 @@ header {
 .flash-messages .alert {
     border-radius: 10px;
 }
+
+/* EventFM error pages */
+
+.error-page {
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+.error-image {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 24px;
+}
