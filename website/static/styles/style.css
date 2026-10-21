@@ -384,7 +384,7 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    border-radius: 50px;
+    border-radius: 10px;
     padding: 8px 16px;
     font-size: 0.9rem;
     font-weight: 600;
@@ -455,7 +455,7 @@ body {
 }
 
 .filter-apply-btn {
-    border-radius: 50px;
+    border-radius: 10px;
     padding: 8px 20px;
     font-size: 0.9rem;
     font-weight: 600;
@@ -477,8 +477,9 @@ body {
     color: #AD5135;
 }
 
-.home-section-title {
-    margin-top: 48px;
+.festival-section-title.home-section-title {
+    margin-top: 24px;
+    font-size: clamp(1.7rem, 2.8vw, 2.25rem);
 }
 
 .home-filters {
@@ -490,8 +491,9 @@ body {
 }
 
 @media (max-width: 576px) {
-    .home-section-title {
-        margin-top: 32px;
+    .festival-section-title.home-section-title {
+        margin-top: 16px;
+        font-size: 1.55rem;
     }
 
     .filter-dropdown-btn,
@@ -507,17 +509,10 @@ body {
     width: 100% !important;
     max-width: 100% !important;
     height: 100%;
-    border: 1px solid #ece7e1;
+    border: 1px solid #D9D2C9;
     border-radius: 16px;
     overflow: hidden;
     background-color: #ffffff;
-    box-shadow: 0 4px 16px rgba(20, 20, 30, 0.06);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.event-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 30px rgba(20, 20, 30, 0.14);
 }
 
 .event-card .card-img-top {
@@ -680,14 +675,11 @@ body {
     letter-spacing: -0.6px;
     color: #22212A;
     margin-bottom: 24px;
-    padding-left: 16px;
-    border-left: 5px solid #C96A4A;
 }
 
 @media (max-width: 576px) {
     .festival-section-title {
         font-size: 1.4rem;
-        padding-left: 12px;
         margin-bottom: 18px;
     }
 }
@@ -1044,7 +1036,7 @@ header {
 }
 
 .search-results-note {
-    margin: 0 0 0 21px;
+    margin: 0;
     font-size: 0.9rem;
     color: #6b6874;
 }
@@ -1447,11 +1439,10 @@ header {
 
 /* Event image sits behind the top of the page; the card blurs whatever is behind it */
 .event-details-card {
-    border: 1px solid #ECE7E1;
+    border: 1px solid #D9D2C9;
     border-radius: 16px;
     overflow: clip; /* not hidden, which would stop the ticket panel from sticking */
     background-color: #ffffff;
-    box-shadow: 0 4px 16px rgba(20, 20, 30, 0.06);
 }
 
 .event-details-title {
@@ -1671,4 +1662,11 @@ header {
 .event-details-page hr {
     border-color: #E4DFD5;
     opacity: 1;
+}
+
+/* Cards use a border instead of a shadow, with no hover effect */
+
+.card {
+    box-shadow: none !important;
+    border: 1px solid #D9D2C9 !important;
 }
