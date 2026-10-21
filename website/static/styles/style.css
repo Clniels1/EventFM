@@ -1,3 +1,8 @@
+/* Shows when overscrolling past the top or bottom, matching the header and footer */
+html {
+    background-color: #201C2B;
+}
+
 body {
     background-color: #F8F6F0;
     min-height: 100vh;
@@ -1624,38 +1629,41 @@ header {
     border-radius: 10px;
 }
 
-/* Grey panel separating the comments from the event details */
-.event-comments {
-    padding: 24px;
-    border: 1px solid #E4E2DD;
-    border-radius: 14px;
-    background-color: #F3F2EF;
+/* Comments: count, a single line to type on, then a flat list */
+.event-comments textarea.form-control.event-comment-input {
+    resize: vertical;
+    min-height: 0;
+    padding: 6px 0;
+    border: 0;
+    border-bottom: 1px solid #B8B2A8;
+    border-radius: 0;
+    background-color: transparent;
+    box-shadow: none;
 }
 
-.event-comments textarea.form-control {
-    resize: vertical;
+.event-comments textarea.form-control.event-comment-input:focus {
+    border-bottom: 2px solid #22212A;
 }
 
 .event-details-page .event-comments .btn-sm {
     padding: 6px 14px;
 }
 
-/* the last comment's margin would make the bottom padding deeper than the sides */
-.event-comments > :last-child {
-    margin-bottom: 0 !important;
+.event-comment {
+    display: flex;
+    gap: 12px;
+    padding: 14px 0;
 }
 
-.event-comment-card {
-    border: 1px solid #ECE7E1;
-    border-radius: 12px;
-}
-
-.event-comment-card .card-title {
+.event-comment-author {
     font-weight: 600;
     color: #22212A;
 }
 
 .event-comment-avatar {
+    flex: none;
+    width: 40px;
+    height: 40px;
     background-color: #C96A4A;
 }
 
