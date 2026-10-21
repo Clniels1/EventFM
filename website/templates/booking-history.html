@@ -50,7 +50,7 @@
 
     <!-- Booking Navigation -->
     <div class="d-flex flex-wrap gap-2 mb-5">
-        <a href="#upcoming-bookings" class="btn btn-primary booking-nav-btn">Upcoming Bookings</a>
+        <a href="#upcoming-bookings" class="btn btn-primary btn-accent booking-nav-btn">Upcoming Bookings</a>
         <a href="#past-bookings" class="btn btn-outline-secondary booking-nav-btn">Past Bookings</a>
     </div>
 
@@ -67,7 +67,7 @@
                         <h3>No upcoming bookings yet</h3>
                         <p>Your next unforgettable festival experience is waiting for you.</p>
                         <div>
-                            <a href="{{ url_for('main.index') }}" class="btn btn-primary">Discover Festivals</a>
+                            <a href="{{ url_for('main.index') }}" class="btn btn-primary btn-accent">Discover Festivals</a>
                         </div>
                     </div>
                 </div>
@@ -84,7 +84,7 @@
             {% else %}
                 <div class="col-12">
                     <div class="card booking-empty">
-                        <i class="bi bi-music-note-beamed" aria-hidden="true"></i>
+                        <i class="bi bi-clock-history" aria-hidden="true"></i>
                         <h3>No past bookings</h3>
                         <p>Your festival memories will appear here after your events have passed.</p>
                     </div>

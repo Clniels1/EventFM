@@ -339,7 +339,22 @@ body {
     color: #AD5135;
 }
 
+/* Float the explanation over the page so opening it doesn't push content down */
+.search-ai-note {
+    position: relative;
+}
+
+.search-ai-note .collapse,
+.search-ai-note .collapsing {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 5;
+}
+
 .search-ai-info {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     background-color: #FFFFFF;
     border: 1px solid #ECE7E1;
     border-radius: 10px;
@@ -514,6 +529,11 @@ body {
     border-radius: 16px;
     overflow: hidden;
     background-color: #ffffff;
+    transition: filter 0.2s ease;
+}
+
+.event-card:hover {
+    filter: brightness(0.94);
 }
 
 .event-card .card-img-top {
@@ -774,10 +794,40 @@ header {
     background-color: rgba(255, 255, 255, 0.12);
 }
 
-.festival-navbar .nav-link.nav-user-name:hover,
-.festival-navbar .nav-link.nav-user-name:focus {
-    color: #E8E3ED;
-    background-color: transparent;
+/* Account dropdown */
+.festival-navbar .dropdown-menu {
+    border: 1px solid #ECE7E1;
+    border-radius: 10px;
+    padding: 6px;
+    font-size: 0.95rem;
+}
+
+.festival-navbar .dropdown-item {
+    border-radius: 6px;
+    padding: 7px 12px;
+}
+
+.festival-navbar .dropdown-item:active {
+    background-color: #C96A4A;
+}
+
+@media (max-width: 767px) {
+    /* In the collapsed menu the dropdown opens inline instead of floating */
+    .festival-navbar .dropdown-menu {
+        background-color: transparent;
+        border: none;
+        text-align: center;
+    }
+
+    .festival-navbar .dropdown-item {
+        color: #E8E3ED;
+    }
+
+    .festival-navbar .dropdown-item:hover,
+    .festival-navbar .dropdown-item:focus {
+        color: #ffffff;
+        background-color: rgba(255, 255, 255, 0.12);
+    }
 }
 
 .festival-navbar .navbar-toggler {
@@ -816,8 +866,8 @@ header {
     color: #C9C3D3;
     font-size: 0.95rem;
     font-weight: 500;
-    line-height: 1.8;
-    max-width: 380px;
+    line-height: 1.7;
+    max-width: 560px;
 }
 
 .eventfm-footer-heading {
@@ -1095,6 +1145,13 @@ header {
 }
 
 .view-all-btn {
+    --bs-btn-bg: #C96A4A;
+    --bs-btn-border-color: #C96A4A;
+    --bs-btn-hover-bg: #AD5135;
+    --bs-btn-hover-border-color: #AD5135;
+    --bs-btn-active-bg: #AD5135;
+    --bs-btn-active-border-color: #AD5135;
+    --bs-btn-focus-shadow-rgb: 201, 106, 74;
     background-color: #C96A4A;
     border-color: #C96A4A;
     border-radius: 50px;
@@ -1103,9 +1160,35 @@ header {
 }
 
 .view-all-btn:hover,
-.view-all-btn:focus {
+.view-all-btn:focus,
+.view-all-btn:active,
+.btn-check:checked + .view-all-btn,
+.view-all-btn.active {
     background-color: #AD5135;
     border-color: #AD5135;
+    color: #ffffff;
+}
+
+.view-all-btn:focus-visible {
+    box-shadow: 0 0 0 0.25rem rgba(201, 106, 74, 0.35);
+}
+
+/* Orange accent button used on page headers and forms (no blue pressed/focus state) */
+
+.btn-accent {
+    --bs-btn-bg: #C96A4A;
+    --bs-btn-border-color: #C96A4A;
+    --bs-btn-color: #ffffff;
+    --bs-btn-hover-bg: #AD5135;
+    --bs-btn-hover-border-color: #AD5135;
+    --bs-btn-hover-color: #ffffff;
+    --bs-btn-active-bg: #AD5135;
+    --bs-btn-active-border-color: #AD5135;
+    --bs-btn-active-color: #ffffff;
+    --bs-btn-focus-shadow-rgb: 201, 106, 74;
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 8px 20px;
 }
 
 /* Acknowledgement of Country */
@@ -1155,9 +1238,9 @@ header {
     color: #666;
 }
 
-/* the selected option uses the site's accent colour, with the same 1px border as other cards */
+/* the selected option is shown with a flat tinted background instead of an outline */
 .aoc-option-input:checked + .aoc-option-label {
-    border-color: #C96A4A;
+    background-color: #F6E3D9;
 }
 
 .aoc-option-input:focus-visible + .aoc-option-label {
@@ -1713,11 +1796,16 @@ header {
     margin-bottom: 0;
 }
 
+.account-card .form-action-btn {
+    min-width: 150px;
+    padding: 8px 20px; /* same height as the booking history buttons */
+}
+
 /* Section headings inside long forms */
 
 .form-section-title {
     margin-bottom: 4px;
-    font-size: 1.2rem;
+    font-size: 1.45rem;
     font-weight: 600;
     letter-spacing: -0.3px;
     color: #22212A;
@@ -1764,10 +1852,8 @@ header {
 
 .calendar-table th {
     padding: 10px 6px;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
     color: #6b6874;
     background-color: #F8F6F0;
 }

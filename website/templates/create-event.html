@@ -12,7 +12,7 @@
             {% if editing %}
                 Update your festival details and keep your event information up to date.
             {% else %}
-                Bring your music festival to life by sharing the details with the EventFM community.
+                Bring your event to life by sharing the details with the EventFM community.
             {% endif %}
         </p>
     </div>
@@ -134,15 +134,15 @@
                 {% include '_acknowledgement-builder.html' %}
                 <hr class="my-4">
                 <!-- Form Actions -->
-                <div class="d-flex flex-wrap justify-content-end align-items-center gap-3">
+                <div class="d-flex justify-content-between align-items-center gap-3">
                     <a href="{{ url_for('main.index') }}"
-                       class="btn btn-outline-secondary px-4">
+                       class="btn btn-outline-secondary form-action-btn">
                         Cancel
                     </a>
                     {% if editing %}
-                        {{ form.submit(class="btn btn-primary px-4", value="Update Event") }}
+                        {{ form.submit(class="btn btn-primary form-action-btn", value="Update Event") }}
                     {% else %}
-                        {{ form.submit(class="btn btn-primary px-4") }}
+                        {{ form.submit(class="btn btn-primary form-action-btn") }}
                     {% endif %}
                 </div>
             </form>

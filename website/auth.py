@@ -20,10 +20,10 @@ def login():
         password = login_form.password.data
         user = db.session.scalar(db.select(User).where(User.name==user_name))
         if user is None or not check_password_hash(user.password_hash, password): # takes the hash and cleartext password
-            error = 'Incorrect user name or password'
+            error = 'Incorrect username or password'
         if error is None:
             login_user(user)
-            flash(f'Welcome back, {user.first_name}!', 'success')
+            flash(f'Welcome back, {user.name}!', 'success')
             nextp = request.args.get('next') # this gives the url from where the login page was accessed
             if nextp is None or not nextp.startswith('/') or nextp.startswith(('//', '/\\')):
                 return redirect(url_for('main.index'))
@@ -50,7 +50,7 @@ def register():
         email_taken = db.session.scalar(db.select(User).where(db.func.lower(User.emailid)==email)) is not None
         if name_taken or email_taken:
             if name_taken:
-                register_form.user_name.errors.append('That user name is already taken')
+                register_form.user_name.errors.append('That username is already taken')
             if email_taken:
                 register_form.email.errors.append('An account with this email already exists')
             flash('Please fix the highlighted fields below', 'danger')
@@ -64,7 +64,7 @@ def register():
         db.session.commit()
 
         login_user(new_user)
-        flash(f'Welcome to EventFM, {first_name}! Your account has been created.', 'success')
+        flash(f'Welcome to EventFM, {user_name}! Your account has been created.', 'success')
         return redirect(url_for('main.index'))
     return render_template('account.html', form=register_form, heading='Register')
 
