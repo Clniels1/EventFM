@@ -410,7 +410,6 @@ DUMMY_EVENTS = [
 def seed_database():
     app = create_app()
     with app.app_context():
-        # Ensure database tables exist
         db.create_all()
 
         # Find or create a default organiser user to satisfy the foreign key constraint

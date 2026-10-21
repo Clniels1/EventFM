@@ -3,7 +3,6 @@
 
 <div class="container py-5">
 
-    <!-- Page Heading -->
     <div class="mb-4">
         <h1 class="festival-section-title mb-2">
             {% if editing %}Edit Event{% else %}Create Event{% endif %}
@@ -16,17 +15,13 @@
             {% endif %}
         </p>
     </div>
-    <!-- Main Form Card -->
     <div class="card account-card account-card-wide mb-4">
         <div class="card-body p-4 p-md-5">
-            <!-- Event Form -->
             <form method="POST" enctype="multipart/form-data" class="mb-0">
                 {{ form.hidden_tag() }}
-                <!-- Section 1: Event Information -->
                 <div class="mb-4">
                     <h3 class="form-section-title">Event Information</h3>
                 </div>
-                <!-- Event Name -->
                 <div class="mb-3">
                     <label for="eventName" class="form-label">Event Name</label>
                     {{ form.title(class="form-control", id="eventName", placeholder="Enter music festival name", required=False) }}
@@ -34,7 +29,6 @@
                         <div class="text-danger small">{{ error }}</div>
                     {% endfor %}
                 </div>
-                <!-- Event Description -->
                 <div class="mb-4">
                     <label for="eventDescription" class="form-label">Event Description</label>
                     {{ form.description(class="form-control", id="eventDescription", rows="4", placeholder="Describe the music festival, artists, and event details", required=False) }}
@@ -43,11 +37,9 @@
                     {% endfor %}
                 </div>
                 <hr class="my-4">
-                <!-- Section 2: Date and Time -->
                 <div class="mb-4">
                     <h3 class="form-section-title">Date &amp; Time</h3>
                 </div>
-                <!-- Event Date -->
                 <div class="mb-3">
                     <label for="eventDate" class="form-label">Event Date</label>
                     {{ form.date(class="form-control", id="eventDate") }}
@@ -55,7 +47,6 @@
                         <div class="text-danger small">{{ error }}</div>
                     {% endfor %}
                 </div>
-                <!-- Start and End Time -->
                 <div class="row g-3 mb-4">
                     <div class="col-md-6">
                         <label for="startTime" class="form-label">Start Time</label>
@@ -70,11 +61,9 @@
                     </div>
                 </div>
                 <hr class="my-4">
-                <!-- Section 3: Location and Tickets -->
                 <div class="mb-4">
                     <h3 class="form-section-title">Location &amp; Tickets</h3>
                 </div>
-                <!-- Location -->
                 <div class="mb-3">
                     <label for="eventLocation" class="form-label">Location</label>
                     {{ form.location(class="form-control", id="eventLocation", placeholder="Enter event location") }}
@@ -82,7 +71,6 @@
                         <div class="text-danger small">{{ error }}</div>
                     {% endfor %}
                 </div>
-                <!-- Ticket Price and Capacity -->
                 <div class="row g-3 mb-4">
                     <div class="col-md-6">
                         <label for="ticketPrice" class="form-label">Ticket Price ($)</label>
@@ -100,11 +88,9 @@
                     </div>
                 </div>
                 <hr class="my-4">
-                <!-- Section 4: Festival Details -->
                 <div class="mb-4">
                     <h3 class="form-section-title">Festival Details</h3>
                 </div>
-                <!-- Event Image -->
                 <div class="mb-3">
                     <label for="eventImage" class="form-label">Event Image</label>
                     {{ form.image(class="form-control", id="eventImage", accept="image/*") }}
@@ -112,7 +98,6 @@
                         <div class="text-danger small">{{ error }}</div>
                     {% endfor %}
                 </div>
-                <!-- Genre and Age Restriction -->
                 <div class="row g-3 mb-4">
                     <div class="col-md-6">
                         <label for="eventCategory" class="form-label">Music Festival Category</label>
@@ -130,10 +115,8 @@
                     </div>
                 </div>
                 <hr class="my-4">
-                <!-- Enhanced Acknowledgement of Country Builder -->
                 {% include '_acknowledgement-builder.html' %}
                 <hr class="my-4">
-                <!-- Form Actions -->
                 <div class="d-flex justify-content-between align-items-center gap-3">
                     <a href="{{ url_for('main.index') }}"
                        class="btn btn-outline-secondary form-action-btn">

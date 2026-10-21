@@ -30,7 +30,6 @@ def build_chunks(event):
     genre_label = dict(GENRE_CHOICES).get(event.genre, event.genre)
     header = f'{event.title}. {genre_label}. {event.location}.'
 
-    # Pack sentences into chunks
     sentences = [s for s in re.split(r'(?<=[.!?])\s+', event.description.strip()) if s]
     chunks, current, words = [], [], 0
     for sentence in sentences:

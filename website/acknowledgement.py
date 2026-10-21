@@ -2,7 +2,6 @@ import re
 from markupsafe import Markup, escape
 from .models import Acknowledgement
 
-# Fixed statement used for the "generic" option
 GENERIC_STATEMENT = ('We acknowledge the Traditional Custodians of the land on which this event takes place, '
                      'and pay our respects to their Elders past and present. We recognise their continuing '
                      'connection to land, waters and culture.')
@@ -120,7 +119,6 @@ RESOURCES = [
      'use': 'Background on both protocols, with sample wording.'},
 ]
 
-# Shown on the guide page
 MISTAKES = [
     ('Treating it as a formality',
      'Rushing through a script before the event starts. If it isn\'t sincere, it\'s not appropriate.'),
