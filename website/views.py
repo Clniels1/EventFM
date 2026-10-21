@@ -1,7 +1,7 @@
 import os
 import calendar
 from uuid import uuid4
-from datetime import date
+from datetime import date, timezone, timedelta
 from urllib.parse import urlparse
 from flask import Blueprint, render_template, redirect, url_for, current_app, request, flash, session
 from .models import Event, Order, Comment, GENRE_CHOICES, AGE_LIMIT_CHOICES
@@ -27,6 +27,13 @@ PRICE_RANGES = [
     ('125-plus', '$125+', 125, None),
 ]
 PRICE_LABELS = {key: label for key, label, _, _ in PRICE_RANGES}
+
+AEST = timezone(timedelta(hours=10))
+
+@main_bp.app_template_filter('aest')
+def to_aest(value):
+    # timestamps are stored as naive UTC, so tag them as UTC before converting
+    return value.replace(tzinfo=timezone.utc).astimezone(AEST)
 
 @main_bp.app_template_filter('genre_label')
 def genre_label(slug):

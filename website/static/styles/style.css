@@ -18,10 +18,6 @@ body {
 .container {
     padding-top: 30px;
 }
-.col-md-6 {
-    padding: 20px;
-    border: 1px solid #cccccc;
-}
 .card-img-top {
     width: 100%;
     height: 300px;
@@ -343,7 +339,22 @@ body {
     color: #AD5135;
 }
 
+/* Float the explanation over the page so opening it doesn't push content down */
+.search-ai-note {
+    position: relative;
+}
+
+.search-ai-note .collapse,
+.search-ai-note .collapsing {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 5;
+}
+
 .search-ai-info {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     background-color: #FFFFFF;
     border: 1px solid #ECE7E1;
     border-radius: 10px;
@@ -518,6 +529,11 @@ body {
     border-radius: 16px;
     overflow: hidden;
     background-color: #ffffff;
+    transition: filter 0.2s ease;
+}
+
+.event-card:hover {
+    filter: brightness(0.94);
 }
 
 .event-card .card-img-top {
@@ -778,10 +794,40 @@ header {
     background-color: rgba(255, 255, 255, 0.12);
 }
 
-.festival-navbar .nav-link.nav-user-name:hover,
-.festival-navbar .nav-link.nav-user-name:focus {
-    color: #E8E3ED;
-    background-color: transparent;
+/* Account dropdown */
+.festival-navbar .dropdown-menu {
+    border: 1px solid #ECE7E1;
+    border-radius: 10px;
+    padding: 6px;
+    font-size: 0.95rem;
+}
+
+.festival-navbar .dropdown-item {
+    border-radius: 6px;
+    padding: 7px 12px;
+}
+
+.festival-navbar .dropdown-item:active {
+    background-color: #C96A4A;
+}
+
+@media (max-width: 767px) {
+    /* In the collapsed menu the dropdown opens inline instead of floating */
+    .festival-navbar .dropdown-menu {
+        background-color: transparent;
+        border: none;
+        text-align: center;
+    }
+
+    .festival-navbar .dropdown-item {
+        color: #E8E3ED;
+    }
+
+    .festival-navbar .dropdown-item:hover,
+    .festival-navbar .dropdown-item:focus {
+        color: #ffffff;
+        background-color: rgba(255, 255, 255, 0.12);
+    }
 }
 
 .festival-navbar .navbar-toggler {
@@ -820,8 +866,8 @@ header {
     color: #C9C3D3;
     font-size: 0.95rem;
     font-weight: 500;
-    line-height: 1.8;
-    max-width: 380px;
+    line-height: 1.7;
+    max-width: 560px;
 }
 
 .eventfm-footer-heading {
@@ -1099,6 +1145,13 @@ header {
 }
 
 .view-all-btn {
+    --bs-btn-bg: #C96A4A;
+    --bs-btn-border-color: #C96A4A;
+    --bs-btn-hover-bg: #AD5135;
+    --bs-btn-hover-border-color: #AD5135;
+    --bs-btn-active-bg: #AD5135;
+    --bs-btn-active-border-color: #AD5135;
+    --bs-btn-focus-shadow-rgb: 201, 106, 74;
     background-color: #C96A4A;
     border-color: #C96A4A;
     border-radius: 50px;
@@ -1107,22 +1160,41 @@ header {
 }
 
 .view-all-btn:hover,
-.view-all-btn:focus {
+.view-all-btn:focus,
+.view-all-btn:active,
+.btn-check:checked + .view-all-btn,
+.view-all-btn.active {
     background-color: #AD5135;
     border-color: #AD5135;
+    color: #ffffff;
+}
+
+.view-all-btn:focus-visible {
+    box-shadow: 0 0 0 0.25rem rgba(201, 106, 74, 0.35);
+}
+
+/* Orange accent button used on page headers and forms (no blue pressed/focus state) */
+
+.btn-accent {
+    --bs-btn-bg: #C96A4A;
+    --bs-btn-border-color: #C96A4A;
+    --bs-btn-color: #ffffff;
+    --bs-btn-hover-bg: #AD5135;
+    --bs-btn-hover-border-color: #AD5135;
+    --bs-btn-hover-color: #ffffff;
+    --bs-btn-active-bg: #AD5135;
+    --bs-btn-active-border-color: #AD5135;
+    --bs-btn-active-color: #ffffff;
+    --bs-btn-focus-shadow-rgb: 201, 106, 74;
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 8px 20px;
 }
 
 /* Acknowledgement of Country */
 
 .aoc-section {
-    margin: 32px 0 24px;
-    padding-top: 24px;
-    border-top: 1px solid #E4DFD5;
-}
-
-.aoc-heading {
-    font-size: 1.35rem;
-    font-weight: 500;
+    margin: 0;
 }
 
 .aoc-label {
@@ -1151,8 +1223,8 @@ header {
     gap: 4px;
     height: 100%;
     padding: 14px 16px;
-    border: 2px solid #E4DFD5;
-    border-radius: 10px;
+    border: 1px solid #D9D2C9;
+    border-radius: 12px;
     background-color: #ffffff;
     cursor: pointer;
 }
@@ -1166,13 +1238,13 @@ header {
     color: #666;
 }
 
-/* same blue as Bootstrap's checked and focused form controls */
+/* the selected option is shown with a flat tinted background instead of an outline */
 .aoc-option-input:checked + .aoc-option-label {
-    border-color: #0d6efd;
+    background-color: #F6E3D9;
 }
 
 .aoc-option-input:focus-visible + .aoc-option-label {
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    box-shadow: 0 0 0 0.2rem rgba(201, 106, 74, 0.2);
 }
 
 .aoc-panel {
@@ -1249,18 +1321,19 @@ header {
     color: #B42318;
 }
 
-.aoc-panel-enhanced {
-    background-color: #ffffff;
-    border: 1px solid #E6E6EA;
+/* the steps are cards themselves, so the enhanced panel adds no box around them */
+.aoc-panel.aoc-panel-enhanced {
+    padding: 0;
+    background-color: transparent;
 }
 
 
 .aoc-step {
     margin: 0;
     padding: 16px 20px 18px;
-    border: 1px solid #E6E6EA;
-    border-radius: 8px;
-    background-color: #F7F7F8;
+    border: 1px solid #D9D2C9;
+    border-radius: 12px;
+    background-color: #ffffff;
 }
 
 .aoc-step + .aoc-step {
@@ -1352,47 +1425,14 @@ header {
 
 /* Acknowledgement of Country guide page */
 
+.aoc-guide {
+    max-width: 820px;
+    padding-bottom: 48px;
+}
+
 .aoc-guide-title {
     font-weight: 600;
-    padding-bottom: 8px;
     margin-bottom: 8px;
-    border-bottom: 1px solid #D9D9DE;
-}
-
-/* Wikipedia-style contents list, stays in view while scrolling on wide screens */
-.aoc-guide-contents {
-    position: sticky;
-    top: 100px;
-    font-size: 0.9rem;
-}
-
-.aoc-guide-contents-title {
-    font-weight: 600;
-    padding-bottom: 6px;
-    margin-bottom: 8px;
-    border-bottom: 1px solid #D9D9DE;
-}
-
-.aoc-guide-contents ul {
-    list-style: none;
-    padding-left: 0;
-    margin-bottom: 0;
-}
-
-.aoc-guide-contents ul ul {
-    padding-left: 14px;
-}
-
-.aoc-guide-contents li {
-    margin: 5px 0;
-}
-
-.aoc-guide-contents a {
-    text-decoration: none;
-}
-
-.aoc-guide-contents a:hover {
-    text-decoration: underline;
 }
 
 .aoc-guide-section {
@@ -1401,11 +1441,9 @@ header {
 }
 
 .aoc-guide-section h2 {
-    font-size: 1.45rem;
-    font-weight: 500;
-    padding-bottom: 6px;
-    margin-bottom: 14px;
-    border-bottom: 1px solid #D9D9DE;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 12px;
 }
 
 .aoc-guide-subheading {
@@ -1655,6 +1693,22 @@ header {
     padding: 14px 0;
 }
 
+.event-comment > div {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.event-comment-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 8px;
+}
+
+.event-comment-time {
+    white-space: nowrap;
+}
+
 .event-comment-author {
     font-weight: 600;
     color: #22212A;
@@ -1677,4 +1731,158 @@ header {
 .card {
     box-shadow: none !important;
     border: 1px solid #D9D2C9 !important;
+}
+
+/* Booking history page */
+
+.booking-nav-btn {
+    border-radius: 10px;
+    padding: 8px 20px;
+    font-weight: 600;
+}
+
+.booking-section-title {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.4px;
+    color: #22212A;
+}
+
+.booking-empty {
+    padding: 48px 24px;
+    text-align: center;
+    border-radius: 16px;
+    background-color: #ffffff;
+}
+
+.booking-empty .bi {
+    font-size: 2.25rem;
+    color: #C96A4A;
+}
+
+.booking-empty h3 {
+    margin: 12px 0 8px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #22212A;
+}
+
+.booking-empty p {
+    margin-bottom: 20px;
+    color: #6b6874;
+}
+
+.booking-empty > :last-child {
+    margin-bottom: 0;
+}
+
+.account-card .form-action-btn {
+    min-width: 150px;
+    padding: 8px 20px; /* same height as the booking history buttons */
+}
+
+/* Section headings inside long forms */
+
+.form-section-title {
+    margin-bottom: 4px;
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    color: #22212A;
+}
+
+/* Secondary buttons in an event card footer, kept clickable above the card's stretched link */
+.event-card-footer {
+    gap: 8px;
+}
+
+.event-card-footer .btn-outline-secondary {
+    position: relative;
+    z-index: 2;
+    border-radius: 9px;
+    font-size: 0.85rem;
+    padding: 6px 14px;
+}
+
+/* Long forms keep the page's standard width and left edge, but cap the card so fields don't stretch */
+.account-card-wide {
+    max-width: 900px;
+}
+
+/* Festival calendar */
+
+.calendar-card {
+    border-radius: 16px;
+    overflow: hidden;
+    background-color: #ffffff;
+}
+
+.calendar-month {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.4px;
+    color: #22212A;
+}
+
+.calendar-table {
+    --bs-table-border-color: #E4DFD5;
+    margin-bottom: 0;
+}
+
+.calendar-table th {
+    padding: 10px 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #6b6874;
+    background-color: #F8F6F0;
+}
+
+.calendar-table td {
+    min-width: 120px;
+    height: 100px;
+    vertical-align: top;
+    color: #22212A;
+}
+
+.calendar-table td a {
+    color: #C96A4A;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.calendar-table td a:hover {
+    color: #AD5135;
+    text-decoration: underline;
+}
+
+.calendar-back-btn {
+    border-radius: 9px;
+    font-weight: 600;
+}
+
+/* Account pages */
+
+.account-title,
+.profile-name {
+    font-weight: 600;
+    letter-spacing: -0.4px;
+    color: #22212A;
+}
+
+.account-title {
+    margin-bottom: 4px;
+    font-size: 1.75rem;
+}
+
+.profile-name {
+    margin-bottom: 4px;
+    font-size: 1.4rem;
+}
+
+.profile-avatar {
+    width: 64px;
+    height: 64px;
+    background-color: #C96A4A;
 }

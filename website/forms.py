@@ -31,18 +31,18 @@ def strip_whitespace(value):
 
 # Login form
 class LoginForm(FlaskForm):
-    user_name=StringField("User Name", filters=[strip_whitespace],
-                          validators=[DataRequired('Enter your user name'), Length(max=100)],
-                          render_kw={'placeholder': 'Enter your user name', 'autocomplete': 'username'})
+    user_name=StringField("Username", filters=[strip_whitespace],
+                          validators=[DataRequired('Enter your username'), Length(max=100)],
+                          render_kw={'placeholder': 'Enter your username', 'autocomplete': 'username'})
     password=PasswordField("Password", validators=[InputRequired('Enter your password')],
                            render_kw={'placeholder': 'Enter your password', 'autocomplete': 'current-password'})
     submit = SubmitField("Log In")
 
 # Registration form
 class RegisterForm(FlaskForm):
-    user_name=StringField("User Name", filters=[strip_whitespace],
-                          validators=[DataRequired('Choose a user name'),
-                                      Length(min=3, max=30, message='User name must be between 3 and 30 characters')],
+    user_name=StringField("Username", filters=[strip_whitespace],
+                          validators=[DataRequired('Choose a username'),
+                                      Length(min=3, max=30, message='Username must be between 3 and 30 characters')],
                           render_kw={'placeholder': 'e.g. festivalfan99', 'autocomplete': 'username'})
     first_name = StringField("First Name", filters=[strip_whitespace],
                              validators=[DataRequired('Enter your first name'),
@@ -141,7 +141,7 @@ class EventForm(FlaskForm):
     aoc_commitment = TextAreaField("What is your event doing to support First Nations communities? (optional)", validators=[Length(max=1000)])
     aoc_welcome = BooleanField("A Welcome to Country will be delivered by a Traditional Owner")
     aoc_check_names = BooleanField("I have checked the custodians' names and spelling with a reliable local source")
-    aoc_check_genuine = BooleanField("Everything in my acknowledgement is true of this event (nothing tokenistic or overclaimed)")
+    aoc_check_genuine = BooleanField("Everything in my acknowledgement is true of this event")
     aoc_check_difference = BooleanField("I understand this is an Acknowledgement, not a Welcome to Country")
 
     submit = SubmitField("Create Event")

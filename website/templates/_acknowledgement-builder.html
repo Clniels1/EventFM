@@ -11,16 +11,18 @@
 {% set option_info = {
     'none': ('None', 'No statement is shown on your event page.'),
     'generic': ('Generic', 'A standard statement acknowledging the Traditional Custodians of the land.'),
-    'enhanced': ('Enhanced', 'A tailored statement that names the Traditional Custodians of your venue.')
+    'enhanced': ('Enhanced', 'A unique statement that names the Traditional Custodians of your venue.')
 } %}
 
 <section class="aoc-section" id="acknowledgement">
-    <h3 class="aoc-heading">Acknowledgement of Country</h3>
-    <p class="text-muted">
-        An Acknowledgement of Country shows respect for the Traditional Custodians of the land your event is held on.
-        Anyone can give one; a Welcome to Country can only be given by Traditional Owners.
-        <a href="{{ url_for('main.acknowledgement_guide') }}" target="_blank">Read the EventFM guide</a>.
-    </p>
+    <div class="mb-4">
+        <h3 class="form-section-title">Acknowledgement of Country</h3>
+        <p class="text-muted small mb-0">
+            An Acknowledgement of Country shows respect for the Traditional Custodians of the land your event is held on.
+            Anyone can give one; a Welcome to Country can only be given by Traditional Owners.
+            <a href="{{ url_for('main.acknowledgement_guide') }}" target="_blank">Read the EventFM guide</a>.
+        </p>
+    </div>
 
     <div class="aoc-options" role="radiogroup" aria-label="Acknowledgement of Country type">
         {% for option in form.acknowledgement_type %}
@@ -105,7 +107,6 @@
                     {{ form.aoc_place_name.label(class="form-label") }}
                     {{ form.aoc_place_name(class="form-control", placeholder="e.g. Meanjin") }}
                     {{ field_errors(form.aoc_place_name) }}
-                    <div class="form-text">Only use a name you have checked is used locally.</div>
                 </div>
             </div>
             <div class="mb-1">
@@ -130,7 +131,7 @@
             <div class="mb-3">
                 {{ form.aoc_commitment.label(class="form-label") }}
                 {{ form.aoc_commitment(class="form-control", rows="2",
-                    placeholder="e.g. Our line-up includes First Nations artists, booked and paid fairly. Only include what your event is genuinely doing.") }}
+                    placeholder="e.g. Our line-up includes First Nations artists, booked and paid fairly.") }}
                 {{ field_errors(form.aoc_commitment) }}
             </div>
             <div class="form-check">

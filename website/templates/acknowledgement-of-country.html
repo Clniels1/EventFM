@@ -3,32 +3,9 @@
 
 <div class="container aoc-guide">
     <h1 class="aoc-guide-title">Acknowledgement of Country</h1>
-    <p class="text-muted mb-4">
+    <p class="text-muted mb-5">
         What organisers should know before adding an acknowledgement to an event.
     </p>
-
-    <div class="row">
-    <!-- Contents sidebar, Wikipedia style -->
-    <nav class="col-lg-3 mb-4" aria-label="Contents">
-        <div class="aoc-guide-contents">
-            <p class="aoc-guide-contents-title">Contents</p>
-            <ul>
-                <li><a href="#what-is">What it is</a></li>
-                <li><a href="#welcome-vs-acknowledgement">Welcome vs Acknowledgement</a></li>
-                <li><a href="#capital-cities">Capital cities</a></li>
-                <li><a href="#find-custodians">Finding custodians</a></li>
-                <li>
-                    <a href="#mistakes">Mistakes to avoid</a>
-                    <ul>
-                        <li><a href="#contested">Contested issues</a></li>
-                    </ul>
-                </li>
-                <li><a href="#writing">Writing your own</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <article class="col-lg-9">
 
     <section id="what-is" class="aoc-guide-section">
         <h2>What it is</h2>
@@ -162,11 +139,28 @@
             <li>Anything your event is actually doing, like booking First Nations artists</li>
         </ol>
         <p class="small text-muted">
-            The generic option uses a fixed statement: "{{ generic_statement }}"
+            The generic option when creating an event uses a fixed statement: "{{ generic_statement }}"
         </p>
     </section>
-    </article>
-    </div>
+
+    <section id="sources" class="aoc-guide-section">
+        <h2>Sources</h2>
+        <ul class="aoc-resource-list small">
+            {% for resource in resources if resource.url %}
+            <li><a href="{{ resource.url }}" target="_blank" rel="noopener noreferrer">{{ resource.name }}</a></li>
+            {% endfor %}
+            <li>
+                <a href="https://www.ted.com/talks/shelley_reys_deliver_an_acknowledgement_of_country_that_really_means_something"
+                   target="_blank" rel="noopener noreferrer">Shelley Reys, TEDxSydney: Deliver an Acknowledgement of Country that really means something</a>
+            </li>
+            {% for city in capital_cities.values() %}
+            <li>
+                <a href="{{ city.url }}" target="_blank" rel="noopener noreferrer">{{ city.source }}</a>
+                (custodians for {{ city.city }})
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
 </div>
 
 {% endblock %}
