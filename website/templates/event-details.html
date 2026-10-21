@@ -181,9 +181,9 @@
                 {% for comment in event.comments | sort(attribute='created_at', reverse=true) %}
                     <div class="event-comment">
                         <div>
-                            <div class="d-flex align-items-baseline gap-2 mb-1">
+                            <div class="event-comment-header mb-1">
                                 <h6 class="event-comment-author mb-0">{{ comment.author.name }}</h6>
-                                <small class="text-muted">{{ comment.created_at.strftime('%d %B %Y, %I:%M %p') }} UTC</small>
+                                <small class="event-comment-time text-muted">{{ (comment.created_at | aest).strftime('%d %B %Y, %I:%M %p') }} AEST</small>
                             </div>
                             <p class="mb-0">{{ comment.content }}</p>
                         </div>

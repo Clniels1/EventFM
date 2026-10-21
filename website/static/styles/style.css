@@ -1693,6 +1693,22 @@ header {
     padding: 14px 0;
 }
 
+.event-comment > div {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.event-comment-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 8px;
+}
+
+.event-comment-time {
+    white-space: nowrap;
+}
+
 .event-comment-author {
     font-weight: 600;
     color: #22212A;
