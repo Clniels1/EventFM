@@ -2,7 +2,6 @@ from . import db
 from datetime import datetime, timezone
 from flask_login import UserMixin
 
-# List of genre choices (makes filtering possible)
 GENRE_CHOICES = [
     ('pop', 'Pop'),
     ('hip-hop-rap', 'Hip-Hop & Rap'),
@@ -20,7 +19,6 @@ GENRE_CHOICES = [
     ('classical', 'Classical')
 ]
 
-# Age restriction choices for events
 AGE_LIMIT_CHOICES = [
     ('all-ages', 'All ages'),
     ('15-plus', '15+'),
@@ -28,7 +26,6 @@ AGE_LIMIT_CHOICES = [
     ('under-18', 'Under 18 only')
 ]
 
-# Create user model 
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -41,7 +38,7 @@ class User(db.Model, UserMixin):
     street_address = db.Column(db.String(200), nullable=False)
     user_type = db.Column(db.String(50), nullable=False)
 
-    # User has nested events and event related fields to link a UID to an event (makes it so other users can see their comments, made events, etc.)
+    # events, orders and comments created by this user
     events = db.relationship('Event', backref='owner', lazy=True)
     comments = db.relationship('Comment', backref='author', lazy=True)
     orders = db.relationship('Order', backref='user', lazy=True)
@@ -49,7 +46,6 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return '<NameL {}, id {}>'.format(self.name, self.id)
 
-# Event model
 class Event(db.Model):
     __tablename__ = 'events'
     id = db.Column(db.Integer, primary_key=True)
@@ -67,9 +63,8 @@ class Event(db.Model):
     status = db.Column(db.String(20), nullable=False, default='Open')
     acknowledgement_type = db.Column(db.String(20), nullable=False, default='none')
     acknowledgement_text = db.Column(db.Text)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False) #Links to user who created it (User.ID = Foreign Key)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
-    # Similar to user model, event has comments owned by it 
     comments = db.relationship('Comment', backref='event', lazy=True)
     orders = db.relationship('Order', backref='event', lazy=True)
     chunks = db.relationship('EventChunk', backref='event', lazy=True, cascade='all, delete-orphan')
@@ -84,7 +79,6 @@ class Event(db.Model):
     def tickets_remaining(self):
         return self.capacity - self.tickets_sold
 
-    # Refreshes the status of the event based on the date and tickets remaining
     def refresh_status(self):
         if self.status == 'Cancelled':
             return
@@ -109,7 +103,6 @@ class Acknowledgement(db.Model):
     commitment = db.Column(db.Text)
     welcome_to_country = db.Column(db.Boolean, nullable=False, default=False)
 
-# Text chunk of an event with its semantic-search embedding
 class EventChunk(db.Model):
     __tablename__ = 'event_chunks'
     id = db.Column(db.Integer, primary_key=True)
@@ -118,7 +111,6 @@ class EventChunk(db.Model):
     text = db.Column(db.Text, nullable=False)
     embedding = db.Column(db.LargeBinary, nullable=False)
 
-# Comment model, passed to user and event models to link comments to both users and events
 class Comment(db.Model):
     __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key=True)
@@ -127,7 +119,6 @@ class Comment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
 
-# Order model, passed to user and event models to link orders to both users and events
 class Order(db.Model):
     __tablename__ = 'orders'
     id = db.Column(db.Integer, primary_key=True)

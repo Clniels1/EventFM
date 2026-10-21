@@ -6,12 +6,10 @@ from .forms import LoginForm, RegisterForm
 from . import db
 
 
-# Create a blueprint - make sure all BPs have unique names
 auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 
-# view function
 def login():
     login_form = LoginForm()
     error = None
@@ -19,7 +17,7 @@ def login():
         user_name = login_form.user_name.data
         password = login_form.password.data
         user = db.session.scalar(db.select(User).where(User.name==user_name))
-        if user is None or not check_password_hash(user.password_hash, password): # takes the hash and cleartext password
+        if user is None or not check_password_hash(user.password_hash, password):
             error = 'Incorrect username or password'
         if error is None:
             login_user(user)
@@ -32,7 +30,6 @@ def login():
             flash(error, 'danger')
     return render_template('account.html', form=login_form, heading='Login')
 
-# registration view function
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     register_form = RegisterForm()
@@ -68,7 +65,6 @@ def register():
         return redirect(url_for('main.index'))
     return render_template('account.html', form=register_form, heading='Register')
 
-# logout view function
 @auth_bp.route('/logout')
 @login_required
 def logout():

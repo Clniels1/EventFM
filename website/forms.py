@@ -29,7 +29,6 @@ def strip_whitespace(value):
     return value.strip() if isinstance(value, str) else value
 
 
-# Login form
 class LoginForm(FlaskForm):
     user_name=StringField("Username", filters=[strip_whitespace],
                           validators=[DataRequired('Enter your username'), Length(max=100)],
@@ -38,7 +37,6 @@ class LoginForm(FlaskForm):
                            render_kw={'placeholder': 'Enter your password', 'autocomplete': 'current-password'})
     submit = SubmitField("Log In")
 
-# Registration form
 class RegisterForm(FlaskForm):
     user_name=StringField("Username", filters=[strip_whitespace],
                           validators=[DataRequired('Choose a username'),
@@ -68,17 +66,15 @@ class RegisterForm(FlaskForm):
     password=PasswordField("Password", validators=[InputRequired('Enter a password'),
                   Length(min=6, max=128, message="Password must be between 6 and 128 characters"),
                   EqualTo('confirm', message="Passwords should match")],
-                  render_kw={'placeholder': 'At least 6 characters', 'autocomplete': 'new-password'}) # Password hashed and stored in database, not stored in plaintext + check for length and matching below
+                  render_kw={'placeholder': 'At least 6 characters', 'autocomplete': 'new-password'})
     confirm = PasswordField("Confirm Password", validators=[InputRequired('Confirm your password')],
                             render_kw={'placeholder': 'Re-enter your password', 'autocomplete': 'new-password'})
     submit = SubmitField("Create Account")
 
-# Acknowledgement of Country selector shown on event creation
 AOC_CHOICES = [('none', 'No Acknowledgement of Country'),
                ('generic', 'Acknowledgement of Country: generic'),
                ('enhanced', 'Acknowledgement of Country: enhanced')]
 
-# Event form
 class EventForm(FlaskForm):
     title = StringField(
         "Event Name",

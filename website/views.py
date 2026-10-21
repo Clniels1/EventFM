@@ -134,7 +134,6 @@ def search():
         )
         keyword_ids = {e.id for e in apply_filters(Event.query.filter(search_filter), filters).all()}
 
-        # score each event by semantic similarity
         semantic_scores = {}
         try:
             semantic_scores = dict(semantic_search(query, limit=SEARCH_CANDIDATE_LIMIT))
@@ -276,7 +275,6 @@ def edit_event(event_id):
     if not form.is_submitted():
         aoc.load_into_form(form, event)
     if form.validate_on_submit():
-        # capacity above sold
         if form.capacity.data < event.tickets_sold:
             flash(f'Capacity cannot be less than the {event.tickets_sold} tickets already sold', 'danger')
             return render_event_form(form, editing=True)
@@ -298,7 +296,6 @@ def edit_event(event_id):
     return render_event_form(form, editing=True)
 
 def render_event_form(form, editing=False):
-    # check custom wording for common mistakes
     review = []
     if form.acknowledgement_type.data == 'enhanced' and form.acknowledgement_text.data:
         review = aoc.review_statement(form.acknowledgement_text.data, form.aoc_custodians.data or '')

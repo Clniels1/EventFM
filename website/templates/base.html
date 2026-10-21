@@ -13,10 +13,8 @@
 </head>
 
 <body>
-    <!-- Header -->
     <header>
 
-        <!-- Navbar -->
         <nav class="navbar navbar-expand-md festival-navbar navbar-dark">
             <div class="container">
                 <a class="navbar-brand eventfm-brand" href="{{ url_for('main.index') }}">
@@ -65,7 +63,6 @@
     </header>
 
     <main class="site-main">
-    <!-- Code for using Flask flash -->
     {% block flash_messages %}
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -91,7 +88,6 @@
 <footer class="site-footer eventfm-footer">
     <div class="container">
         <div class="row gy-4 align-items-start">
-            <!-- EventFM Description -->
             <div class="col-md-6">
                 <h3 class="eventfm-footer-brand">
                     Event<span>FM</span>
@@ -108,23 +104,18 @@
                     help you every step of the way.
                 </p>
             </div>
-            <!-- Explore EventFM -->
             <div class="col-md-6">
                 <h5 class="eventfm-footer-heading">
                     Explore EventFM
                 </h5>
                 <div class="eventfm-footer-links">
-                    <!-- Home -->
                     <div class="text-center mb-3">
                         <a href="{{ url_for('main.index') }}">
                             Home
                         </a>
                     </div>
-                    <!-- Divider -->
                     <hr class="border-light opacity-25 mt-0 mb-4">
-                    <!-- Navigation Columns -->
                     <div class="row g-3 text-start">
-                        <!-- Left Column -->
                         <div class="col-6 d-flex flex-column align-items-start gap-3">
                             <a href="{{ url_for('main.index') }}">
                                 Discover Festivals
@@ -142,7 +133,6 @@
                                 Acknowledgement of Country
                             </a>
                         </div>
-                        <!-- Right Column -->
                         <div class="col-6 d-flex flex-column align-items-start gap-3">
                             <a href="{{ url_for('main.booking_history') }}">
                                 Booking History
@@ -167,7 +157,6 @@
                 </div>
             </div>
         </div>
-        <!-- Copyright -->
         <div class="eventfm-footer-bottom">
             <p>&copy; 2026 EventFM. All rights reserved.</p>
         </div>
