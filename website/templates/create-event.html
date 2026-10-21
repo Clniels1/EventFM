@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container py-5" style="max-width: 1000px;">
+<div class="container py-5">
 
     <!-- Page Heading -->
     <div class="mb-4">
-        <h1 class="h2 fw-bold mb-2">
+        <h1 class="festival-section-title mb-2">
             {% if editing %}Edit Event{% else %}Create Event{% endif %}
         </h1>
         <p class="text-muted mb-0">
@@ -17,24 +17,14 @@
         </p>
     </div>
     <!-- Main Form Card -->
-    <div class="card shadow-sm account-card border-0 mb-4">
+    <div class="card account-card account-card-wide mb-4">
         <div class="card-body p-4 p-md-5">
-            <!-- Acknowledgement of Country -->
-            <div class="alert alert-light border mb-4">
-                <strong>Acknowledgement of Country</strong>
-                <p class="mb-0">
-                    We acknowledge the Traditional Custodians of the land on which our events are held and pay our respects to Elders past and present.
-                </p>
-            </div>
             <!-- Event Form -->
             <form method="POST" enctype="multipart/form-data" class="mb-0">
                 {{ form.hidden_tag() }}
                 <!-- Section 1: Event Information -->
                 <div class="mb-4">
-                    <h3 class="h5 fw-bold mb-2">Event Information</h3>
-                    <p class="text-muted small mb-0">
-                        Tell festivalgoers what makes your event special.
-                    </p>
+                    <h3 class="form-section-title">Event Information</h3>
                 </div>
                 <!-- Event Name -->
                 <div class="mb-3">
@@ -55,10 +45,7 @@
                 <hr class="my-4">
                 <!-- Section 2: Date and Time -->
                 <div class="mb-4">
-                    <h3 class="h5 fw-bold mb-2">Date &amp; Time</h3>
-                    <p class="text-muted small mb-0">
-                        Let attendees know when your festival will take place.
-                    </p>
+                    <h3 class="form-section-title">Date &amp; Time</h3>
                 </div>
                 <!-- Event Date -->
                 <div class="mb-3">
@@ -85,10 +72,7 @@
                 <hr class="my-4">
                 <!-- Section 3: Location and Tickets -->
                 <div class="mb-4">
-                    <h3 class="h5 fw-bold mb-2">Location &amp; Tickets</h3>
-                    <p class="text-muted small mb-0">
-                        Set your festival location, ticket price and capacity.
-                    </p>
+                    <h3 class="form-section-title">Location &amp; Tickets</h3>
                 </div>
                 <!-- Location -->
                 <div class="mb-3">
@@ -118,10 +102,7 @@
                 <hr class="my-4">
                 <!-- Section 4: Festival Details -->
                 <div class="mb-4">
-                    <h3 class="h5 fw-bold mb-2">Festival Details</h3>
-                    <p class="text-muted small mb-0">
-                        Help attendees discover the right festival for them.
-                    </p>
+                    <h3 class="form-section-title">Festival Details</h3>
                 </div>
                 <!-- Event Image -->
                 <div class="mb-3">
@@ -149,13 +130,6 @@
                     </div>
                 </div>
                 <hr class="my-4">
-                <!-- Section 5: Acknowledgement Information -->
-                <div class="mb-4">
-                    <h3 class="h5 fw-bold mb-2">Acknowledgement Information</h3>
-                    <p class="text-muted small mb-0">
-                        Provide the acknowledgement details required for your event.
-                    </p>
-                </div>
                 <!-- Enhanced Acknowledgement of Country Builder -->
                 {% include '_acknowledgement-builder.html' %}
                 <hr class="my-4">

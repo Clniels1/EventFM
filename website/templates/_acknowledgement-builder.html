@@ -15,12 +15,14 @@
 } %}
 
 <section class="aoc-section" id="acknowledgement">
-    <h3 class="aoc-heading">Acknowledgement of Country</h3>
-    <p class="text-muted">
-        An Acknowledgement of Country shows respect for the Traditional Custodians of the land your event is held on.
-        Anyone can give one; a Welcome to Country can only be given by Traditional Owners.
-        <a href="{{ url_for('main.acknowledgement_guide') }}" target="_blank">Read the EventFM guide</a>.
-    </p>
+    <div class="mb-4">
+        <h3 class="form-section-title">Acknowledgement of Country</h3>
+        <p class="text-muted small mb-0">
+            An Acknowledgement of Country shows respect for the Traditional Custodians of the land your event is held on.
+            Anyone can give one; a Welcome to Country can only be given by Traditional Owners.
+            <a href="{{ url_for('main.acknowledgement_guide') }}" target="_blank">Read the EventFM guide</a>.
+        </p>
+    </div>
 
     <div class="aoc-options" role="radiogroup" aria-label="Acknowledgement of Country type">
         {% for option in form.acknowledgement_type %}

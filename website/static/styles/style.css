@@ -18,10 +18,6 @@ body {
 .container {
     padding-top: 30px;
 }
-.col-md-6 {
-    padding: 20px;
-    border: 1px solid #cccccc;
-}
 .card-img-top {
     width: 100%;
     height: 300px;
@@ -1115,14 +1111,7 @@ header {
 /* Acknowledgement of Country */
 
 .aoc-section {
-    margin: 32px 0 24px;
-    padding-top: 24px;
-    border-top: 1px solid #E4DFD5;
-}
-
-.aoc-heading {
-    font-size: 1.35rem;
-    font-weight: 500;
+    margin: 0;
 }
 
 .aoc-label {
@@ -1151,8 +1140,8 @@ header {
     gap: 4px;
     height: 100%;
     padding: 14px 16px;
-    border: 2px solid #E4DFD5;
-    border-radius: 10px;
+    border: 1px solid #D9D2C9;
+    border-radius: 12px;
     background-color: #ffffff;
     cursor: pointer;
 }
@@ -1166,13 +1155,13 @@ header {
     color: #666;
 }
 
-/* same blue as Bootstrap's checked and focused form controls */
+/* the selected option uses the site's accent colour, with the same 1px border as other cards */
 .aoc-option-input:checked + .aoc-option-label {
-    border-color: #0d6efd;
+    border-color: #C96A4A;
 }
 
 .aoc-option-input:focus-visible + .aoc-option-label {
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    box-shadow: 0 0 0 0.2rem rgba(201, 106, 74, 0.2);
 }
 
 .aoc-panel {
@@ -1249,18 +1238,19 @@ header {
     color: #B42318;
 }
 
-.aoc-panel-enhanced {
-    background-color: #ffffff;
-    border: 1px solid #E6E6EA;
+/* the steps are cards themselves, so the enhanced panel adds no box around them */
+.aoc-panel.aoc-panel-enhanced {
+    padding: 0;
+    background-color: transparent;
 }
 
 
 .aoc-step {
     margin: 0;
     padding: 16px 20px 18px;
-    border: 1px solid #E6E6EA;
-    border-radius: 8px;
-    background-color: #F7F7F8;
+    border: 1px solid #D9D2C9;
+    border-radius: 12px;
+    background-color: #ffffff;
 }
 
 .aoc-step + .aoc-step {
@@ -1677,4 +1667,155 @@ header {
 .card {
     box-shadow: none !important;
     border: 1px solid #D9D2C9 !important;
+}
+
+/* Booking history page */
+
+.booking-nav-btn {
+    border-radius: 10px;
+    padding: 8px 20px;
+    font-weight: 600;
+}
+
+.booking-section-title {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.4px;
+    color: #22212A;
+}
+
+.booking-empty {
+    padding: 48px 24px;
+    text-align: center;
+    border-radius: 16px;
+    background-color: #ffffff;
+}
+
+.booking-empty .bi {
+    font-size: 2.25rem;
+    color: #C96A4A;
+}
+
+.booking-empty h3 {
+    margin: 12px 0 8px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #22212A;
+}
+
+.booking-empty p {
+    margin-bottom: 20px;
+    color: #6b6874;
+}
+
+.booking-empty > :last-child {
+    margin-bottom: 0;
+}
+
+/* Section headings inside long forms */
+
+.form-section-title {
+    margin-bottom: 4px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    color: #22212A;
+}
+
+/* Secondary buttons in an event card footer, kept clickable above the card's stretched link */
+.event-card-footer {
+    gap: 8px;
+}
+
+.event-card-footer .btn-outline-secondary {
+    position: relative;
+    z-index: 2;
+    border-radius: 9px;
+    font-size: 0.85rem;
+    padding: 6px 14px;
+}
+
+/* Long forms keep the page's standard width and left edge, but cap the card so fields don't stretch */
+.account-card-wide {
+    max-width: 900px;
+}
+
+/* Festival calendar */
+
+.calendar-card {
+    border-radius: 16px;
+    overflow: hidden;
+    background-color: #ffffff;
+}
+
+.calendar-month {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.4px;
+    color: #22212A;
+}
+
+.calendar-table {
+    --bs-table-border-color: #E4DFD5;
+    margin-bottom: 0;
+}
+
+.calendar-table th {
+    padding: 10px 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #6b6874;
+    background-color: #F8F6F0;
+}
+
+.calendar-table td {
+    min-width: 120px;
+    height: 100px;
+    vertical-align: top;
+    color: #22212A;
+}
+
+.calendar-table td a {
+    color: #C96A4A;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.calendar-table td a:hover {
+    color: #AD5135;
+    text-decoration: underline;
+}
+
+.calendar-back-btn {
+    border-radius: 9px;
+    font-weight: 600;
+}
+
+/* Account pages */
+
+.account-title,
+.profile-name {
+    font-weight: 600;
+    letter-spacing: -0.4px;
+    color: #22212A;
+}
+
+.account-title {
+    margin-bottom: 4px;
+    font-size: 1.75rem;
+}
+
+.profile-name {
+    margin-bottom: 4px;
+    font-size: 1.4rem;
+}
+
+.profile-avatar {
+    width: 64px;
+    height: 64px;
+    background-color: #C96A4A;
 }

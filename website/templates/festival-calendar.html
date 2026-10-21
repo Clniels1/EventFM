@@ -2,18 +2,18 @@
 {% block content %}
 
 <div class="container py-5">
-    <div class="text-center mb-5">
-        <h1 class="fw-bold">Festival Calendar</h1>
-        <p>View upcoming music festivals by date.</p>
+    <div class="mb-4">
+        <h1 class="festival-section-title mb-2">Festival Calendar</h1>
+        <p class="text-muted mb-0">View upcoming music festivals by date.</p>
     </div>
     {% for month_key, month in months.items() %}
-        <div class="card shadow-sm mb-5">
+        <div class="card calendar-card mb-4">
             <div class="card-body p-4">
-                <h2 class="text-center mb-4">
+                <h2 class="calendar-month">
                     {{ month.name }} {{ month.year }}
                 </h2>
                 <div class="table-responsive">
-                    <table class="table table-bordered text-center align-middle">
+                    <table class="table table-bordered calendar-table text-center align-middle">
                         <thead>
                             <tr>
                                 <th>Monday</th>
@@ -29,7 +29,7 @@
                             {% for week in month.weeks %}
                                 <tr>
                                     {% for day in week %}
-                                        <td style="min-width: 120px; height: 100px;">
+                                        <td>
                                             {% if day != 0 %}
                                                 <strong>{{ day }}</strong>
 
@@ -53,12 +53,14 @@
             </div>
         </div>
     {% else %}
-        <div class="alert alert-info text-center">
-            No events are currently available on the calendar.
+        <div class="card booking-empty">
+            <i class="bi bi-calendar-x" aria-hidden="true"></i>
+            <h3>No events yet</h3>
+            <p>No events are currently available on the calendar.</p>
         </div>
     {% endfor %}
-    <div class="text-center">
-        <a href="{{ url_for('main.index') }}" class="btn btn-secondary">Back to Home</a>
+    <div>
+        <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary calendar-back-btn"><i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Back to Home</a>
     </div>
 </div>
 
